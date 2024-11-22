@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_main"
+    tools:context=".User_Profile">
+
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center"
+        android:text="Update Profile"
+        android:textColor="@color/silver"
+        android:textSize="50sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <!-- ====== EditText Fields ====== -->
+
+    <ImageButton
+        android:id="@+id/btnBackToMain"
+        android:layout_width="109dp"
+        android:layout_height="76dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="16dp"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        android:src="@drawable/image_go_back"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/deleteProfile"
+        android:layout_width="164dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="236dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/red"
+        android:hint="delete profile"
+        android:textSize="19sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/EtUpdateName"
+        android:layout_width="303dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="52dp"
+        android:background="@color/silver"
+        android:drawableLeft="@drawable/vector_name_24"
+        android:drawablePadding="8dp"
+        android:hint="Update Name"
+        android:textSize="25dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.198" />
+
+    <EditText
+        android:id="@+id/EtUpdatePassword"
+        android:layout_width="303dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="52dp"
+        android:background="@color/silver"
+        android:drawableLeft="@drawable/vector_password_24"
+        android:drawablePadding="8dp"
+        android:hint="Update Password"
+        android:textSize="25dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.319" />
+
+    <EditText
+        android:id="@+id/EtUpdateEmail"
+        android:layout_width="303dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="52dp"
+        android:background="@color/silver"
+        android:drawableLeft="@drawable/vector_username_pin_24"
+        android:drawablePadding="8dp"
+        android:hint="Update Email"
+        android:textSize="25dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.556" />
+
+    <EditText
+        android:id="@+id/EtUpdatePhone"
+        android:layout_width="303dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="52dp"
+        android:background="@color/silver"
+        android:drawableLeft="@drawable/vector_phone_24"
+        android:drawablePadding="8dp"
+        android:hint="Update Phone"
+        android:textSize="25dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.433" />
+
+    <Button
+        android:id="@+id/BtnUpdate"
+        android:layout_width="134dp"
+        android:layout_height="73dp"
+        android:layout_marginStart="132dp"
+        android:backgroundTint="@color/lightBlue"
+        android:text="Update"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.732" />   <!-- === Button for update === -->
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
