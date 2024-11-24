@@ -9,11 +9,13 @@
     tools:context=".User_Profile">
 
 
+    <!-- ====== EditText Fields ====== -->
+
     <TextView
         android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="75dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
         android:gravity="center"
         android:text="Update Profile"
@@ -21,9 +23,6 @@
         android:textSize="50sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-
-    <!-- ====== EditText Fields ====== -->
 
     <ImageButton
         android:id="@+id/btnBackToMain"
@@ -54,11 +53,12 @@
         android:layout_width="303dp"
         android:layout_height="55dp"
         android:layout_marginStart="52dp"
-        android:background="@color/silver"
+        android:background="@drawable/main_color_border"
         android:drawableLeft="@drawable/vector_name_24"
         android:drawablePadding="8dp"
         android:hint="Update Name"
         android:textSize="25dp"
+        android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -69,11 +69,12 @@
         android:layout_width="303dp"
         android:layout_height="55dp"
         android:layout_marginStart="52dp"
-        android:background="@color/silver"
+        android:background="@drawable/main_color_border"
         android:drawableLeft="@drawable/vector_password_24"
         android:drawablePadding="8dp"
         android:hint="Update Password"
         android:textSize="25dp"
+        android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -84,11 +85,12 @@
         android:layout_width="303dp"
         android:layout_height="55dp"
         android:layout_marginStart="52dp"
-        android:background="@color/silver"
+        android:background="@drawable/main_color_border"
         android:drawableLeft="@drawable/vector_username_pin_24"
         android:drawablePadding="8dp"
         android:hint="Update Email"
         android:textSize="25dp"
+        android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -99,9 +101,10 @@
         android:layout_width="303dp"
         android:layout_height="55dp"
         android:layout_marginStart="52dp"
-        android:background="@color/silver"
+        android:background="@drawable/main_color_border"
         android:drawableLeft="@drawable/vector_phone_24"
         android:drawablePadding="8dp"
+        android:padding="8dp"
         android:hint="Update Phone"
         android:textSize="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -111,8 +114,8 @@
 
     <Button
         android:id="@+id/BtnUpdate"
-        android:layout_width="134dp"
-        android:layout_height="73dp"
+        android:layout_width="146dp"
+        android:layout_height="72dp"
         android:layout_marginStart="132dp"
         android:backgroundTint="@color/lightBlue"
         android:text="Update"
@@ -120,7 +123,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.732" />   <!-- === Button for update === -->
+        app:layout_constraintVertical_bias="0.729" />   <!-- === Button for update === -->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
