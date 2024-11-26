@@ -212,12 +212,11 @@ public class signUpActivity extends AppCompatActivity {
                            signUp_username.setError("Username is already exists");
                        }
                        else if(isUnique.equals("email")){
-                           signUp_username.setError("Email is already exists");
+                           signUp_email.setError("Email is already exists");
                        }
                        else if(isUnique.equals("phone")){
-                           signUp_username.setError("Phone number is already exists");
+                           signUp_phoneNum.setError("Phone number is already exists");
                        }
-
                    }
                });
             }
@@ -230,7 +229,7 @@ public class signUpActivity extends AppCompatActivity {
         database.child("users").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                if (snapshot.exists()) {
+                if (snapshot.exists() && !username.isEmpty()) {
                     callback.onResult("username"); // Username already taken
                     return;
                 }
@@ -239,7 +238,7 @@ public class signUpActivity extends AppCompatActivity {
                 database.child("emails").child(email).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
-                        if (snapshot.exists()) {
+                        if (snapshot.exists() && !email.isEmpty()) {
                             callback.onResult("email"); // Email already in use
                             return;
                         }
@@ -248,7 +247,7 @@ public class signUpActivity extends AppCompatActivity {
                         database.child("phoneNumbers").child(phoneNumber).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot snapshot) {
-                                if (snapshot.exists()) {
+                                if (snapshot.exists() && !phoneNumber.isEmpty()) {
                                     callback.onResult("phone"); // Email already in use
                                 }
                                 else{
