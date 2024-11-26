@@ -18,18 +18,17 @@ public class info_validation {
 
 
     // username validation
-    public static boolean username_validation(String username){
+    public static boolean username_validation(String username) {
         int leng = username.length();
-        if (leng > 15 | leng < 5 | username.contains("'")){
+        if (leng > 15 | leng < 5 | username.contains("'")) {
             return false;
-        }
-        else{
+        } else {
             return true;
         }
     }
 
     // email validation - bug with sync
-    public static boolean email_validation(String email){
+    public static boolean email_validation(String email) {
         if (!email.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             return true;
         }
@@ -37,85 +36,31 @@ public class info_validation {
     }
 
     // name validation
-    public static boolean name_validation(String name){
+    public static boolean name_validation(String name) {
         int leng = name.length();
-        if (leng > 10 | leng < 2 | name.contains(".") | name.contains("'") | name.contains(",")){
+        if (leng > 10 | leng < 2 | name.contains(".") | name.contains("'") | name.contains(",")) {
             return false;
         }
         return true;
     }
 
     //password validation
-    public static boolean password_validation(String password){
+    public static boolean password_validation(String password) {
         int leng = password.length();
-        if (leng > 18 | leng < 6){
+        if (leng > 18 | leng < 6) {
             return false;
         }
         return true;
     }
 
     // phone number validation
-    public static boolean phoneNumber_validation(String phone){
-        if (PhoneNumberUtils.isGlobalPhoneNumber(phone)){
+    public static boolean phoneNumber_validation(String phone) {
+        if (PhoneNumberUtils.isGlobalPhoneNumber(phone)) {
             return true;
         }
         return false;
     }
 
-    public static void checkEmailExists(String email, EmailCheckCallback callback) {
-        // Get a reference to the "users" node
-        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
-
-        // Attach a listener to retrieve data once
-        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                boolean emailExists = false;
-
-                // Loop through each user in the database
-                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                    // Check if the "email" field matches
-                    String userEmail = userSnapshot.child("email").getValue(String.class);
-                    if (email.equals(userEmail)) {
-                        emailExists = true;
-                        break;
-                    }
-                }
-
-                // Return the result via the callback
-                callback.onResult(emailExists);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Handle database error
-                callback.onResult(false);
-            }
-        });
-    }
-
-    public interface EmailCheckCallback {
-        void onResult(boolean exists);
-    }
 }
 
 
-//mDatabase = FirebaseDatabase.getInstance().getReference("users");
-//emailSnap = true;
-//        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-//    @Override
-//    public void onDataChange(@NonNull DataSnapshot snapshot) {
-//        for(DataSnapshot usersnap : snapshot.getChildren()){
-//            String temp = usersnap.child("email").getValue(String.class);
-//            if (temp.equals(email)){
-//                emailSnap = false;
-//                break;
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public void onCancelled(@NonNull DatabaseError error) {
-//
-//    }
-//});

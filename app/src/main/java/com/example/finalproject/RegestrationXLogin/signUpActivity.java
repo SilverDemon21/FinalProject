@@ -19,6 +19,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.DatabaseError;
+
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -33,8 +39,10 @@ import com.example.finalproject.info_validation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -48,12 +56,13 @@ public class signUpActivity extends AppCompatActivity {
     private ImageView imgGallery, imgCamera, imgProfile;
     TextView loginRedirectText;
     Button signUp_button;
-    FirebaseDatabase database;
     DatabaseReference reference;
     DatabaseReference mDatabase;
     ImageButton RbackToMainActivity;
     private Uri uriPhoto;
     private Bitmap photoBitmap;
+
+    private final DatabaseReference database = FirebaseDatabase.getInstance().getReference();
 
     private boolean findCamera, findGallery;
 
@@ -150,44 +159,115 @@ public class signUpActivity extends AppCompatActivity {
         signUp_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                database = FirebaseDatabase.getInstance();
-                reference = database.getReference("users");
 
 
                 String name = signUp_name.getText().toString();
                 String email = signUp_email.getText().toString();
+                String formattedEmail = email.replace(".", "_");
                 String username = signUp_username.getText().toString();
                 String password = signUp_password.getText().toString();
                 String phone = signUp_phoneNum.getText().toString();
 
 
-
                 // the signup process
-                reference.child(username).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DataSnapshot> task) {
-                        if(task.getResult().getValue() != null && !username.isEmpty()){
-                            signUp_username.setError("The username is already in use");
-                            profileIsGood();
-                        }
-                        else{
-                            if(!profileIsGood()){
+               checkUniqueness(username, formattedEmail, phone, new UniquenessCallback() {
+                   @Override
+                   public void onResult(String isUnique) {
+                       if(isUnique.equals("good")){
+                           if(profileIsGood()){
+                               saveUserDetails(name, formattedEmail, username, password, phone, photoName);
+                               Intent intent = new Intent(signUpActivity.this, MainActivity.class);
+                               startActivity(intent);
+                           }
+                       }
+                       else if(isUnique.equals("username")){
+                           signUp_username.setError("Username is already exists");
+                       }
+                       else if(isUnique.equals("email")){
+                           signUp_username.setError("Email is already exists");
+                       }
+                       else if(isUnique.equals("phone")){
+                           signUp_username.setError("Phone number is already exists");
+                       }
 
-                            }
-                            else {
-                                HellperSignUpClass hellperSignUpClass = new HellperSignUpClass(name, email, username, password, phone, photoName);
-                                reference.child(username).setValue(hellperSignUpClass);
-
-                                Intent intent = new Intent(signUpActivity.this, loginActivity.class);
-                                startActivity(intent);
-                                Toast.makeText(signUpActivity.this, "You sign up successfully", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-                });
+                   }
+               });
             }
         });
     }
+
+
+    private void checkUniqueness(String username, String email, String phoneNumber, UniquenessCallback callback) {
+        // Check if username already exists
+        database.child("users").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    callback.onResult("username"); // Username already taken
+                    return;
+                }
+
+                // Check if email is already taken
+                database.child("emails").child(email).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            callback.onResult("email"); // Email already in use
+                            return;
+                        }
+
+                        // Check if phone number is already taken
+                        database.child("phoneNumbers").child(phoneNumber).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    callback.onResult("phone"); // Email already in use
+                                }
+                                else{
+                                    callback.onResult("good");
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError error) {
+                                callback.onResult("cna");
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                        callback.onResult("cna");
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                callback.onResult("cna");
+            }
+        });
+    }
+
+
+    private void saveUserDetails(String name, String email, String username, String password, String phoneNum, String photoName) {
+        // Create a new User object with the provided data
+        HellperSignUpClass user = new HellperSignUpClass(name, email, username, password, phoneNum, photoName);
+
+        // Save user data under the username as the key
+        database.child("users").child(username).setValue(user);
+
+        // Save the email and phone number mappings
+        database.child("emails").child(email).setValue(username);
+        database.child("phoneNumbers").child(phoneNum).setValue(username);
+
+        System.out.println("User registered successfully!");
+    }
+
+    interface UniquenessCallback {
+        void onResult(String isUnique);
+    }
+
 
     // validation for all the fields
     public Boolean profileIsGood(){
