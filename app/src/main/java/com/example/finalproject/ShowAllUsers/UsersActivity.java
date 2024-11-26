@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.finalproject.R;
+import com.example.finalproject.RegestrationXLogin.signUpActivity;
 import com.example.finalproject.User;
 import com.example.finalproject.User_Profile;
 import com.example.finalproject.sharedPref_manager;
@@ -114,7 +115,8 @@ public class UsersActivity extends AppCompatActivity {
                         String ClickedUsername = clickedUser.getUsername();
 
                         if(currentUsername.equals(ClickedUsername)){
-                            Intent intent = new Intent(UsersActivity.this, User_Profile.class);
+                            Intent intent = new Intent(UsersActivity.this, signUpActivity.class);
+                            intent.putExtra("activity","update");
                             startActivity(intent);
                         }
                         else {

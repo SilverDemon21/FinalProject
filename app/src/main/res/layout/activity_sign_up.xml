@@ -43,6 +43,7 @@
 
 
                 <TextView
+                    android:id="@+id/title"
                     android:layout_width="161dp"
                     android:layout_height="wrap_content"
                     android:text="Sign up"

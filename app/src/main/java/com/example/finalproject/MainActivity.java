@@ -98,7 +98,9 @@ public class MainActivity extends AppCompatActivity {
         }
         else if(item.getItemId() == R.id.menu_signUp){
             Intent intent = new Intent(MainActivity.this, signUpActivity.class);
+            intent.putExtra("activity", "create");
             startActivity(intent);
+
         } else if (item.getItemId() == R.id.menu_userInfo) {
             Intent intent = new Intent(MainActivity.this, UsersActivity.class);
             startActivity(intent);

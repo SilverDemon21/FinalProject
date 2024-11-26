@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.example.finalproject.sharedPref_manager;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -54,19 +55,18 @@ import java.util.Date;
 public class signUpActivity extends AppCompatActivity {
     EditText signUp_name, signUp_email, signUp_username, signUp_password, signUp_phoneNum;
     private ImageView imgGallery, imgCamera, imgProfile;
-    TextView loginRedirectText;
+    TextView loginRedirectText, title;
     Button signUp_button;
-    DatabaseReference reference;
-    DatabaseReference mDatabase;
     ImageButton RbackToMainActivity;
     private Uri uriPhoto;
     private Bitmap photoBitmap;
+
 
     private final DatabaseReference database = FirebaseDatabase.getInstance().getReference();
 
     private boolean findCamera, findGallery;
 
-    private String photoName;
+    private String photoName, type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,9 +75,9 @@ public class signUpActivity extends AppCompatActivity {
         getSupportActionBar().hide();
 
         // implements all the variables
+        sharedPref_manager manger = new sharedPref_manager(signUpActivity.this, "LoginUpdate");
 
-
-
+        title = findViewById(R.id.title);
         imgCamera = findViewById(R.id.imgCamera);
         imgGallery = findViewById(R.id.imgGallery);
         signUp_name = findViewById(R.id.signUp_name);
@@ -93,6 +93,34 @@ public class signUpActivity extends AppCompatActivity {
 
         findCamera = false;
         findGallery = false;
+
+        Intent intent = getIntent();
+
+        type = intent.getStringExtra("activity");
+
+        if (type.equals("update")){
+            loginRedirectText.setVisibility(View.INVISIBLE);
+            loginRedirectText.setEnabled(false);
+
+            title.setText("Update Profile");
+            signUp_button.setText("Update");
+
+            signUp_password.setVisibility(View.GONE);
+            signUp_password.setEnabled(false);
+
+            signUp_name.setText(manger.getName());
+            signUp_email.setText(manger.getEmail());
+            signUp_phoneNum.setText(manger.getPhoneNum());
+            signUp_username.setText(manger.getUsername());
+
+            photoName = manger.getPhotoName();
+
+            File file = new File(Environment.getExternalStorageDirectory() + "/" + "Pictures" + "/" + photoName);
+            if (file.exists()){
+                Uri uri = Uri.parse(file.getAbsolutePath());
+                imgProfile.setImageURI(uri);
+            }
+        }
 
 
         // button to pick up image from gallery
@@ -277,7 +305,7 @@ public class signUpActivity extends AppCompatActivity {
         String name = signUp_name.getText().toString().trim();
         String username = signUp_username.getText().toString().trim();
         String password = signUp_password.getText().toString().trim();
-        if(photoBitmap == null){
+        if(photoBitmap == null && type.equals("create")){
             Toast.makeText(signUpActivity.this, "Pls save the image", Toast.LENGTH_SHORT).show();
             profileGood = false;
         }
@@ -344,6 +372,9 @@ public class signUpActivity extends AppCompatActivity {
     });
 
     public boolean saveImageInFolder(Bitmap bitmap){
+        if (photoBitmap == null){
+            return true;
+        }
         photoName = new SimpleDateFormat("ddMMyy-HHmmss").format(new Date()) + ".jpg";
         File myDir = new File(Environment.getExternalStorageDirectory(), "/" + "Pictures");
         if(!myDir.exists()){
