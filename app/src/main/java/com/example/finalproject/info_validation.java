@@ -61,6 +61,42 @@ public class info_validation {
         }
         return false;
     }
+
+    public static void checkEmailExists(String email, EmailCheckCallback callback) {
+        // Get a reference to the "users" node
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
+
+        // Attach a listener to retrieve data once
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean emailExists = false;
+
+                // Loop through each user in the database
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    // Check if the "email" field matches
+                    String userEmail = userSnapshot.child("email").getValue(String.class);
+                    if (email.equals(userEmail)) {
+                        emailExists = true;
+                        break;
+                    }
+                }
+
+                // Return the result via the callback
+                callback.onResult(emailExists);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Handle database error
+                callback.onResult(false);
+            }
+        });
+    }
+
+    public interface EmailCheckCallback {
+        void onResult(boolean exists);
+    }
 }
 
 

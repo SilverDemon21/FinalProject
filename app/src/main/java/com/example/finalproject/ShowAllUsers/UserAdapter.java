@@ -20,14 +20,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserAdapter extends ArrayAdapter<User> {
     private Context mContext;
-    private List<User> mUserList;
 
 
     // Constructor
     public UserAdapter(Context context, List<User> userList) {
         super(context, 0, userList);
         mContext = context;
-        mUserList = userList;
 
     }
 

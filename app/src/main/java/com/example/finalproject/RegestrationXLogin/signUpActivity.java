@@ -67,6 +67,8 @@ public class signUpActivity extends AppCompatActivity {
 
         // implements all the variables
 
+
+
         imgCamera = findViewById(R.id.imgCamera);
         imgGallery = findViewById(R.id.imgGallery);
         signUp_name = findViewById(R.id.signUp_name);
