@@ -51,6 +51,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class signUpActivity extends AppCompatActivity {
     EditText signUp_name, signUp_email, signUp_username, signUp_password, signUp_phoneNum;
@@ -98,8 +100,9 @@ public class signUpActivity extends AppCompatActivity {
 
         type = intent.getStringExtra("activity");
 
+
         if (type.equals("update")){
-            loginRedirectText.setVisibility(View.INVISIBLE);
+            loginRedirectText.setVisibility(View.GONE);
             loginRedirectText.setEnabled(false);
 
             title.setText("Update Profile");
@@ -108,10 +111,12 @@ public class signUpActivity extends AppCompatActivity {
             signUp_password.setVisibility(View.GONE);
             signUp_password.setEnabled(false);
 
+            signUp_username.setVisibility(View.GONE);
+            signUp_username.setEnabled(false);
+
             signUp_name.setText(manger.getName());
-            signUp_email.setText(manger.getEmail());
+            signUp_email.setText(manger.getEmail().replace("_", "."));
             signUp_phoneNum.setText(manger.getPhoneNum());
-            signUp_username.setText(manger.getUsername());
 
             photoName = manger.getPhotoName();
 
@@ -203,9 +208,25 @@ public class signUpActivity extends AppCompatActivity {
                    public void onResult(String isUnique) {
                        if(isUnique.equals("good")){
                            if(profileIsGood()){
-                               saveUserDetails(name, formattedEmail, username, password, phone, photoName);
-                               Intent intent = new Intent(signUpActivity.this, MainActivity.class);
-                               startActivity(intent);
+
+                               if(type.equals("create")){
+                                   saveUserDetails(name, formattedEmail, username, password, phone, photoName);
+                                   Intent intent = new Intent(signUpActivity.this, loginActivity.class);
+                                   startActivity(intent);
+
+                               } else if (type.equals("update")) {
+
+                                    String cUsername = manger.getUsername();
+                                    updateUser(cUsername, formattedEmail, phone, name, photoName, new UpdateCallback() {
+                                        @Override
+                                        public void onResult(boolean updated) {
+                                            Intent intent = new Intent(signUpActivity.this, MainActivity.class);
+                                            startActivity(intent);
+                                        }
+                                    });
+                               }
+
+
                            }
                        }
                        else if(isUnique.equals("username")){
@@ -223,7 +244,7 @@ public class signUpActivity extends AppCompatActivity {
         });
     }
 
-
+    // check the uniqueness of an email, username and phone number
     private void checkUniqueness(String username, String email, String phoneNumber, UniquenessCallback callback) {
         // Check if username already exists
         database.child("users").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -276,24 +297,96 @@ public class signUpActivity extends AppCompatActivity {
         });
     }
 
+    // callback interface for the function above
+    interface UniquenessCallback {
+        void onResult(String isUnique);
+    }
 
+    // update the user profile
+    private void updateUser(String username, String newEmail, String newPhone, String newName, String newPhotoName, UpdateCallback callback){
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+
+        databaseReference.child("users").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(!snapshot.exists()){
+                    return;
+                }
+
+                sharedPref_manager manager = new sharedPref_manager(signUpActivity.this, "LoginUpdate");
+                Map<String, Object> updates = new HashMap<>();
+
+                String currentEmail = manager.getEmail();
+                String currentPhone = manager.getPhoneNum();
+                String currentName = manager.getName();
+                String currentPhotoName = manager.getPhotoName();
+
+                manager.setEmail(newEmail);
+                manager.setName(newName);
+                manager.setPhoneNum(newPhone);
+                manager.setPhotoName(newPhotoName);
+
+                if(newEmail != null && !newEmail.equals(currentEmail)){
+                    updates.put("email", newEmail);
+
+                    databaseReference.child("emails").child(currentEmail).setValue(null);
+                    databaseReference.child("emails").child(newEmail).setValue(username);
+                }
+
+                if(newPhone != null && !newPhone.equals(currentPhone)){
+                    updates.put("phoneNum", newPhone);
+
+                    databaseReference.child("phoneNumbers").child(currentPhone).setValue(null);
+                    databaseReference.child("phoneNumbers").child(newPhone).setValue(username);
+                }
+
+                if(newName != null && !newName.equals(currentName)){
+                    updates.put("name", newName);
+                }
+
+                if(newPhotoName!= null && !newPhotoName.equals(currentPhotoName)){
+                    updates.put("photoName", photoName);
+                }
+
+                if(!updates.isEmpty()){
+                    databaseReference.child("users").child(username).updateChildren(updates).addOnCompleteListener(task -> {
+                        if(task.isSuccessful()){
+                            Toast.makeText(signUpActivity.this, "The profile was Updated", Toast.LENGTH_SHORT).show();
+                            callback.onResult(true);
+                        }
+                        else{
+                            Toast.makeText(signUpActivity.this, "The profile wasn't Updated", Toast.LENGTH_SHORT).show();
+                            callback.onResult(false);
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    // callback interface for the function above
+    interface UpdateCallback{
+        void onResult(boolean updated);
+    }
+
+
+    // save the user details when signing up
     private void saveUserDetails(String name, String email, String username, String password, String phoneNum, String photoName) {
         // Create a new User object with the provided data
         HellperSignUpClass user = new HellperSignUpClass(name, email, username, password, phoneNum, photoName);
 
-        // Save user data under the username as the key
         database.child("users").child(username).setValue(user);
-
-        // Save the email and phone number mappings
         database.child("emails").child(email).setValue(username);
         database.child("phoneNumbers").child(phoneNum).setValue(username);
 
-        System.out.println("User registered successfully!");
     }
 
-    interface UniquenessCallback {
-        void onResult(String isUnique);
-    }
+
 
 
     // validation for all the fields
@@ -320,11 +413,11 @@ public class signUpActivity extends AppCompatActivity {
             signUp_name.setError("The name should be between 2 and 10 characters");
             profileGood = false;
         }
-        if (!info_validation.password_validation(password)){
+        if (!info_validation.password_validation(password) && !type.equals("update")){
             signUp_password.setError("The password should be between 6 and 18 characters");
             profileGood = false;
         }
-        if (!info_validation.username_validation(username)){
+        if (!info_validation.username_validation(username) && !type.equals("update")){
             signUp_username.setError("The username should be between 5 and 15 characters");
             profileGood = false;
         }
@@ -337,6 +430,7 @@ public class signUpActivity extends AppCompatActivity {
     }
 
 
+    // open the photo at the top of the activity
     ActivityResultLauncher<Intent> openPhoto = registerForActivityResult
             (new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
@@ -364,12 +458,13 @@ public class signUpActivity extends AppCompatActivity {
                         uriPhoto = filePath.getData();
                         imgProfile.setImageURI(uriPhoto);
                     }
-
                 }
             }
         }
     });
 
+
+    // save the image at a folder to be able to use it again directly
     public boolean saveImageInFolder(Bitmap bitmap){
         if (photoBitmap == null){
             return true;

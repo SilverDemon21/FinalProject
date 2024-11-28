@@ -29,10 +29,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class User_Profile extends AppCompatActivity {
-    private Button  deleteProfile, BtnUpdate;
+    private Button  deleteProfile;
     private TextView showEmail;
-    private ImageButton btnMainMenu;
-    private EditText EtUpdateName, EtUpdatePassword, EtUpdateEmail, EtUpdatePhone;
     sharedPref_manager manager;
     FirebaseDatabase database;
     DatabaseReference reference;
@@ -46,12 +44,7 @@ public class User_Profile extends AppCompatActivity {
         setContentView(R.layout.activity_user_profile);
 
         deleteProfile = findViewById(R.id.deleteProfile);
-        EtUpdateEmail = findViewById(R.id.EtUpdateEmail);
-        EtUpdatePassword = findViewById(R.id.EtUpdatePassword);
-        EtUpdateName = findViewById(R.id.EtUpdateName);
-        BtnUpdate = findViewById(R.id.BtnUpdate);
         btnBackToMain = findViewById(R.id.btnBackToMain);
-        EtUpdatePhone = findViewById(R.id.EtUpdatePhone);
 
 
         info_validation validation;
@@ -84,79 +77,6 @@ public class User_Profile extends AppCompatActivity {
             }
         });
 
-        // button to update users profile
-        BtnUpdate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {UpdateProfile();}
-        });
-    }
-
-
-
-
-    // checks all the input data - if good sending false
-    public boolean checkNewProfile(){
-        boolean WrongNewProfile = false;
-        String email = EtUpdateEmail.getText().toString().trim();
-        String name = EtUpdateName.getText().toString().trim();
-        String password = EtUpdatePassword.getText().toString().trim();
-        String phone = EtUpdatePhone.getText().toString().trim();
-        if(!email.isEmpty()){
-            if(!info_validation.email_validation(email)){
-                WrongNewProfile = true;
-                EtUpdateEmail.setError("Pls write valid email / email is already exists");
-            }
-        }
-        if(!name.isEmpty()){
-            if(!info_validation.name_validation(name)){
-                WrongNewProfile = true;
-                EtUpdateName.setError("The name should be between 2 - 10 characters");
-            }
-        }
-        if(!password.isEmpty()){
-            if(!info_validation.password_validation(password)){
-                WrongNewProfile = true;
-                EtUpdateName.setError("The password should be between 6 - 15 characters");
-            }
-        }
-        if(!phone.isEmpty()) {
-            if (!info_validation.phoneNumber_validation(phone)) {
-                WrongNewProfile = true;
-                EtUpdatePhone.setError("Pls write a real phone / this phone is already exists");
-            }
-        }
-        return WrongNewProfile;
-    }
-
-
-    // Updates the profile if the stats are validated
-    public void UpdateProfile(){
-
-        if (!checkNewProfile()){
-            String currentUser = manager.getUsername();
-            String email = EtUpdateEmail.getText().toString().trim();
-            String name = EtUpdateName.getText().toString().trim();
-            String password = EtUpdatePassword.getText().toString().trim();
-            String phone = EtUpdatePhone.getText().toString().trim();
-            Map<String, Object> updates = new HashMap<>();
-            if (!email.isEmpty()){
-                updates.put("email", email);
-                manager.setEmail(email);
-            }
-            if(!name.isEmpty()){
-                updates.put("name", name);
-                manager.setName(name);
-            }
-            if(!password.isEmpty()){
-                updates.put("password", password);
-            }
-            if (!phone.isEmpty()){
-                updates.put("phoneNum", phone);
-            }
-            reference = FirebaseDatabase.getInstance().getReference("users").child(currentUser);
-            reference.updateChildren(updates);
-
-        }
     }
 
 
@@ -180,21 +100,20 @@ public class User_Profile extends AppCompatActivity {
         public void onClick(DialogInterface dialogInterface, int i) {
             if(i == -1){
                 sharedPref_manager manager = new sharedPref_manager(User_Profile.this,"LoginUpdate");
-                DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users");
-                userRef.orderByChild("username").equalTo(manager.getUsername()).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        DataSnapshot userSnap = snapshot.getChildren().iterator().next();
-                        userSnap.getRef().removeValue();
-                        manager.convertToLoggedOut();
-                    }
+                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                databaseReference.get().addOnCompleteListener(task -> {
+                    String username = manager.getUsername();
+                    String email = manager.getEmail();
+                    String phone = manager.getPhoneNum();
 
-                    }
+                    databaseReference.child("users").child(username).removeValue();
+                    databaseReference.child("emails").child(email).removeValue();
+                    databaseReference.child("phoneNumbers").child(phone).removeValue();
+                    manager.convertToLoggedOut();
+
+
                 });
-
 
             }
         }

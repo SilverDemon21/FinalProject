@@ -46,7 +46,7 @@ public class UserAdapter extends ArrayAdapter<User> {
 
         if (user != null) {
             nameTextView.setText(user.getName());
-            emailTextView.setText(user.getEmail());
+            emailTextView.setText(user.getEmail().replace("_","."));
             usernameTextView.setText(user.getUsername());
             phoneTextView.setText(user.getPhoneNum());
 
