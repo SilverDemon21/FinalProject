@@ -60,7 +60,7 @@
                 android:layout_height="50dp"
                 android:id="@+id/login_username"
                 android:background="@drawable/lavender_border"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="30dp"
                 android:padding="8dp"
                 android:hint="username"
                 android:drawableLeft="@drawable/vector_username_pin_24"
@@ -81,13 +81,14 @@
                 android:textColor="@color/black"
                 />
 
+
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:text="Login"
                 android:id="@+id/login_button"
                 android:textSize="18sp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="22dp"
                 android:backgroundTint="@color/lavender"
                 app:cornerRadius="20dp"
                 />
@@ -102,8 +103,16 @@
                 android:layout_marginTop="10dp"
                 android:textSize="18dp"
                 android:textColor="@color/lavender"
-
                 />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="22dp"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center"
+                android:text="Forgot password?"
+                android:textColor="@color/lavender"
+                android:textSize="18sp"/>
 
 
 

@@ -107,7 +107,7 @@ public class signUpActivity extends AppCompatActivity {
 
             title.setText("Update Profile");
             signUp_button.setText("Update");
-            title.setTextSize(30);
+            title.setTextSize(24);
 
             signUp_password.setVisibility(View.GONE);
             signUp_password.setEnabled(false);
