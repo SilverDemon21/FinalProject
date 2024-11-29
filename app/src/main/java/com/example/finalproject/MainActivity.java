@@ -106,7 +106,8 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
         else if(item.getItemId() == R.id.menu_updateProfile){
-            Intent intent = new Intent(MainActivity.this, User_Profile.class);
+            Intent intent = new Intent(MainActivity.this, signUpActivity.class);
+            intent.putExtra("activity", "update");
             startActivity(intent);
         }
         return true;

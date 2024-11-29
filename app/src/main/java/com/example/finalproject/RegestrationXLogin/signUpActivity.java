@@ -107,6 +107,7 @@ public class signUpActivity extends AppCompatActivity {
 
             title.setText("Update Profile");
             signUp_button.setText("Update");
+            title.setTextSize(30);
 
             signUp_password.setVisibility(View.GONE);
             signUp_password.setEnabled(false);
@@ -247,21 +248,28 @@ public class signUpActivity extends AppCompatActivity {
     // check the uniqueness of an email, username and phone number
     private void checkUniqueness(String username, String email, String phoneNumber, UniquenessCallback callback) {
         // Check if username already exists
+        sharedPref_manager manager = new sharedPref_manager(signUpActivity.this,"LoginUpdate");
         database.child("users").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if (snapshot.exists() && !username.isEmpty()) {
-                    callback.onResult("username"); // Username already taken
-                    return;
-                }
+                    if(username.equals(manager.getUsername()) && type.equals("update")){}
+                    else{
+                        callback.onResult("username"); // Username already taken
+                        return;
+                    }
 
+                }
                 // Check if email is already taken
                 database.child("emails").child(email).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
                         if (snapshot.exists() && !email.isEmpty()) {
-                            callback.onResult("email"); // Email already in use
-                            return;
+                            if(email.equals(manager.getEmail()) && type.equals("update")){}
+                            else{
+                                callback.onResult("email"); // Email already in use
+                                return;
+                            }
                         }
 
                         // Check if phone number is already taken
@@ -269,10 +277,13 @@ public class signUpActivity extends AppCompatActivity {
                             @Override
                             public void onDataChange(DataSnapshot snapshot) {
                                 if (snapshot.exists() && !phoneNumber.isEmpty()) {
-                                    callback.onResult("phone"); // Email already in use
-                                }
-                                else{
-                                    callback.onResult("good");
+                                    if(phoneNumber.equals(manager.getPhoneNum()) && type.equals("update"))
+                                    {
+                                        callback.onResult("good");
+                                    }
+                                    else{
+                                        callback.onResult("phone"); // Email already in use
+                                    }
                                 }
                             }
 
@@ -410,7 +421,7 @@ public class signUpActivity extends AppCompatActivity {
             profileGood = false;
         }
         if (!info_validation.name_validation(name)){
-            signUp_name.setError("The name should be between 2 and 10 characters");
+            signUp_name.setError("The name should be between 2 and 10 characters and only contain letters");
             profileGood = false;
         }
         if (!info_validation.password_validation(password) && !type.equals("update")){
