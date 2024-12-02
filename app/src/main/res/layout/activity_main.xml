@@ -9,15 +9,28 @@
     tools:context=".MainActivity">
 
     <Button
+        android:id="@+id/button"
         android:layout_width="263dp"
         android:layout_height="75dp"
-        android:layout_marginBottom="188dp"
+        android:layout_marginBottom="120dp"
         android:backgroundTint="@color/realLavender"
         android:text="Choose location"
         android:textSize="27sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.547"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:layout_width="339dp"
+        android:layout_height="335dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/img_logo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.04" />
 
     <TextView
         android:id="@+id/sharedUser"
@@ -31,7 +44,7 @@
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.065" />
+        app:layout_constraintVertical_bias="0.063" />
 
     <ImageButton
         android:id="@+id/profileSettings"

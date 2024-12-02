@@ -2,16 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
 
-
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
 
     <application
         android:allowBackup="true"
@@ -22,38 +19,34 @@
         android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.FinalProject"
-
         tools:targetApi="31">
+        <activity
+            android:name=".dialog_about_app"
+            android:exported="false" />
         <activity
             android:name=".ShowAllUsers.UsersActivity"
             android:exported="false" />
         <activity
             android:name=".User_Profile"
             android:exported="false" />
-
         <activity
             android:name=".RegestrationXLogin.loginActivity"
             android:exported="false" />
         <activity
             android:name=".RegestrationXLogin.signUpActivity"
             android:exported="false" />
-
         <activity
             android:name=".MainActivity"
-            android:exported="true">
-        </activity>
-
-        <activity android:name=".activity_splash"
+            android:exported="true"></activity>
+        <activity
+            android:name=".activity_splash"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
-
     </application>
-
 
 </manifest>

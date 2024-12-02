@@ -226,8 +226,6 @@ public class signUpActivity extends AppCompatActivity {
                                         }
                                     });
                                }
-
-
                            }
                        }
                        else if(isUnique.equals("username")){
@@ -285,6 +283,10 @@ public class signUpActivity extends AppCompatActivity {
                                         callback.onResult("phone"); // Email already in use
                                     }
                                 }
+                                else{
+                                    callback.onResult("good");
+                                }
+
                             }
 
                             @Override

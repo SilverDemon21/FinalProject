@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/rounded_background">
+
+    <!-- App Title -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Find Me"
+        android:textSize="23sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textColor="@color/teal_700"
+        android:paddingBottom="8dp" />
+
+    <!-- Separator -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/teal_200"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Developer Info -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Created by: Daniel Serebro"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        android:paddingBottom="8dp" />
+
+    <!-- App Description -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Find Me allows users to save any location in the world. With a single click, navigate to that location using Waze or Google Maps."
+        android:textSize="15sp"
+        android:lineSpacingExtra="4dp"
+        android:textColor="@color/black"
+        android:paddingBottom="16dp" />
+
+    <!-- Decorative Footer -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Your navigation companion!"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:textStyle="italic"
+        android:textColor="@color/teal_700" />
+</LinearLayout>

@@ -63,10 +63,11 @@ public class MainActivity extends AppCompatActivity {
 
     // update title
     private void updateTitle() {
-
         if (!manager.getIsLoggedIn()) {
             sharedUser.setText("Welcome user");
-        } else {
+        } else if(manager.getUsername().equals("admin")) {
+            sharedUser.setText("Welcome " + manager.getUsername() + " Admin");
+        } else{
             sharedUser.setText("Welcome " + manager.getUsername());
         }
     }
@@ -109,6 +110,9 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, signUpActivity.class);
             intent.putExtra("activity", "update");
             startActivity(intent);
+        }
+        else if (item.getItemId()==R.id.menu_about) {
+            AboutAppDialog.showAboutDialog(this);
         }
         return true;
     }

@@ -17,6 +17,10 @@
         android:title="Update Profile"
         app:showAsAction="never"
         />
+    <item
+        android:id="@+id/menu_about"
+        android:title="About"
+        app:showAsAction="never"/>
 
 
 </menu>

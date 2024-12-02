@@ -55,9 +55,9 @@ public class info_validation {
     // phone number validation
     public static boolean phoneNumber_validation(String phone) {
         if (!phone.matches(phoneRegex)) {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
 }

@@ -13,6 +13,10 @@
         android:title="Sing Up"
         app:showAsAction="never"
         />
+    <item
+        android:id="@+id/menu_about"
+        android:title="About"
+        app:showAsAction="never"/>
 
 
 </menu>
