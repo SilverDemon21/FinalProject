@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_main"
+    android:background="@drawable/background_best_main"
     tools:context=".User_Profile">
 
 
@@ -40,15 +40,14 @@
         android:id="@+id/deleteProfile"
         android:layout_width="164dp"
         android:layout_height="60dp"
-        android:layout_marginStart="236dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="24dp"
         android:backgroundTint="@color/red"
         android:hint="delete profile"
         android:textSize="19sp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.935"
         app:layout_constraintStart_toStartOf="parent" />
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

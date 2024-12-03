@@ -3,24 +3,34 @@ package com.example.finalproject;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.finalproject.RegestrationXLogin.loginActivity;
 import com.example.finalproject.RegestrationXLogin.signUpActivity;
 import com.example.finalproject.ShowAllUsers.UsersActivity;
 
+import java.io.File;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class MainActivity extends AppCompatActivity {
 
     private ImageButton profileSettings;
+    private CircleImageView userImage;
     private TextView sharedUser;
     private sharedPref_manager manager;
 
@@ -31,17 +41,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setLogo(R.drawable.img_defult_user_image);
-
-            getSupportActionBar().setDisplayUseLogoEnabled(true);
-        }
-
-
         profileSettings = findViewById(R.id.profileSettings);
         sharedUser = findViewById(R.id.sharedUser);
         manager =  new sharedPref_manager(MainActivity.this, "LoginUpdate");
+        userImage = findViewById(R.id.userImage);
 
 
 
@@ -65,10 +68,36 @@ public class MainActivity extends AppCompatActivity {
     private void updateTitle() {
         if (!manager.getIsLoggedIn()) {
             sharedUser.setText("Welcome user");
+            userImage.setImageURI(null);
         } else if(manager.getUsername().equals("admin")) {
             sharedUser.setText("Welcome " + manager.getUsername() + " Admin");
         } else{
             sharedUser.setText("Welcome " + manager.getUsername());
+        }
+        if(manager.getIsLoggedIn()){
+            File file = new File(Environment.getExternalStorageDirectory() + "/" + "Pictures" + "/" + manager.getPhotoName());
+            if (file.exists()){
+                //Uri uri = Uri.parse("storage/emulated/0/Pictures/abc.jpg");
+                Uri uri = Uri.parse(file.getAbsolutePath());
+
+
+                File f1 = new File(uri.toString());
+                if (f1.exists()){
+                    String d = "ss";
+                    userImage.setImageURI(uri);
+//                    Glide.with(this)
+//                            .load(uri)
+//                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+//                            .skipMemoryCache(true)
+//                            .into(userImage);
+                    Toast.makeText(MainActivity.this, "" +uri, Toast.LENGTH_SHORT).show();
+                }
+
+
+                // /storage/emulated/0/Pictures/031224-125713.jpg
+
+
+            }
         }
     }
 
@@ -138,8 +167,8 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(DialogInterface dialogInterface, int i){
             if(i == -1){
                 manager.convertToLoggedOut();
-                invalidateOptionsMenu();
                 updateTitle();
+                invalidateOptionsMenu();
             }
         }
     }

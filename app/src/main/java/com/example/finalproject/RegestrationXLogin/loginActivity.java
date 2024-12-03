@@ -69,6 +69,7 @@ public class loginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(loginActivity.this, signUpActivity.class);
+                intent.putExtra("activity", "create");
                 startActivity(intent);
             }
         });

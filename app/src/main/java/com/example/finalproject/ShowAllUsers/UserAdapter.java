@@ -10,6 +10,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.finalproject.R;
 import com.example.finalproject.User;
 
@@ -53,7 +55,11 @@ public class UserAdapter extends ArrayAdapter<User> {
             File file = new File(Environment.getExternalStorageDirectory() + "/" + "Pictures" + "/" + user.getPhotoName());
             if (file.exists()){
                 Uri uri = Uri.parse(file.getAbsolutePath());
-                imgPhoto.setImageURI(uri);
+                Glide.with(mContext)
+                        .load(uri)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE) // Disable disk caching
+                        .skipMemoryCache(true) // Skip memory cache
+                        .into(imgPhoto);
             }
         }
 

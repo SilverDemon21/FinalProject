@@ -13,7 +13,7 @@ public class info_validation {
     private static final String nameRegex = "^[a-zA-Z\\s]+$";
     private static final String usernameRegex = "^[a-zA-Z-,]+$";
     private static final String passwordRegex = "^[a-zA-Z0-9!&*()^%]+$";
-    private static final String emailRegex = "^[a-zA-Z0-9!&*()^%@]+$";
+    private static final String emailRegex = "^[a-zA-Z0-9!&*()^%@.]+$";
     private static final String phoneRegex = "^[0-9]{10}$";
 
     // username validation

@@ -21,9 +21,6 @@
         android:theme="@style/Theme.FinalProject"
         tools:targetApi="31">
         <activity
-            android:name=".dialog_about_app"
-            android:exported="false" />
-        <activity
             android:name=".ShowAllUsers.UsersActivity"
             android:exported="false" />
         <activity
