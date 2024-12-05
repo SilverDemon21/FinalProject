@@ -17,8 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.finalproject.RegestrationXLogin.loginActivity;
 import com.example.finalproject.RegestrationXLogin.signUpActivity;
 import com.example.finalproject.ShowAllUsers.UsersActivity;
@@ -68,38 +68,25 @@ public class MainActivity extends AppCompatActivity {
     private void updateTitle() {
         if (!manager.getIsLoggedIn()) {
             sharedUser.setText("Welcome user");
-            userImage.setImageURI(null);
+            userImage.setImageResource(R.drawable.img_defult_user_image);
         } else if(manager.getUsername().equals("admin")) {
             sharedUser.setText("Welcome " + manager.getUsername() + " Admin");
         } else{
             sharedUser.setText("Welcome " + manager.getUsername());
         }
         if(manager.getIsLoggedIn()){
-            File file = new File(Environment.getExternalStorageDirectory() + "/" + "Pictures" + "/" + manager.getPhotoName());
-            if (file.exists()){
-                //Uri uri = Uri.parse("storage/emulated/0/Pictures/abc.jpg");
-                Uri uri = Uri.parse(file.getAbsolutePath());
-
-
-                File f1 = new File(uri.toString());
-                if (f1.exists()){
-                    String d = "ss";
-                    userImage.setImageURI(uri);
-//                    Glide.with(this)
-//                            .load(uri)
-//                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                            .skipMemoryCache(true)
-//                            .into(userImage);
-                    Toast.makeText(MainActivity.this, "" +uri, Toast.LENGTH_SHORT).show();
-                }
-
-
-                // /storage/emulated/0/Pictures/031224-125713.jpg
-
-
-            }
+            displayImage(manager.getPhotoUrl());
         }
     }
+
+    private void displayImage(String photoUrl){
+
+        Glide.with(this)
+                .load(photoUrl)
+                .into(userImage);
+
+    }
+
 
 
     //creates pointer for the xml file of menu

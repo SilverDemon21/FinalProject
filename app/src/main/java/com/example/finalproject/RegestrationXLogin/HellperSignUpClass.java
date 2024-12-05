@@ -1,15 +1,15 @@
 package com.example.finalproject.RegestrationXLogin;
 
 public class HellperSignUpClass {
-    String name, email, username, password, phoneNum, photoName;
+    String name, email, username, password, phoneNum, photoUrl;
 
-    public HellperSignUpClass(String name, String email, String username, String password, String phoneNum, String photoName) {
+    public HellperSignUpClass(String name, String email, String username, String password, String phoneNum, String photoUrl) {
         this.name = name;
         this.email = email;
         this.username = username;
         this.password = password;
         this.phoneNum = phoneNum;
-        this.photoName = photoName;
+        this.photoUrl = photoUrl;
     }
     public HellperSignUpClass(){
 
@@ -46,8 +46,8 @@ public class HellperSignUpClass {
     public String getPhoneNum(){return phoneNum;}
     public void setPhoneNum(String phoneNum) {this.phoneNum = phoneNum; }
 
-    public String getPhotoName() {return photoName;}
-    public void setPhotoName(String photoName) {this.photoName = photoName;}
+    public String getPhotoUrl() {return photoUrl;}
+    public void setPhotoUrl(String photoUrl) {this.photoUrl = photoUrl;}
 
 
 }

@@ -44,6 +44,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -119,7 +121,6 @@ public class signUpActivity extends AppCompatActivity {
             signUp_email.setText(manger.getEmail().replace("_", "."));
             signUp_phoneNum.setText(manger.getPhoneNum());
 
-            photoName = manger.getPhotoName();
 
             File file = new File(Environment.getExternalStorageDirectory() + "/" + "Pictures" + "/" + photoName);
             if (file.exists()){
@@ -211,14 +212,18 @@ public class signUpActivity extends AppCompatActivity {
                            if(profileIsGood()){
 
                                if(type.equals("create")){
-                                   saveUserDetails(name, formattedEmail, username, password, phone, photoName);
-                                   Intent intent = new Intent(signUpActivity.this, loginActivity.class);
-                                   startActivity(intent);
-
-                               } else if (type.equals("update")) {
+                                   saveUserDetails(name, formattedEmail, username, password, phone, uriPhoto, new ImageUploadCallback() {
+                                       @Override
+                                       public void onResult(boolean created) {
+                                           Intent intent = new Intent(signUpActivity.this, MainActivity.class);
+                                           startActivity(intent);
+                                       }
+                                   });
+                               }
+                               else if (type.equals("update")) {
 
                                     String cUsername = manger.getUsername();
-                                    updateUser(cUsername, formattedEmail, phone, name, photoName, new UpdateCallback() {
+                                    updateUser(cUsername, formattedEmail, phone, name, uriPhoto, new UpdateCallback() {
                                         @Override
                                         public void onResult(boolean updated) {
                                             Intent intent = new Intent(signUpActivity.this, MainActivity.class);
@@ -316,7 +321,7 @@ public class signUpActivity extends AppCompatActivity {
     }
 
     // update the user profile
-    private void updateUser(String username, String newEmail, String newPhone, String newName, String newPhotoName, UpdateCallback callback){
+    private void updateUser(String username, String newEmail, String newPhone, String newName, Uri newPhotoUri, UpdateCallback callback){
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
         databaseReference.child("users").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -326,18 +331,20 @@ public class signUpActivity extends AppCompatActivity {
                     return;
                 }
 
+                String newPhotoUrl = newPhotoUri.toString();
+
                 sharedPref_manager manager = new sharedPref_manager(signUpActivity.this, "LoginUpdate");
                 Map<String, Object> updates = new HashMap<>();
 
                 String currentEmail = manager.getEmail();
                 String currentPhone = manager.getPhoneNum();
                 String currentName = manager.getName();
-                String currentPhotoName = manager.getPhotoName();
+                String currentPhotoUrl = manager.getPhotoUrl();
 
                 manager.setEmail(newEmail);
                 manager.setName(newName);
                 manager.setPhoneNum(newPhone);
-                manager.setPhotoName(newPhotoName);
+                manager.setPhotoUrl(newPhotoUrl);
 
                 if(newEmail != null && !newEmail.equals(currentEmail)){
                     updates.put("email", newEmail);
@@ -357,8 +364,8 @@ public class signUpActivity extends AppCompatActivity {
                     updates.put("name", newName);
                 }
 
-                if(newPhotoName!= null && !newPhotoName.equals(currentPhotoName)){
-                    updates.put("photoName", photoName);
+                if(newPhotoUrl!= null && !newPhotoUrl.equals(currentPhotoUrl)){
+                    updates.put("photoUrl", newPhotoUrl);
                 }
 
                 if(!updates.isEmpty()){
@@ -389,17 +396,33 @@ public class signUpActivity extends AppCompatActivity {
 
 
     // save the user details when signing up
-    private void saveUserDetails(String name, String email, String username, String password, String phoneNum, String photoName) {
+    private void saveUserDetails(String name, String email, String username, String password, String phoneNum, Uri photoUri,ImageUploadCallback callback) {
         // Create a new User object with the provided data
-        HellperSignUpClass user = new HellperSignUpClass(name, email, username, password, phoneNum, photoName);
 
-        database.child("users").child(username).setValue(user);
-        database.child("emails").child(email).setValue(username);
-        database.child("phoneNumbers").child(phoneNum).setValue(username);
+        StorageReference photoRef = FirebaseStorage.getInstance()
+                .getReference("user_photos")
+                .child(username + ".jph");
+
+        photoRef.putFile(photoUri).addOnCompleteListener(taskSnapshot -> {
+            String photoUrl = photoUri.toString();
+
+
+
+
+            HellperSignUpClass user = new HellperSignUpClass(name, email, username, password, phoneNum, photoUrl);
+
+            database.child("users").child(username).setValue(user);
+            database.child("emails").child(email).setValue(username);
+            database.child("phoneNumbers").child(phoneNum).setValue(username);
+
+            callback.onResult(true);
+        });
 
     }
 
-
+    interface ImageUploadCallback {
+        void onResult(boolean created);
+    }
 
 
     // validation for all the fields
@@ -433,11 +456,6 @@ public class signUpActivity extends AppCompatActivity {
         if (!info_validation.username_validation(username) && !type.equals("update")){
             signUp_username.setError("The username should be between 5 and 15 characters");
             profileGood = false;
-        }
-        if(profileGood){
-            if(!saveImageInFolder(photoBitmap)){
-                profileGood = false;
-            }
         }
         return profileGood;
     }
@@ -477,32 +495,6 @@ public class signUpActivity extends AppCompatActivity {
     });
 
 
-    // save the image at a folder to be able to use it again directly
-    public boolean saveImageInFolder(Bitmap bitmap){
-        if (photoBitmap == null){
-            return true;
-        }
-        photoName = new SimpleDateFormat("ddMMyy-HHmmss").format(new Date()) + ".jpg";
-        File myDir = new File(Environment.getExternalStorageDirectory(), "/" + "Pictures");
-        if(!myDir.exists()){
-            myDir.mkdirs();
-        }
 
-        File dest = new File(myDir, photoName);
 
-        FileOutputStream out = null;
-        try {
-            out = new FileOutputStream(dest);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-            out.flush();
-            out.close();
-            Toast.makeText(signUpActivity.this, "The image have been saved", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-        catch (Exception e)
-        {
-            Toast.makeText(signUpActivity.this, "The image have not been saved", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-    }
 }

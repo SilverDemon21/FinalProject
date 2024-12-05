@@ -5,16 +5,16 @@ public class User {
     private String name;
     private String username;
     private String phoneNum;
-    private String photoName;
+    private String photoUrl;
 
     public User() {}
 
-    public User( String email, String name, String username, String phone, String photoName) {
+    public User( String email, String name, String username, String phone, String photoUrl) {
         this.email = email;
         this.name = name;
         this.username = username;
         this.phoneNum = phone;
-        this.photoName = photoName;
+        this.photoUrl = photoUrl;
     }
 
 
@@ -27,5 +27,5 @@ public class User {
 
     public String getPhoneNum() {return phoneNum;}
 
-    public String getPhotoName() {return photoName;}
+    public String getPhotoUrl() {return photoUrl;}
 }

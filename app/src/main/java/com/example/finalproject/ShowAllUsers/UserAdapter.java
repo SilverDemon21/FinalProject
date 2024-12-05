@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.finalproject.R;
 import com.example.finalproject.User;
 
@@ -43,7 +42,7 @@ public class UserAdapter extends ArrayAdapter<User> {
         TextView emailTextView = convertView.findViewById(R.id.emailTextView);
         TextView usernameTextView = convertView.findViewById(R.id.usernameTextView);
         TextView phoneTextView = convertView.findViewById(R.id.phoneTextView);
-        CircleImageView imgPhoto = convertView.findViewById(R.id.imgPhoto);
+        CircleImageView imgUrl = convertView.findViewById(R.id.imgPhoto);
 
 
         if (user != null) {
@@ -52,20 +51,17 @@ public class UserAdapter extends ArrayAdapter<User> {
             usernameTextView.setText(user.getUsername());
             phoneTextView.setText(user.getPhoneNum());
 
-            File file = new File(Environment.getExternalStorageDirectory() + "/" + "Pictures" + "/" + user.getPhotoName());
-            if (file.exists()){
-                Uri uri = Uri.parse(file.getAbsolutePath());
-                Glide.with(mContext)
-                        .load(uri)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE) // Disable disk caching
-                        .skipMemoryCache(true) // Skip memory cache
-                        .into(imgPhoto);
-            }
+
+            Glide.with(mContext)
+                    .load(user.getPhotoUrl())
+                    .into(imgUrl);
         }
 
 
         return convertView;
     }
+
+
 
 
 

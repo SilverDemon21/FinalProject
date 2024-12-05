@@ -19,7 +19,7 @@ public class sharedPref_manager {
     private String email;
     private String name;
     private String phoneNum;
-    private String photoName;
+    private String photoUrl;
     SharedPreferences sh;
     SharedPreferences.Editor editor;
     Context context;
@@ -47,8 +47,8 @@ public class sharedPref_manager {
     public boolean getIsLoggedIn() {return sh.getBoolean("isLoggedIn",false);}
     public void setIsLoggedIn(boolean loggedIn) {editor.putBoolean("isLooggedIn", loggedIn); editor.commit();}
 
-    public String getPhotoName() {return sh.getString("photoName", "");}
-    public void setPhotoName(String photoName) {editor.putString("photoName", photoName); editor.commit();}
+    public String getPhotoUrl() {return sh.getString("photoUrl", "");}
+    public void setPhotoUrl(String photoUrl) {editor.putString("photoUrl", photoUrl); editor.commit();}
 
 
     public void convertToLoggedIn(){
@@ -118,13 +118,13 @@ public class sharedPref_manager {
         });
     }
 
-    public void savePhotoName(String username){
+    public void savePhotoUrl(String username){
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(username);
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                photoName = snapshot.child("photoName").getValue(String.class);
-                editor.putString("photoName", photoName);
+                photoUrl = snapshot.child("photoUrl").getValue(String.class);
+                editor.putString("photoUrl", photoUrl);
                 editor.commit();
             }
 

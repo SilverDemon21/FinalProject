@@ -115,7 +115,7 @@ public class loginActivity extends AppCompatActivity {
         manager.saveEmail(username);
         manager.saveName(username);
         manager.savePhone(username);
-        manager.savePhotoName(username);
+        manager.savePhotoUrl(username);
         manager.convertToLoggedIn();
     }
 
