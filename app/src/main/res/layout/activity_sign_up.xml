@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:background="@drawable/lavender_border"
+            android:background="@drawable/border_orange"
             android:orientation="vertical"
             android:padding="24dp">
 
@@ -48,7 +48,7 @@
                     android:layout_height="wrap_content"
                     android:text="Sign up"
                     android:textAlignment="center"
-                    android:textColor="@color/lavender"
+                    android:textColor="@color/realLavender"
                     android:textSize="30sp"
                     android:textStyle="bold" />
 
@@ -92,7 +92,7 @@
                 android:layout_height="45dp"
                 android:layout_marginTop="15dp"
                 android:textSize="16sp"
-                android:background="@drawable/lavender_border"
+                android:background="@drawable/border_orange"
                 android:drawableLeft="@drawable/vector_name_24"
                 android:drawablePadding="8dp"
                 android:hint="name"
@@ -105,7 +105,7 @@
                 android:layout_height="45dp"
                 android:layout_marginTop="10dp"
                 android:textSize="16sp"
-                android:background="@drawable/lavender_border"
+                android:background="@drawable/border_orange"
                 android:drawableLeft="@drawable/vector_email_24"
                 android:drawablePadding="8dp"
                 android:hint="email"
@@ -118,7 +118,7 @@
                 android:layout_height="45dp"
                 android:layout_marginTop="10dp"
                 android:textSize="16sp"
-                android:background="@drawable/lavender_border"
+                android:background="@drawable/border_orange"
                 android:drawableLeft="@drawable/vector_phone_24"
                 android:drawablePadding="8dp"
                 android:hint="phone number"
@@ -131,7 +131,7 @@
                 android:layout_height="45dp"
                 android:layout_marginTop="10dp"
                 android:textSize="16sp"
-                android:background="@drawable/lavender_border"
+                android:background="@drawable/border_orange"
                 android:drawableLeft="@drawable/vector_username_pin_24"
                 android:drawablePadding="8dp"
                 android:hint="username"
@@ -144,7 +144,7 @@
                 android:layout_height="45dp"
                 android:layout_marginTop="10dp"
                 android:textSize="16sp"
-                android:background="@drawable/lavender_border"
+                android:background="@drawable/border_orange"
                 android:drawableLeft="@drawable/vector_password_24"
                 android:drawablePadding="8dp"
                 android:hint="password"
@@ -157,7 +157,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="20dp"
-                android:backgroundTint="@color/lavender"
+                android:backgroundTint="@color/realLavender"
                 android:text="Sign Up"
                 android:textSize="22sp"
                 app:cornerRadius="20dp" />
@@ -170,7 +170,7 @@
                 android:layout_marginTop="5dp"
                 android:padding="8dp"
                 android:text="already a user? Login"
-                android:textColor="@color/lavender"
+                android:textColor="@color/realLavender"
                 android:textSize="18dp"
 
                 />

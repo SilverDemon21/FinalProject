@@ -38,6 +38,9 @@ public class UserAdapter extends ArrayAdapter<User> {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.user_item, parent, false);
         }
 
+
+
+
         TextView nameTextView = convertView.findViewById(R.id.nameTextView);
         TextView emailTextView = convertView.findViewById(R.id.emailTextView);
         TextView usernameTextView = convertView.findViewById(R.id.usernameTextView);

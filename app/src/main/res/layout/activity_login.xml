@@ -27,7 +27,7 @@
             android:orientation="vertical"
             android:layout_gravity="center_horizontal"
             android:padding="24dp"
-            android:background="@drawable/lavender_border">
+            android:background="@drawable/border_orange">
 
             <LinearLayout
                 android:layout_width="280dp"
@@ -49,7 +49,7 @@
                     android:layout_height="wrap_content"
                     android:text="Login"
                     android:textAlignment="center"
-                    android:textColor="@color/lavender"
+                    android:textColor="@color/realLavender"
                     android:textSize="36sp"
                     android:textStyle="bold" />
 
@@ -59,7 +59,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:id="@+id/login_username"
-                android:background="@drawable/lavender_border"
+                android:background="@drawable/border_orange"
                 android:layout_marginTop="30dp"
                 android:padding="8dp"
                 android:hint="username"
@@ -71,7 +71,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:id="@+id/login_password"
-                android:background="@drawable/lavender_border"
+                android:background="@drawable/border_orange"
                 android:layout_marginTop="20dp"
                 android:padding="8dp"
                 android:inputType="textPassword"
@@ -89,7 +89,7 @@
                 android:id="@+id/login_button"
                 android:textSize="18sp"
                 android:layout_marginTop="22dp"
-                android:backgroundTint="@color/lavender"
+                android:backgroundTint="@color/realLavender"
                 app:cornerRadius="20dp"
                 />
 
@@ -102,7 +102,7 @@
                 android:padding="8dp"
                 android:layout_marginTop="10dp"
                 android:textSize="18dp"
-                android:textColor="@color/lavender"
+                android:textColor="@color/realLavender"
                 />
 
             <TextView
@@ -111,7 +111,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_gravity="center"
                 android:text="Forgot password?"
-                android:textColor="@color/lavender"
+                android:textColor="@color/realLavender"
                 android:textSize="18sp"/>
 
 

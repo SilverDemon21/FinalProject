@@ -6,6 +6,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -25,6 +26,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -39,6 +42,7 @@ public class UsersActivity extends AppCompatActivity {
     private String currentUsername;
     private sharedPref_manager manager;
     private EditText etSearch;
+    private Button btn_nameSort, btn_usernameSort;
 
 
 
@@ -53,12 +57,34 @@ public class UsersActivity extends AppCompatActivity {
 
         etSearch = findViewById(R.id.etSearch);
 
+        btn_nameSort = findViewById(R.id.btn_nameSort);
+        btn_usernameSort = findViewById(R.id.btn_usernameSort);
+
 
         manager = new sharedPref_manager(UsersActivity.this,"LoginUpdate");
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
 
+        if(!manager.getUsername().equals("admin")){
+            btn_nameSort.setVisibility(View.GONE);
+            btn_usernameSort.setVisibility(View.GONE);
+        }
+
         listViewUsers = findViewById(R.id.listViewUsers);
         currentUsername = manager.getUsername();
+
+        btn_nameSort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sortUserListByName();
+            }
+        });
+
+        btn_usernameSort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sortUserListByUsername();
+            }
+        });
 
 
         etSearch.addTextChangedListener(new TextWatcher() {
@@ -152,6 +178,28 @@ public class UsersActivity extends AppCompatActivity {
         }
         userList.clear();
         userList.addAll(filteredList);
+
+        userAdapter.notifyDataSetChanged();
+    }
+
+
+    private void sortUserListByName() {
+        Collections.sort(userList, new Comparator<User>() {
+            @Override
+            public int compare(User user1, User user2) {
+                return user1.getName().compareToIgnoreCase(user2.getName());
+            }
+        });
+        userAdapter.notifyDataSetChanged();
+    }
+
+    private void sortUserListByUsername() {
+        Collections.sort(userList, new Comparator<User>() {
+            @Override
+            public int compare(User user1, User user2) {
+                return user1.getUsername().compareToIgnoreCase(user2.getUsername());
+            }
+        });
         userAdapter.notifyDataSetChanged();
     }
 

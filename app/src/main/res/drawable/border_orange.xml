@@ -5,8 +5,8 @@
     <corners
         android:radius="30sp"/>
     <stroke
-        android:color="@color/lavender"
-        android:width="2dp"/>
+        android:color="@color/realLavender"
+        android:width="2.5dp"/>
 
     <solid
         android:color="@color/white"/>
