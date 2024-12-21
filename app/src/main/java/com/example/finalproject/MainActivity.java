@@ -23,7 +23,6 @@ import com.example.finalproject.RegestrationXLogin.loginActivity;
 import com.example.finalproject.RegestrationXLogin.signUpActivity;
 import com.example.finalproject.ShowAllUsers.UsersActivity;
 
-import java.io.File;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -70,9 +69,9 @@ public class MainActivity extends AppCompatActivity {
             sharedUser.setText("Welcome user");
             userImage.setImageResource(R.drawable.img_defult_user_image);
         } else if(manager.getUsername().equals("admin")) {
-            sharedUser.setText("Welcome " + manager.getUsername() + " Admin");
+            sharedUser.setText("Welcome, " + manager.getUsername() + " Admin");
         } else{
-            sharedUser.setText("Welcome " + manager.getUsername());
+            sharedUser.setText("Welcome, " + manager.getUsername());
         }
         if(manager.getIsLoggedIn()){
             displayImage(manager.getPhotoUrl());

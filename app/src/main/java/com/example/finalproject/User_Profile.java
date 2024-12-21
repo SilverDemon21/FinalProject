@@ -24,6 +24,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,12 +47,11 @@ public class User_Profile extends AppCompatActivity {
 
         deleteProfile = findViewById(R.id.deleteProfile);
         btnBackToMain = findViewById(R.id.btnBackToMain);
-
-
-        info_validation validation;
-
         manager = new sharedPref_manager(User_Profile.this, "LoginUpdate");
 
+        if (!manager.getIsLoggedIn()){
+            deleteProfile.setVisibility(View.GONE);
+        }
 
         // set defult image
         if (getSupportActionBar() != null) {
@@ -78,7 +79,6 @@ public class User_Profile extends AppCompatActivity {
         });
 
     }
-
 
 
     public void createAlertDelete(){
@@ -112,6 +112,10 @@ public class User_Profile extends AppCompatActivity {
                     databaseReference.child("phoneNumbers").child(phone).removeValue();
                     manager.convertToLoggedOut();
 
+                    StorageReference storageRef = FirebaseStorage.getInstance("gs://final-project-be550.firebasestorage.app").getReference();
+                    StorageReference imageRef = storageRef.child(username);
+
+                    imageRef.delete();
 
                 });
 

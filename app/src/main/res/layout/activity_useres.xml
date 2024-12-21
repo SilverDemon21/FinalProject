@@ -46,8 +46,8 @@
     <ListView
         android:id="@+id/listViewUsers"
         android:layout_width="match_parent"
-        android:layout_height="579dp"
+        android:layout_height="516dp"
         android:divider="@null"
-        android:dividerHeight="5dp"/>
+        android:dividerHeight="5dp" />
 
 </LinearLayout>

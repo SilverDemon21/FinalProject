@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -12,9 +14,13 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.finalproject.AboutAppDialog;
+import com.example.finalproject.MainActivity;
 import com.example.finalproject.R;
+import com.example.finalproject.RegestrationXLogin.loginActivity;
 import com.example.finalproject.RegestrationXLogin.signUpActivity;
 import com.example.finalproject.User;
 import com.example.finalproject.User_Profile;
@@ -106,6 +112,24 @@ public class UsersActivity extends AppCompatActivity {
         fetchUserData();
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.menu_button_go_back_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        super.onOptionsItemSelected(item);
+        if(item.getItemId() == R.id.menu_go_back){
+            Intent intent = new Intent(UsersActivity.this, MainActivity.class);
+            startActivity(intent);
+        }
+        return true;
+    }
+
 
     // Send the correct list of users to the adapter
     private void fetchUserData() {

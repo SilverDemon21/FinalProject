@@ -62,7 +62,7 @@ public class sharedPref_manager {
         editor.putString("email", "");
         editor.putString("name", "");
         editor.putString("phone", "");
-        editor.putString("photoName", "");
+        editor.putString("photoUrl", "");
         editor.commit();
     }
 
