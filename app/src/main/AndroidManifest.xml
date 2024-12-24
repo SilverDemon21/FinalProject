@@ -21,6 +21,9 @@
         android:theme="@style/Theme.FinalProject"
         tools:targetApi="31">
         <activity
+            android:name=".mainAplication.mapAndLogic"
+            android:exported="false" />
+        <activity
             android:name=".ShowAllUsers.UsersActivity"
             android:exported="false" />
         <activity
@@ -34,7 +37,7 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".activity_splash"
             android:exported="true">

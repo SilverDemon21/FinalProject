@@ -3,6 +3,8 @@ package com.example.finalproject;
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 
 import android.Manifest;
 import android.app.Activity;
@@ -14,32 +16,39 @@ import androidx.core.content.ContextCompat;
 
 public class Permission {
 
-    public static boolean DoesHavePrem(Activity activity){
+    public static boolean DoesHavePrem(Activity activity) {
         int resultCamera = ContextCompat.checkSelfPermission(activity, CAMERA);
         int resultWriteStorage = ContextCompat.checkSelfPermission(activity, WRITE_EXTERNAL_STORAGE);
         int resultReadStorage = ContextCompat.checkSelfPermission(activity, READ_EXTERNAL_STORAGE);
+        int resultFineLocation = ContextCompat.checkSelfPermission(activity, ACCESS_FINE_LOCATION);
+        int resultCoarseLocation = ContextCompat.checkSelfPermission(activity, ACCESS_COARSE_LOCATION);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            return resultCamera == PackageManager.PERMISSION_GRANTED;
+            // Android 10+ only checks CAMERA and LOCATION
+            return resultCamera == PackageManager.PERMISSION_GRANTED &&
+                    resultFineLocation == PackageManager.PERMISSION_GRANTED &&
+                    resultCoarseLocation == PackageManager.PERMISSION_GRANTED;
         }
 
-
-        return  resultCamera== PackageManager.PERMISSION_GRANTED &&
-                resultWriteStorage==PackageManager.PERMISSION_GRANTED &&
-                resultReadStorage==PackageManager.PERMISSION_GRANTED;
-
+        // Android below 10 checks all permissions
+        return resultCamera == PackageManager.PERMISSION_GRANTED &&
+                resultWriteStorage == PackageManager.PERMISSION_GRANTED &&
+                resultReadStorage == PackageManager.PERMISSION_GRANTED &&
+                resultFineLocation == PackageManager.PERMISSION_GRANTED &&
+                resultCoarseLocation == PackageManager.PERMISSION_GRANTED;
     }
 
-    public static void GrantPermission(Activity activity){
-        // For Android 10 and above, only request CAMERA permission
+    // Request permissions
+    public static void GrantPermission(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            ActivityCompat.requestPermissions(activity, new String[]{CAMERA}, 1);
-
+            // Request CAMERA and LOCATION permissions for Android 10+
+            ActivityCompat.requestPermissions(activity, new String[]{
+                    CAMERA, ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, 1);
+        } else {
+            // Request CAMERA, STORAGE, and LOCATION permissions for older versions
+            ActivityCompat.requestPermissions(activity, new String[]{
+                    CAMERA, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE,
+                    ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, 1);
         }
-        else{
-            ActivityCompat.requestPermissions(activity, new String[]
-                    {CAMERA, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, 1);
-        }
-
     }
 }
