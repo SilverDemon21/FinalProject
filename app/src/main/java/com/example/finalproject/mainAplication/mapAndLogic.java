@@ -47,13 +47,13 @@ public class mapAndLogic extends AppCompatActivity {
         if(!Permission.DoesHavePrem(this)){
             Permission.GrantPermission(this);
         } else{
-            setupLocationTracking();
+            //setupLocationTracking();
         }
 
     }
 
-    private  void setupLocationTracking(){
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION))
-            ==PackageManager.PERMISSION_GRANTED
-    }
+//    private  void setupLocationTracking(){
+//        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION))
+//            ==PackageManager.PERMISSION_GRANTED
+//    }
 }

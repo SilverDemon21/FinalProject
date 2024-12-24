@@ -25,17 +25,15 @@ public class Permission {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             // Android 10+ only checks CAMERA and LOCATION
-            return resultCamera == PackageManager.PERMISSION_GRANTED &&
-                    resultFineLocation == PackageManager.PERMISSION_GRANTED &&
-                    resultCoarseLocation == PackageManager.PERMISSION_GRANTED;
+            return resultCamera == PackageManager.PERMISSION_GRANTED;
+
         }
 
         // Android below 10 checks all permissions
         return resultCamera == PackageManager.PERMISSION_GRANTED &&
                 resultWriteStorage == PackageManager.PERMISSION_GRANTED &&
-                resultReadStorage == PackageManager.PERMISSION_GRANTED &&
-                resultFineLocation == PackageManager.PERMISSION_GRANTED &&
-                resultCoarseLocation == PackageManager.PERMISSION_GRANTED;
+                resultReadStorage == PackageManager.PERMISSION_GRANTED;
+
     }
 
     // Request permissions
@@ -43,12 +41,11 @@ public class Permission {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             // Request CAMERA and LOCATION permissions for Android 10+
             ActivityCompat.requestPermissions(activity, new String[]{
-                    CAMERA, ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, 1);
+                    CAMERA}, 1);
         } else {
             // Request CAMERA, STORAGE, and LOCATION permissions for older versions
             ActivityCompat.requestPermissions(activity, new String[]{
-                    CAMERA, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE,
-                    ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, 1);
+                    CAMERA, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, 1);
         }
     }
 }
