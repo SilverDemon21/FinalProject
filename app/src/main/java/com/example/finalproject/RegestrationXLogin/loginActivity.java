@@ -142,6 +142,7 @@ public class loginActivity extends AppCompatActivity {
                         Intent intent = new Intent(loginActivity.this, MainActivity.class);
                         saveData();
                         startActivity(intent);
+                        finish();
                     }
                     else{
                         login_password.setError("invalid credentials");

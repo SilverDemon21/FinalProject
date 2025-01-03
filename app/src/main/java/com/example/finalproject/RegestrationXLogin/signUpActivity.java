@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -39,12 +38,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.finalproject.MainActivity;
 import com.example.finalproject.R;
-import com.example.finalproject.info_validation;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -116,13 +113,12 @@ public class signUpActivity extends AppCompatActivity {
             title.setTextSize(24);
 
             signUp_password.setVisibility(View.GONE);
-            signUp_password.setEnabled(false);
 
             signUp_username.setVisibility(View.GONE);
-            signUp_username.setEnabled(false);
 
             signUp_comfirm_password.setVisibility(View.GONE);
-            signUp_comfirm_password.setEnabled(false);
+
+            signUp_date_of_birth.setVisibility(View.GONE);
 
             signUp_name.setText(manger.getName());
             signUp_email.setText(manger.getEmail().replace("_", "."));
@@ -204,6 +200,7 @@ public class signUpActivity extends AppCompatActivity {
                 String username = signUp_username.getText().toString();
                 String password = signUp_password.getText().toString();
                 String phone = signUp_phoneNum.getText().toString();
+                String dateOfBirth = signUp_date_of_birth.getText().toString();
 
 
                 // the signup process
@@ -214,11 +211,12 @@ public class signUpActivity extends AppCompatActivity {
                             if (profileIsGood()) {
 
                                 if (type.equals("create")) {
-                                    saveUserDetails(name, formattedEmail, username, password, phone, uriPhoto, new ImageUploadCallback() {
+                                    saveUserDetails(name, formattedEmail, username, password, phone, uriPhoto, dateOfBirth, new ImageUploadCallback() {
                                         @Override
                                         public void onResult(boolean created) {
                                             Intent intent = new Intent(signUpActivity.this, MainActivity.class);
                                             startActivity(intent);
+                                            finish();
                                         }
                                     });
                                 }
@@ -404,7 +402,7 @@ public class signUpActivity extends AppCompatActivity {
     }
 
     // save the user details when signing up
-    private void saveUserDetails(String name, String email, String username, String password, String phoneNum, Uri photoUri, ImageUploadCallback callback) {
+    private void saveUserDetails(String name, String email, String username, String password, String phoneNum, Uri photoUri,String dateOfBirth, ImageUploadCallback callback) {
 
 
         StorageReference storageRef = FirebaseStorage.getInstance("gs://final-project-be550.firebasestorage.app").getReference();
@@ -416,7 +414,7 @@ public class signUpActivity extends AppCompatActivity {
             imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
                 String photoUrl = uri.toString();
 
-                HellperSignUpClass user = new HellperSignUpClass(name, email, username, password, phoneNum, photoUrl);
+                HellperSignUpClass user = new HellperSignUpClass(name, email, username, password, phoneNum, photoUrl, dateOfBirth);
 
                 database.child("users").child(username).setValue(user);
                 database.child("emails").child(email).setValue(username);
@@ -427,7 +425,7 @@ public class signUpActivity extends AppCompatActivity {
             });
         });
         uploadTask.addOnFailureListener(e ->{
-            Log.e("hdsfhfhsd", e.getMessage());
+            Log.e("fail", e.getMessage());
         });
     }
 
@@ -471,6 +469,9 @@ public class signUpActivity extends AppCompatActivity {
         String username = signUp_username.getText().toString().trim();
         String password = signUp_password.getText().toString().trim();
         String comfirmPass = signUp_comfirm_password.getText().toString().trim();
+        String dateOfBirth = signUp_date_of_birth.getText().toString();
+
+        signUp_date_of_birth.setError(null);
 
         if (photoBitmap == null && type.equals("create")) {
             Toast.makeText(signUpActivity.this, "Pls save the image", Toast.LENGTH_SHORT).show();
@@ -486,6 +487,10 @@ public class signUpActivity extends AppCompatActivity {
         }
         if (!info_validation.name_validation(name)) {
             signUp_name.setError("The name should be between 2 and 10 characters and only contain letters");
+            profileGood = false;
+        }
+        if (dateOfBirth.isEmpty()){
+            signUp_date_of_birth.setError("pls put your date of birth");
             profileGood = false;
         }
         if (!info_validation.password_validation(password) && !type.equals("update")) {
@@ -519,6 +524,10 @@ public class signUpActivity extends AppCompatActivity {
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH));
+
+        Calendar maxDate = Calendar.getInstance();
+        maxDate.add(Calendar.YEAR, -7);
+        datePickerDialog.getDatePicker().setMaxDate(maxDate.getTimeInMillis());
 
         datePickerDialog.show();
     }

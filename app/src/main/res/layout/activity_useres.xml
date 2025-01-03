@@ -25,7 +25,7 @@
             android:layout_height="50dp"
             android:layout_marginLeft="35dp"
             android:backgroundTint="@color/realLavender"
-            android:text="name"
+            android:text="age"
             android:layout_marginBottom="5dp"
             android:layout_weight="1"
             android:textSize="20sp"/>

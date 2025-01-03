@@ -6,6 +6,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -24,9 +25,11 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.finalproject.Permission;
 import com.example.finalproject.R;
 
+import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 
 import java.util.List;
@@ -58,6 +61,7 @@ public class mapAndLogic extends AppCompatActivity {
             requestPermissions();
         }
 
+
         // Add click listener to map
         addMapClickListener();
     }
@@ -74,38 +78,108 @@ public class mapAndLogic extends AppCompatActivity {
     private void setupLocationTracking(){
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-        locationListener = new LocationListener() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+        if (lastKnownLocation != null) {
+            updateMapWithLocation(lastKnownLocation);
+        }
+        else{
+            locationListener = new LocationListener() {
+                @Override
+                public void onLocationChanged(@NonNull Location location) {
+                    updateMapWithLocation(location);
+
+                    locationManager.removeUpdates(this);
+                }
+
+                @Override
+                public void onProviderDisabled(@NonNull String provider) {
+                    Toast.makeText(mapAndLogic.this, "Pls enable GPS to use this feature", Toast.LENGTH_SHORT).show();
+                }
+            };
+            locationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER, 1000, 1, locationListener);
+
+        }
+    }
+
+
+    private void updateMapWithLocation(Location location){
+            double latitude = location.getLatitude();
+            double longitude = location.getLongitude();
+
+            GeoPoint userLocation = new GeoPoint(latitude, longitude);
+            mapView.getController().setCenter(userLocation);
+
+            Marker marker = new Marker(mapView);
+            marker.setPosition(userLocation);
+            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+            marker.setTitle("You are here");
+            mapView.getOverlays().add(marker);
+            mapView.invalidate();
+    }
+
+
+    private void addMapClickListener(){
+        MapEventsReceiver mapEventsReceiver = new MapEventsReceiver() {
             @Override
-            public void onLocationChanged(@NonNull Location location) {
-                double latitude = location.getLatitude();
-                double longitude = location.getLongitude();
-
-                GeoPoint userLocation = new GeoPoint(latitude, longitude);
-                mapView.getController().setCenter(userLocation);
-
-                Marker marker = new Marker(mapView);
-                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-                marker.setTitle("You are here");
-                mapView.getOverlayManager().add(marker);
-                mapView.invalidate();
-
-                locationManager.removeUpdates(this);
+            public boolean singleTapConfirmedHelper(GeoPoint p) {
+                addMarker(p);
+                return true;
             }
 
             @Override
-            public void onProviderDisabled(@NonNull String provider) {
-                Toast.makeText(mapAndLogic.this, "Pls enable GPS to use this feature", Toast.LENGTH_SHORT).show();
+            public boolean longPressHelper(GeoPoint p) {
+                return false;
             }
         };
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-            .requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener)
+        MapEventsOverlay eventsOverlay = new MapEventsOverlay(mapEventsReceiver);
+        mapView.getOverlays().add(eventsOverlay);
     }
 
+
+    private void addMarker(GeoPoint point){
+        Marker marker = new Marker(mapView);
+        marker.setPosition(point);
+        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        marker.setTitle("Lat: " + point.getLatitude() + ", Lon: " + point.getLongitude());
+        mapView.getOverlays();
+        mapView.invalidate();
+
+        Toast.makeText(this, "Location "+ point.getLatitude()+ ", " + point.getLongitude(), Toast.LENGTH_SHORT).show();
+
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                setupLocationTracking();
+            } else {
+                Toast.makeText(this, "Permission denied. Unable to get location.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mapView.onResume(); // Resume map view
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mapView.onPause(); // Pause map view
+    }
 }
 
-//    private  void setupLocationTracking(){
-//        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION))
-//            ==PackageManager.PERMISSION_GRANTED
-//    }
+

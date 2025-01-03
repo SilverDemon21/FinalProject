@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ import com.bumptech.glide.Glide;
 import com.example.finalproject.RegestrationXLogin.loginActivity;
 import com.example.finalproject.RegestrationXLogin.signUpActivity;
 import com.example.finalproject.ShowAllUsers.UsersActivity;
+import com.example.finalproject.mainAplication.mapAndLogic;
 
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -29,6 +31,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MainActivity extends AppCompatActivity {
 
     private ImageButton profileSettings;
+    private Button mapBtn;
     private CircleImageView userImage;
     private TextView sharedUser;
     private sharedPref_manager manager;
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         sharedUser = findViewById(R.id.sharedUser);
         manager =  new sharedPref_manager(MainActivity.this, "LoginUpdate");
         userImage = findViewById(R.id.userImage);
+        mapBtn = findViewById(R.id.mapBtn);
 
 
 
@@ -56,6 +60,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, User_Profile.class);
+                startActivity(intent);
+            }
+        });
+
+        mapBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, mapAndLogic.class);
                 startActivity(intent);
             }
         });

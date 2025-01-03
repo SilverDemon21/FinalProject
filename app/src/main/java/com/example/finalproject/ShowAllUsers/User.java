@@ -1,4 +1,4 @@
-package com.example.finalproject;
+package com.example.finalproject.ShowAllUsers;
 
 public class User {
     private String email;
@@ -6,15 +6,17 @@ public class User {
     private String username;
     private String phoneNum;
     private String photoUrl;
+    private String dateOfBirth;
 
     public User() {}
 
-    public User( String email, String name, String username, String phone, String photoUrl) {
+    public User( String email, String name, String username, String phone, String photoUrl, String dateOfBirth) {
         this.email = email;
         this.name = name;
         this.username = username;
         this.phoneNum = phone;
         this.photoUrl = photoUrl;
+        this.dateOfBirth = dateOfBirth;
     }
 
 
@@ -28,4 +30,6 @@ public class User {
     public String getPhoneNum() {return phoneNum;}
 
     public String getPhotoUrl() {return photoUrl;}
+
+    public String getDateOfBirth() {return dateOfBirth;}
 }

@@ -9,7 +9,7 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/mapBtn"
         android:layout_width="263dp"
         android:layout_height="75dp"
         android:layout_marginBottom="120dp"

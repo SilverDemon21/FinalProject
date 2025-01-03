@@ -17,13 +17,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.finalproject.AboutAppDialog;
 import com.example.finalproject.MainActivity;
 import com.example.finalproject.R;
-import com.example.finalproject.RegestrationXLogin.loginActivity;
 import com.example.finalproject.RegestrationXLogin.signUpActivity;
-import com.example.finalproject.User;
-import com.example.finalproject.User_Profile;
 import com.example.finalproject.sharedPref_manager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -31,10 +27,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 
 public class UsersActivity extends AppCompatActivity {
@@ -48,7 +49,7 @@ public class UsersActivity extends AppCompatActivity {
     private String currentUsername;
     private sharedPref_manager manager;
     private EditText etSearch;
-    private Button btn_nameSort, btn_usernameSort;
+    private Button btn_ageSort, btn_usernameSort;
 
 
 
@@ -63,7 +64,7 @@ public class UsersActivity extends AppCompatActivity {
 
         etSearch = findViewById(R.id.etSearch);
 
-        btn_nameSort = findViewById(R.id.btn_nameSort);
+        btn_ageSort = findViewById(R.id.btn_nameSort);
         btn_usernameSort = findViewById(R.id.btn_usernameSort);
 
 
@@ -71,17 +72,18 @@ public class UsersActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
 
         if(!manager.getUsername().equals("admin")){
-            btn_nameSort.setVisibility(View.GONE);
+            btn_ageSort.setVisibility(View.GONE);
             btn_usernameSort.setVisibility(View.GONE);
+            etSearch.setVisibility(View.GONE);
         }
 
         listViewUsers = findViewById(R.id.listViewUsers);
         currentUsername = manager.getUsername();
 
-        btn_nameSort.setOnClickListener(new View.OnClickListener() {
+        btn_ageSort.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sortUserListByName();
+                sortUserListByAge();
             }
         });
 
@@ -207,11 +209,16 @@ public class UsersActivity extends AppCompatActivity {
     }
 
 
-    private void sortUserListByName() {
+    private void sortUserListByAge() {
         Collections.sort(userList, new Comparator<User>() {
             @Override
             public int compare(User user1, User user2) {
-                return user1.getName().compareToIgnoreCase(user2.getName());
+                // Calculate ages for both users
+                int age1 = calculateAge(user1.getDateOfBirth());
+                int age2 = calculateAge(user2.getDateOfBirth());
+
+                // Compare by age (ascending order)
+                return Integer.compare(age1, age2); // Use Integer.compare for cleaner code
             }
         });
         userAdapter.notifyDataSetChanged();
@@ -225,6 +232,30 @@ public class UsersActivity extends AppCompatActivity {
             }
         });
         userAdapter.notifyDataSetChanged();
+    }
+
+    private int calculateAge(String dateOfBirth) {
+        // Parse the date of birth string into a Calendar object
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        try {
+            Date dob = sdf.parse(dateOfBirth); // Convert string to Date
+            Calendar dobCalendar = Calendar.getInstance();
+            dobCalendar.setTime(dob);
+
+            Calendar today = Calendar.getInstance(); // Get current date
+
+            int age = today.get(Calendar.YEAR) - dobCalendar.get(Calendar.YEAR);
+
+            // Adjust if birthday hasn't occurred yet this year
+            if (today.get(Calendar.DAY_OF_YEAR) < dobCalendar.get(Calendar.DAY_OF_YEAR)) {
+                age--;
+            }
+
+            return age; // Return calculated age
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return 0; // Return 0 if parsing fails
     }
 
 
