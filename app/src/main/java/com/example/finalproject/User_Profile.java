@@ -117,6 +117,10 @@ public class User_Profile extends AppCompatActivity {
 
                     imageRef.delete();
 
+                    Intent intent = new Intent(User_Profile.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+
                 });
 
             }

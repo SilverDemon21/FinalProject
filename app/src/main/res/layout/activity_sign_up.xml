@@ -89,8 +89,8 @@
             <EditText
                 android:id="@+id/signUp_name"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginTop="15dp"
+                android:layout_height="41dp"
+                android:layout_marginTop="12dp"
                 android:textSize="16sp"
                 android:background="@drawable/border_orange"
                 android:drawableLeft="@drawable/vector_name_24"
@@ -102,8 +102,8 @@
             <EditText
                 android:id="@+id/signUp_email"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginTop="10dp"
+                android:layout_height="41dp"
+                android:layout_marginTop="7dp"
                 android:textSize="16sp"
                 android:background="@drawable/border_orange"
                 android:drawableLeft="@drawable/vector_email_24"
@@ -115,8 +115,8 @@
             <EditText
                 android:id="@+id/signUp_phoneNum"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginTop="10dp"
+                android:layout_height="41dp"
+                android:layout_marginTop="7dp"
                 android:textSize="16sp"
                 android:background="@drawable/border_orange"
                 android:drawableLeft="@drawable/vector_phone_24"
@@ -128,8 +128,8 @@
             <EditText
                 android:id="@+id/signUp_username"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginTop="10dp"
+                android:layout_height="41dp"
+                android:layout_marginTop="7dp"
                 android:textSize="16sp"
                 android:background="@drawable/border_orange"
                 android:drawableLeft="@drawable/vector_username_pin_24"
@@ -139,10 +139,24 @@
                 android:textColor="@color/black" />
 
             <EditText
+                android:id="@+id/signUp_date_of_birth"
+                android:layout_width="match_parent"
+                android:layout_height="41dp"
+                android:layout_marginTop="7dp"
+                android:textSize="16sp"
+                android:focusable="false"
+                android:background="@drawable/border_orange"
+                android:drawableLeft="@drawable/vector_date_of_birth"
+                android:drawablePadding="8dp"
+                android:hint="date of birth"
+                android:padding="8dp"
+                android:textColor="@color/black" />
+
+            <EditText
                 android:id="@+id/signUp_password"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginTop="10dp"
+                android:layout_height="41dp"
+                android:layout_marginTop="7dp"
                 android:textSize="16sp"
                 android:background="@drawable/border_orange"
                 android:drawableLeft="@drawable/vector_password_24"
@@ -152,11 +166,25 @@
                 android:padding="8dp"
                 android:textColor="@color/black" />
 
+            <EditText
+                android:id="@+id/signUp_comfirm_password"
+                android:layout_width="match_parent"
+                android:layout_height="41dp"
+                android:layout_marginTop="7dp"
+                android:textSize="16sp"
+                android:background="@drawable/border_orange"
+                android:drawableLeft="@drawable/vector_check_password"
+                android:drawablePadding="8dp"
+                android:hint="comfirm password"
+                android:inputType="textPassword"
+                android:padding="8dp"
+                android:textColor="@color/black" />
+
             <Button
                 android:id="@+id/signUp_button"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="14dp"
                 android:backgroundTint="@color/realLavender"
                 android:text="Sign Up"
                 android:textSize="22sp"
@@ -167,12 +195,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-                android:padding="8dp"
+                android:layout_marginTop="3dp"
+                android:padding="7dp"
                 android:text="already a user? Login"
                 android:textColor="@color/realLavender"
                 android:textSize="18dp"
-
                 />
 
 

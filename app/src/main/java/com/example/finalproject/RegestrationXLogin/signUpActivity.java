@@ -4,6 +4,7 @@ import static com.example.finalproject.Permission.DoesHavePrem;
 import static com.example.finalproject.Permission.GrantPermission;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -45,17 +46,22 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class signUpActivity extends AppCompatActivity {
-    EditText signUp_name, signUp_email, signUp_username, signUp_password, signUp_phoneNum;
+    EditText signUp_name, signUp_email, signUp_username, signUp_password, signUp_phoneNum,
+            signUp_comfirm_password,signUp_date_of_birth;
     private ImageView imgGallery, imgCamera, imgProfile;
     TextView loginRedirectText, title;
     Button signUp_button;
     ImageButton RbackToMainActivity;
     private Uri uriPhoto;
     private Bitmap photoBitmap;
+    Calendar calendar;
 
 
     private final DatabaseReference database = FirebaseDatabase.getInstance().getReference();
@@ -84,6 +90,8 @@ public class signUpActivity extends AppCompatActivity {
         loginRedirectText = findViewById(R.id.loginRedirectText);
         RbackToMainActivity = findViewById(R.id.RbackMainActivity);
         signUp_phoneNum = findViewById(R.id.signUp_phoneNum);
+        signUp_comfirm_password = findViewById(R.id.signUp_comfirm_password);
+        signUp_date_of_birth = findViewById(R.id.signUp_date_of_birth);
 
         imgProfile = findViewById(R.id.imgProfile);
 
@@ -113,10 +121,16 @@ public class signUpActivity extends AppCompatActivity {
             signUp_username.setVisibility(View.GONE);
             signUp_username.setEnabled(false);
 
+            signUp_comfirm_password.setVisibility(View.GONE);
+            signUp_comfirm_password.setEnabled(false);
+
             signUp_name.setText(manger.getName());
             signUp_email.setText(manger.getEmail().replace("_", "."));
             signUp_phoneNum.setText(manger.getPhoneNum());
         }
+
+        calendar = Calendar.getInstance();
+        signUp_date_of_birth.setOnClickListener(v -> showDatePickerDialog());
 
 
         // button to pick up image from gallery
@@ -158,6 +172,7 @@ public class signUpActivity extends AppCompatActivity {
                 }
             }
         });
+
 
         // go back to main activity button
         RbackToMainActivity.setOnClickListener(new View.OnClickListener() {
@@ -455,6 +470,8 @@ public class signUpActivity extends AppCompatActivity {
         String name = signUp_name.getText().toString().trim();
         String username = signUp_username.getText().toString().trim();
         String password = signUp_password.getText().toString().trim();
+        String comfirmPass = signUp_comfirm_password.getText().toString().trim();
+
         if (photoBitmap == null && type.equals("create")) {
             Toast.makeText(signUpActivity.this, "Pls save the image", Toast.LENGTH_SHORT).show();
             profileGood = false;
@@ -475,12 +492,37 @@ public class signUpActivity extends AppCompatActivity {
             signUp_password.setError("The password should be between 6 and 18 characters");
             profileGood = false;
         }
+        if (!comfirmPass.equals(password) | comfirmPass.isEmpty()){
+            signUp_comfirm_password.setError("The password does not match the password above");
+            profileGood = false;
+        }
         if (!info_validation.username_validation(username) && !type.equals("update")) {
             signUp_username.setError("The username should be between 5 and 15 characters");
             profileGood = false;
         }
         return profileGood;
     }
+
+    // date dialog for date of birth
+    private void showDatePickerDialog(){
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                (view, year, month, dayOfMonth) -> {
+                    // Set selected date in Calendar
+                    calendar.set(Calendar.YEAR, year);
+                    calendar.set(Calendar.MONTH, month);
+                    calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                    // Format and display date
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                    signUp_date_of_birth.setText(sdf.format(calendar.getTime()));
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH));
+
+        datePickerDialog.show();
+    }
+
 
 
     // open the photo at the top of the activity
