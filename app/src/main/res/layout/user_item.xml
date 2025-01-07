@@ -27,8 +27,8 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imgPhoto"
-        android:layout_width="82dp"
-        android:layout_height="79dp"
+        android:layout_width="86dp"
+        android:layout_height="89dp"
         android:layout_margin="20dp"
         android:src="@drawable/defult_user_image"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -56,7 +56,7 @@
     <TextView
         android:id="@+id/emailTextView"
         android:layout_width="264dp"
-        android:layout_height="28dp"
+        android:layout_height="30dp"
         android:layout_marginVertical="10dp"
         android:text="user@example.com"
         android:textColor="@color/black"

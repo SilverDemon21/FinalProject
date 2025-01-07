@@ -167,6 +167,7 @@ public class MainActivity extends AppCompatActivity {
                 manager.convertToLoggedOut();
                 updateTitle();
                 invalidateOptionsMenu();
+                Toast.makeText(MainActivity.this, "Logged out successfully", Toast.LENGTH_SHORT).show();
             }
         }
     }

@@ -5,12 +5,15 @@ import org.osmdroid.config.Configuration;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -22,8 +25,10 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.finalproject.MainActivity;
 import com.example.finalproject.Permission;
 import com.example.finalproject.R;
+import com.example.finalproject.ShowAllUsers.UsersActivity;
 
 import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -55,6 +60,8 @@ public class mapAndLogic extends AppCompatActivity {
         mapView.setMultiTouchControls(true);
         mapView.getController().setZoom(15.0);
 
+        mapView.getZoomController().setVisibility(org.osmdroid.views.CustomZoomButtonsController.Visibility.SHOW_AND_FADEOUT);
+
         if (checkPermissions()) {
             setupLocationTracking();
         } else {
@@ -64,6 +71,23 @@ public class mapAndLogic extends AppCompatActivity {
 
         // Add click listener to map
         addMapClickListener();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.menu_button_go_back_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        super.onOptionsItemSelected(item);
+        if(item.getItemId() == R.id.menu_go_back){
+            Intent intent = new Intent(mapAndLogic.this, MainActivity.class);
+            startActivity(intent);
+        }
+        return true;
     }
 
     private boolean checkPermissions() {
@@ -92,8 +116,6 @@ public class mapAndLogic extends AppCompatActivity {
                 @Override
                 public void onLocationChanged(@NonNull Location location) {
                     updateMapWithLocation(location);
-
-                    locationManager.removeUpdates(this);
                 }
 
                 @Override
@@ -102,7 +124,8 @@ public class mapAndLogic extends AppCompatActivity {
                 }
             };
             locationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER, 1000, 1, locationListener);
+                    LocationManager.GPS_PROVIDER, 5000, 1, locationListener);
+
 
         }
     }
@@ -152,7 +175,6 @@ public class mapAndLogic extends AppCompatActivity {
         mapView.invalidate();
 
         Toast.makeText(this, "Location "+ point.getLatitude()+ ", " + point.getLongitude(), Toast.LENGTH_SHORT).show();
-
     }
 
 
@@ -168,11 +190,19 @@ public class mapAndLogic extends AppCompatActivity {
         }
     }
 
+    private void saveLocationByCoordinates(double latitude, double longitude){
+
+    }
+
 
     @Override
     protected void onResume() {
         super.onResume();
         mapView.onResume(); // Resume map view
+
+        if (checkPermissions()) { // Check if permissions are granted
+            setupLocationTracking(); // Restart location tracking
+        }
     }
 
     @Override
