@@ -7,7 +7,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Shader;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -16,12 +23,14 @@ import android.location.LocationManager;
 import android.media.tv.AdRequest;
 import android.os.Bundle;
 import android.os.Looper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -30,6 +39,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.finalproject.MainActivity;
 import com.example.finalproject.Permission;
 import com.example.finalproject.R;
@@ -41,6 +53,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -77,6 +90,8 @@ public class mapAndLogic extends AppCompatActivity {
         Configuration.getInstance().load(getApplicationContext(),
                 getSharedPreferences("osmdroid", MODE_PRIVATE));
 
+        sharedPref_manager manager = new sharedPref_manager(mapAndLogic.this, "LoginUpdate");
+
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
         mapView = findViewById(R.id.map);
@@ -87,16 +102,57 @@ public class mapAndLogic extends AppCompatActivity {
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
+
+
         userMarker = new Marker(mapView);
         userMarker.setTitle("You are here!");
+        String userUrl = manager.getPhotoUrl();
+        Glide.with(this)
+                .asBitmap()
+                .load(userUrl)
+                .into(new CustomTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        // Resize the image
+                        Bitmap resizedBitmap = Bitmap.createScaledBitmap(resource, 80, 80, false);
+                        Bitmap circularBitmap = getCircularBitmap(resizedBitmap);
+
+                        // Set the resized image as the marker icon
+                        userMarker.setIcon(new BitmapDrawable(getResources(), circularBitmap));
+                        mapView.invalidate(); // Refresh the map
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                        // Handle placeholder if needed
+                    }
+                });
+
         userMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
         mapView.getOverlays().add(userMarker);
 
-        if (checkPermissions()) {
-           startLocationUpdates();
-        } else {
-            requestPermissions();
+
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) return;
+                for (Location location : locationResult.getLocations()) {
+                    updateLocationOnMap(location);
+                }
+            }
+        };
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            fusedLocationProviderClient.getLastLocation()
+                    .addOnSuccessListener(location -> {
+                        updateLocationOnMap(location);
+                        });
         }
+
+
+
+
+
 
 
         // adds an event listener for the map
@@ -126,32 +182,36 @@ public class mapAndLogic extends AppCompatActivity {
                 return true;
             }
         };
-
         MapEventsOverlay eventsOverlay = new MapEventsOverlay(mapEventsReceiver);
         mapView.getOverlays().add(eventsOverlay);
 
-        locationCallback = new LocationCallback() {
-            @Override
-            public void onLocationResult(LocationResult locationResult){
-                if(locationResult == null) return;
-                for(Location location : locationResult.getLocations()){
-                    updateLocationOnMap(location);
-                }
-            }
-        };
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
+        if (checkPermissions()) {
+            startLocationUpdates();
+        } else {
+            requestPermissions();
         }
 
-        fusedLocationProviderClient.getLastLocation()
-                .addOnSuccessListener(location -> {
-                    if (location != null) {
-                        updateLocationOnMap(location);
-                    }
-                });
+        showAllSavedLocations();
     }
 
+    // <editor-fold desc="Circular image setup">
+    private Bitmap getCircularBitmap(Bitmap bitmap) {
+        int size = Math.min(bitmap.getWidth(), bitmap.getHeight());
+        Bitmap output = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(output);
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        BitmapShader shader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+        paint.setShader(shader);
+
+        float radius = size / 2f;
+        canvas.drawCircle(radius, radius, radius, paint);
+
+        return output;
+    }
+    // </editor-fold>
 
     // <editor-fold desc="Menu items">
     @Override
@@ -174,13 +234,17 @@ public class mapAndLogic extends AppCompatActivity {
 
     // <editor-fold desc="permission staff">
     private boolean checkPermissions() {
-        return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED;
+        return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
-
     private void requestPermissions() {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            Toast.makeText(this, "Location permission is needed to show your location on the map.", Toast.LENGTH_LONG).show();
+        }
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                101);
     }
     // </editor-fold>
 
@@ -188,15 +252,16 @@ public class mapAndLogic extends AppCompatActivity {
 
     private void startLocationUpdates(){
         LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setInterval(10000);
-        locationRequest.setFastestInterval(5000);
+        locationRequest.setInterval(1000 * 11);
+        locationRequest.setFastestInterval(1000 * 6);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
 
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
-        }
+       if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+           fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+       }
 
     }
 
@@ -211,10 +276,11 @@ public class mapAndLogic extends AppCompatActivity {
             mapView.getController().animateTo(userLocation);
             mapView.invalidate();
 
-            Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "new location", Toast.LENGTH_SHORT).show();
 
         }
     }
+
 
     private String getAddressFromCoordinates(double latitude, double longitude){
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
@@ -233,8 +299,6 @@ public class mapAndLogic extends AppCompatActivity {
 
 
     public void saveLocation(SavedLocation location, GeoPoint p){
-
-
         String locationId = databaseReference.child("SavedLocations").push().getKey();
 
         if(locationId != null){
@@ -274,6 +338,42 @@ public class mapAndLogic extends AppCompatActivity {
     }
 
 
+
+    private void showAllSavedLocations(){
+        sharedPref_manager manager = new sharedPref_manager(mapAndLogic.this, "LoginUpdate");
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(manager.getUsername()).child("SavedLocations");
+
+
+        userRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult().exists()) {
+                for (DataSnapshot locationSnapshot : task.getResult().getChildren()) {
+                    String locationId = locationSnapshot.getValue(String.class);
+                    Log.e("fds",locationId);
+
+                    // Fetch location details using the locationId
+                    DatabaseReference locationRef = FirebaseDatabase.getInstance().getReference("SavedLocations").child(locationId);
+
+                    locationRef.get().addOnCompleteListener(locationTask -> {
+                        if (locationTask.isSuccessful() && locationTask.getResult().exists()) {
+                            // Parse location data
+                            Log.e("fds",locationId);
+                            double latitude = locationTask.getResult().child("latitude").getValue(Double.class);
+                            double longitude = locationTask.getResult().child("longitude").getValue(Double.class);
+                            String address = locationTask.getResult().child("address").getValue(String.class);
+
+                            // Add marker to the map
+                            GeoPoint point = new GeoPoint(latitude, longitude);
+                            makeMarker(point, address);
+                        }
+                    });
+                }
+            } else {
+                Toast.makeText(this, "No saved locations found", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -281,7 +381,7 @@ public class mapAndLogic extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 startLocationUpdates();
             } else {
-                Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Permission denied! Cannot access location.", Toast.LENGTH_SHORT).show();
             }
         }
     }
