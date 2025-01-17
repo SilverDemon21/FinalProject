@@ -4,9 +4,7 @@ public class SavedLocation {
     private String username;
     private double latitude;
     private double longitude;
-    private String city;
-    private String street;
-    private int houseNum;
+    private String address;
 
     public SavedLocation(){}
 
@@ -20,12 +18,6 @@ public class SavedLocation {
     public double getLongitude() {return longitude;}
     public void setLongitude(double longitude) {this.longitude = longitude;}
 
-    public String getCity() {return city;}
-    public void setCity(String city) {this.city = city;}
-
-    public String getStreet() {return street;}
-    public void setStreet(String street) {this.street = street;}
-
-    public int getHouseNum() {return houseNum;}
-    public void setHouseNum(int houseNum) {this.houseNum = houseNum;}
+    public String getAddress() {return address;}
+    public void setAddress(String address) {this.address = address;}
 }
