@@ -3,7 +3,6 @@ package com.example.finalproject.mainAplication;
 import org.osmdroid.config.Configuration;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,7 +10,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -20,39 +18,36 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.media.tv.AdRequest;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.finalproject.MainActivity;
-import com.example.finalproject.Permission;
 import com.example.finalproject.R;
-import com.example.finalproject.ShowAllUsers.UsersActivity;
+import com.example.finalproject.User_Profile;
 import com.example.finalproject.sharedPref_manager;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -65,7 +60,6 @@ import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 
 import java.io.IOException;
-import java.io.PushbackInputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -80,6 +74,9 @@ public class mapAndLogic extends AppCompatActivity {
     private Marker userMarker;
     private DatabaseReference databaseReference;
     private LocationCallback locationCallback;
+    private Button btnShowSavedLocationsList;
+
+
 
     
     @Override
@@ -90,7 +87,7 @@ public class mapAndLogic extends AppCompatActivity {
         Configuration.getInstance().load(getApplicationContext(),
                 getSharedPreferences("osmdroid", MODE_PRIVATE));
 
-        sharedPref_manager manager = new sharedPref_manager(mapAndLogic.this, "LoginUpdate");
+
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
@@ -101,6 +98,41 @@ public class mapAndLogic extends AppCompatActivity {
         mapView.getZoomController().setVisibility(org.osmdroid.views.CustomZoomButtonsController.Visibility.SHOW_AND_FADEOUT);
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        btnShowSavedLocationsList = findViewById(R.id.btnShowSavedLocations);
+
+        sharedPref_manager manager = new sharedPref_manager(mapAndLogic.this, "LoginUpdate");
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationBarMap);
+
+        bottomNavigationView.setSelectedItemId(R.id.menu_map);
+
+        bottomNavigationView.setOnItemSelectedListener(item ->{
+            if(item.getItemId() == R.id.menu_home){
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            }
+            else if(item.getItemId() == R.id.menu_map){
+                return true;
+            }
+            else if(item.getItemId() == R.id.menu_profile){
+                startActivity(new Intent(getApplicationContext(), User_Profile.class));
+                overridePendingTransition(0, 0);
+                return true;
+            }
+            return true;
+
+
+        });
+
+        btnShowSavedLocationsList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mapAndLogic.this, listOfSavedLocations.class);
+                startActivity(intent);
+            }
+        });
 
 
 
@@ -132,6 +164,7 @@ public class mapAndLogic extends AppCompatActivity {
         mapView.getOverlays().add(userMarker);
 
 
+
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -150,11 +183,6 @@ public class mapAndLogic extends AppCompatActivity {
         }
 
 
-
-
-
-
-
         // adds an event listener for the map
         MapEventsReceiver mapEventsReceiver = new MapEventsReceiver() {
             @Override
@@ -171,10 +199,12 @@ public class mapAndLogic extends AppCompatActivity {
 
                 sharedPref_manager manager = new sharedPref_manager(mapAndLogic.this, "LoginUpdate");
                 SavedLocation savedLocation = new SavedLocation();
+                savedLocation.setId(databaseReference.child("SavedLocations").push().getKey());
                 savedLocation.setAddress(address);
                 savedLocation.setLatitude(latitude);
                 savedLocation.setLongitude(longitude);
                 savedLocation.setUsername(manager.getUsername());
+
 
                 showConfirmationSavingLocation(mapAndLogic.this,savedLocation, p);
 
@@ -186,13 +216,16 @@ public class mapAndLogic extends AppCompatActivity {
         mapView.getOverlays().add(eventsOverlay);
 
 
+
+
         if (checkPermissions()) {
             startLocationUpdates();
         } else {
             requestPermissions();
         }
-
         showAllSavedLocations();
+
+        
     }
 
     // <editor-fold desc="Circular image setup">
@@ -217,20 +250,85 @@ public class mapAndLogic extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.menu_button_go_back_main, menu);
+        getMenuInflater().inflate(R.menu.menu_add_savedlocations_ways, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         super.onOptionsItemSelected(item);
-        if(item.getItemId() == R.id.menu_go_back){
-            Intent intent = new Intent(mapAndLogic.this, MainActivity.class);
-            startActivity(intent);
+        if(item.getItemId() == R.id.menu_makeLocationViaCoordinates){
+
+            LayoutInflater inflater = LayoutInflater.from(this);
+            View dialogView = inflater.inflate(R.layout.dialog_make_saved_location_via_coordinates, null);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setView(dialogView);
+            AlertDialog dialog = builder.create();
+
+            EditText etLatitudeForSaving = dialogView.findViewById(R.id.etLatitudeForSaving);
+            EditText etLongitudeForSaving = dialogView.findViewById(R.id.etLongitudeForSaving);
+            Button btnCreateSavedLocationViaCoordinates = dialogView.findViewById(R.id.btnCreateSavedLocationViaCoordinates);
+
+
+
+            btnCreateSavedLocationViaCoordinates.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String latitude = etLatitudeForSaving.getText().toString().trim();
+                    String longitude = etLongitudeForSaving.getText().toString().trim();
+                    boolean correctCoordinates = validateCoordinates(latitude, longitude);
+
+                    if (!correctCoordinates){
+                        Toast.makeText(mapAndLogic.this, "Pls enter valid coordinates", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    }
+                    else {
+                        sharedPref_manager manager = new sharedPref_manager(mapAndLogic.this, "LoginUpdate");
+                        Toast.makeText(mapAndLogic.this, "goog", Toast.LENGTH_SHORT).show();
+                        SavedLocation location = new SavedLocation();
+                        location.setLongitude(Double.parseDouble(longitude));
+                        location.setLatitude(Double.parseDouble(latitude));
+                        location.setUsername(manager.getUsername());
+                        location.setId(databaseReference.child("SavedLocations").push().getKey());
+                        location.setAddress(getAddressFromCoordinates(Double.parseDouble(latitude), Double.parseDouble(longitude)));
+
+                        GeoPoint p = new GeoPoint(Double.parseDouble(latitude), Double.parseDouble(longitude));
+
+                        saveLocation(location, p);
+
+                        dialog.dismiss();
+                    }
+                }
+            });
+
+            dialog.show();
+        }
+        if(item.getItemId() == R.id.menu_makeLocationViaAddress){
+
         }
         return true;
     }
     // </editor-fold>
+
+
+    private boolean validateCoordinates(String lat, String lon){
+        if(lat.isEmpty() || lon.isEmpty()){
+            return false;
+        }
+
+        if(!lat.matches("[-0-9.]+") || !lon.matches("[-0-9.]+")){
+            return false;
+        }
+
+        int latInt = Integer.parseInt(lat);
+        int lonInt = Integer.parseInt(lon);
+
+        if(latInt >= -90 && latInt <= 90 && lonInt >= -180 && lonInt <= 180){
+            return true;
+        }
+        return false;
+    }
 
     // <editor-fold desc="permission staff">
     private boolean checkPermissions() {
@@ -249,7 +347,7 @@ public class mapAndLogic extends AppCompatActivity {
     // </editor-fold>
 
 
-
+    // <editor-fold desc="user tracking code">
     private void startLocationUpdates(){
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setInterval(1000 * 11);
@@ -280,26 +378,14 @@ public class mapAndLogic extends AppCompatActivity {
 
         }
     }
+    // </editor-fold>
 
 
-    private String getAddressFromCoordinates(double latitude, double longitude){
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        try {
-            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-            if(addresses != null && !addresses.isEmpty()){
-                Address address = addresses.get(0);
-                return  address.getAddressLine(0);
-            }
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return "Unknown address";
-    }
 
 
+    // <editor-fold desc="saving locations in map code">
     public void saveLocation(SavedLocation location, GeoPoint p){
-        String locationId = databaseReference.child("SavedLocations").push().getKey();
+        String locationId = location.getId();
 
         if(locationId != null){
             databaseReference.child("SavedLocations").child(locationId).setValue(location).addOnSuccessListener(aVoid ->{
@@ -327,27 +413,20 @@ public class mapAndLogic extends AppCompatActivity {
 
         builder.show();
     }
-
-
-    private void makeMarker(GeoPoint p, String address){
-        Marker marker = new Marker(mapView);
-        marker.setPosition(p);
-        marker.setTitle(address);
-        mapView.getOverlays().add(marker);
-        mapView.invalidate();
-    }
+    // </editor-fold>
 
 
 
+
+
+    // <editor-fold desc="code for showing all users saved locations">
     private void showAllSavedLocations(){
         sharedPref_manager manager = new sharedPref_manager(mapAndLogic.this, "LoginUpdate");
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(manager.getUsername()).child("SavedLocations");
-
-
         userRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult().exists()) {
                 for (DataSnapshot locationSnapshot : task.getResult().getChildren()) {
-                    String locationId = locationSnapshot.getValue(String.class);
+                    String locationId = locationSnapshot.getKey();
                     Log.e("fds",locationId);
 
                     // Fetch location details using the locationId
@@ -372,7 +451,30 @@ public class mapAndLogic extends AppCompatActivity {
             }
         });
     }
+    // </editor-fold>
 
+    private void makeMarker(GeoPoint p, String address){
+        Marker marker = new Marker(mapView);
+        marker.setPosition(p);
+        marker.setTitle(address);
+        mapView.getOverlays().add(marker);
+        mapView.invalidate();
+    }
+
+    private String getAddressFromCoordinates(double latitude, double longitude){
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            if(addresses != null && !addresses.isEmpty()){
+                Address address = addresses.get(0);
+                return  address.getAddressLine(0);
+            }
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return "Unknown address";
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -400,7 +502,8 @@ public class mapAndLogic extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        mapView.onPause(); // Pause map view
+        mapView.onPause();
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback); // Pause map view
     }
 }
 

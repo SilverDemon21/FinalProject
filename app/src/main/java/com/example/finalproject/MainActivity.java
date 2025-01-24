@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 
 import com.bumptech.glide.Glide;
@@ -24,14 +25,13 @@ import com.example.finalproject.RegestrationXLogin.loginActivity;
 import com.example.finalproject.RegestrationXLogin.signUpActivity;
 import com.example.finalproject.ShowAllUsers.UsersActivity;
 import com.example.finalproject.mainAplication.mapAndLogic;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ImageButton profileSettings;
-    private Button mapBtn;
     private CircleImageView userImage;
     private TextView sharedUser;
     private sharedPref_manager manager;
@@ -43,37 +43,41 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        profileSettings = findViewById(R.id.profileSettings);
         sharedUser = findViewById(R.id.sharedUser);
         manager =  new sharedPref_manager(MainActivity.this, "LoginUpdate");
         userImage = findViewById(R.id.userImage);
-        mapBtn = findViewById(R.id.mapBtn);
 
 
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationBarHome);
 
+
+        bottomNavigationView.setSelectedItemId(R.id.menu_home);
+
+
+        bottomNavigationView.setOnItemSelectedListener(item ->{
+            if(item.getItemId() == R.id.menu_home){
+                return true;
+            }
+            else if(item.getItemId() == R.id.menu_map){
+                startActivity(new Intent(getApplicationContext(), mapAndLogic.class));
+                overridePendingTransition(0, 0);
+                return true;
+            }
+            else if(item.getItemId() == R.id.menu_profile){
+                startActivity(new Intent(getApplicationContext(), User_Profile.class));
+                overridePendingTransition(0, 0);
+                return true;
+            }
+            return true;
+
+
+        });
         // updating the main activity considering the sharedPref
         updateTitle();
 
 
-        // go to user profile/settings button
-        profileSettings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, User_Profile.class);
-                startActivity(intent);
-            }
-        });
-
-        mapBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, mapAndLogic.class);
-                startActivity(intent);
-            }
-        });
-
-
     }
+
 
     // update title
     private void updateTitle() {

@@ -10,10 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
+        android:drawablePadding="5dp"
         android:drawableLeft="@drawable/vector_search_24"
         android:iconifiedByDefault="false"
         android:hint="Search by username"
         android:queryHint="Search Users" />
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

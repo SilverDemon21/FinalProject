@@ -24,23 +24,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/btnBackToMain"
-        android:layout_width="109dp"
-        android:layout_height="76dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginBottom="16dp"
-        android:background="@null"
-        android:scaleType="fitCenter"
-        android:src="@drawable/image_go_back"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/deleteProfile"
         android:layout_width="164dp"
         android:layout_height="60dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="84dp"
         android:backgroundTint="@color/red"
         android:hint="delete profile"
         android:textSize="19sp"
@@ -48,6 +37,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.935"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationBarProfile"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:menu="@menu/bottom_navigation_bar"
+        app:labelVisibilityMode="labeled"
+        app:backgroundTint="@color/lightBlue" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

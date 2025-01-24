@@ -1,6 +1,7 @@
 package com.example.finalproject.mainAplication;
 
 public class SavedLocation {
+    private String id;
     private String username;
     private double latitude;
     private double longitude;
@@ -20,4 +21,7 @@ public class SavedLocation {
 
     public String getAddress() {return address;}
     public void setAddress(String address) {this.address = address;}
+
+    public String getId() {return id;}
+    public void setId(String id) {this.id = id;}
 }

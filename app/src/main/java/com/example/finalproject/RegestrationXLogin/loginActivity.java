@@ -121,6 +121,7 @@ public class loginActivity extends AppCompatActivity {
 
 
     // login checking and firebase validation
+    // rework
     public void checkUser(){
         String userUsername = login_username.getText().toString().trim();
         String userPassword = login_password.getText().toString().trim();

@@ -19,6 +19,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.finalproject.mainAplication.mapAndLogic;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,7 +38,6 @@ public class User_Profile extends AppCompatActivity {
     sharedPref_manager manager;
     FirebaseDatabase database;
     DatabaseReference reference;
-    private ImageButton btnBackToMain;
 
 
 
@@ -46,12 +47,39 @@ public class User_Profile extends AppCompatActivity {
         setContentView(R.layout.activity_user_profile);
 
         deleteProfile = findViewById(R.id.deleteProfile);
-        btnBackToMain = findViewById(R.id.btnBackToMain);
         manager = new sharedPref_manager(User_Profile.this, "LoginUpdate");
 
         if (!manager.getIsLoggedIn()){
             deleteProfile.setVisibility(View.GONE);
         }
+
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationBarProfile);
+
+        bottomNavigationView.setSelectedItemId(R.id.menu_profile);
+
+        bottomNavigationView.setOnItemSelectedListener(item ->{
+            if(item.getItemId() == R.id.menu_home){
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            }
+            else if(item.getItemId() == R.id.menu_map){
+                startActivity(new Intent(getApplicationContext(), mapAndLogic.class));
+                overridePendingTransition(0, 0);
+                return true;
+            }
+            else if(item.getItemId() == R.id.menu_profile){
+                return true;
+            }
+            return true;
+
+
+        });
+
+
+
+
 
         // set defult image
         if (getSupportActionBar() != null) {
@@ -61,14 +89,6 @@ public class User_Profile extends AppCompatActivity {
             getSupportActionBar().setDisplayUseLogoEnabled(true);
         }
 
-        // button to go back to main activity
-        btnBackToMain.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(User_Profile.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
 
         // button to delete users profile
         deleteProfile.setOnClickListener(new View.OnClickListener() {
