@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide;
 import com.example.finalproject.RegestrationXLogin.loginActivity;
 import com.example.finalproject.RegestrationXLogin.signUpActivity;
 import com.example.finalproject.ShowAllUsers.UsersActivity;
+import com.example.finalproject.mainAplication.groups;
 import com.example.finalproject.mainAplication.mapAndLogic;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -50,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationBarHome);
 
-
         bottomNavigationView.setSelectedItemId(R.id.menu_home);
 
 
@@ -65,6 +65,11 @@ public class MainActivity extends AppCompatActivity {
             }
             else if(item.getItemId() == R.id.menu_profile){
                 startActivity(new Intent(getApplicationContext(), User_Profile.class));
+                overridePendingTransition(0, 0);
+                return true;
+            }
+            else if(item.getItemId() == R.id.menu_groups){
+                startActivity(new Intent(getApplicationContext(), groups.class));
                 overridePendingTransition(0, 0);
                 return true;
             }

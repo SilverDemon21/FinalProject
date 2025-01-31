@@ -20,22 +20,31 @@
         android:layout_gravity="center"/>
 
 
-
+    <EditText
+        android:id="@+id/etTitleForSavingCoordinates"
+        android:layout_width="290dp"
+        android:layout_height="49dp"
+        android:background="@drawable/border_orange"
+        android:gravity="center"
+        android:hint="PlaceName"
+        android:textSize="23dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"/>
 
     <EditText
         android:id="@+id/etLatitudeForSaving"
-        android:layout_width="240dp"
+        android:layout_width="290dp"
         android:layout_height="49dp"
         android:background="@drawable/border_orange"
         android:gravity="center"
         android:hint="latitude"
         android:textSize="23dp"
         android:layout_gravity="center"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="18dp"/>
 
     <EditText
         android:id="@+id/etLongitudeForSaving"
-        android:layout_width="240dp"
+        android:layout_width="290dp"
         android:layout_height="49dp"
         android:background="@drawable/border_orange"
         android:gravity="center"

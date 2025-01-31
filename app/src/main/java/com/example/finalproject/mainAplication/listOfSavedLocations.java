@@ -192,7 +192,7 @@ public class listOfSavedLocations extends AppCompatActivity {
             filteredList.addAll(originalLocations);
         } else {
             for (SavedLocation location : originalLocations) {
-                if (location.getAddress().toLowerCase().contains(query.toLowerCase())) {
+                if (location.getTitle().toLowerCase().contains(query.toLowerCase())) {
                     filteredList.add(location);
                 }
             }

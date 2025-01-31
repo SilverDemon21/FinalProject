@@ -36,11 +36,13 @@ public class LocationAdapter extends ArrayAdapter<SavedLocation> {
         TextView addressTextView = convertView.findViewById(R.id.addressTextView);
         TextView latitudeTextView = convertView.findViewById(R.id.latitudeTextView);
         TextView longitudeTextView = convertView.findViewById(R.id.longitudeTextView);
+        TextView titleTextView = convertView.findViewById(R.id.tileTextView);
 
         if(location != null){
             addressTextView.setText(location.getAddress());
             latitudeTextView.setText(String.valueOf(location.getLatitude()));
             longitudeTextView.setText(String.valueOf(location.getLongitude()));
+            titleTextView.setText(location.getTitle());
         }
 
         return convertView;

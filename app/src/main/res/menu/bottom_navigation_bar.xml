@@ -14,4 +14,9 @@
         android:id="@+id/menu_profile"
         android:icon="@drawable/vector_name_24"
         android:title="Profile"/>
+
+    <item
+        android:id="@+id/menu_groups"
+        android:icon="@drawable/vector_groups"
+        android:title="Groups"/>
 </menu>

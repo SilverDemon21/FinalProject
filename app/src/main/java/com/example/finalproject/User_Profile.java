@@ -19,6 +19,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.finalproject.mainAplication.groups;
 import com.example.finalproject.mainAplication.mapAndLogic;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
@@ -70,6 +71,11 @@ public class User_Profile extends AppCompatActivity {
                 return true;
             }
             else if(item.getItemId() == R.id.menu_profile){
+                return true;
+            }
+            else if(item.getItemId() == R.id.menu_groups){
+                startActivity(new Intent(getApplicationContext(), groups.class));
+                overridePendingTransition(0, 0);
                 return true;
             }
             return true;
@@ -140,7 +146,6 @@ public class User_Profile extends AppCompatActivity {
                     Intent intent = new Intent(User_Profile.this, MainActivity.class);
                     startActivity(intent);
                     finish();
-
                 });
 
             }
