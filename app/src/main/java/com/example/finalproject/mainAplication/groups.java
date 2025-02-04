@@ -12,6 +12,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -21,7 +22,15 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.finalproject.MainActivity;
 import com.example.finalproject.R;
 import com.example.finalproject.User_Profile;
+import com.example.finalproject.sharedPref_manager;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class groups extends AppCompatActivity {
 
@@ -62,14 +71,14 @@ public class groups extends AppCompatActivity {
                 return true;
             }
             return true;
-
-
         });
 
 
         btnCreateGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                sharedPref_manager manager = new sharedPref_manager(groups.this, "LoginUpdate");
 
                 LayoutInflater inflater = LayoutInflater.from(groups.this);
                 View dialogView = inflater.inflate(R.layout.dialog_create_new_group, null);
@@ -102,8 +111,8 @@ public class groups extends AppCompatActivity {
                 btnCreateGroup.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        sendRequestToAdmin(etGroupName.getText().toString().trim(), selectedOption);
-                        Toast.makeText(groups.this, "Your request to open new group was redirected to the admin")
+                        sendRequestToAdmin(etGroupName.getText().toString().trim(), selectedOption, manager.getUsername());
+                        Toast.makeText(groups.this, "Your request to open new group was redirected to the admin", Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                     }
                 });
@@ -111,8 +120,21 @@ public class groups extends AppCompatActivity {
                 dialog.show();
             }
         });
+    }
 
 
+    public void sendRequestToAdmin(String groupName, String groupType, String senderUsername){
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
+        String groupId = databaseReference.child("UserGroups").push().getKey();
+        HashMap<String, String> firstUserInGroupMap = new HashMap<>();
+        firstUserInGroupMap.put(senderUsername,"Manager");
+
+        GroupOfUsers newUsersGroup = new GroupOfUsers(groupId, groupType, groupName ,firstUserInGroupMap);
+        databaseReference.child("Groups").child(groupId).setValue(newUsersGroup);
+
+        Map<String,Object> updates = new HashMap<>();
+        updates.put("Groups/" + groupId,true);
+        databaseReference.child("users").child(senderUsername).updateChildren(updates);
     }
 }

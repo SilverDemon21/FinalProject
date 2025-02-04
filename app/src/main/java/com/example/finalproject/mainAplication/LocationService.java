@@ -77,7 +77,6 @@ public class LocationService extends Service {
 
 
             Map<String, Object> locationData = new HashMap<>();
-            locationData.put("username", manager.getUsername());
             locationData.put("latitude", String.valueOf(latitude));
             locationData.put("longitude", String.valueOf(longitude));
             locationData.put("address", address);
