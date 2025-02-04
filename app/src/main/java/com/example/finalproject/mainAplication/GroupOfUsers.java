@@ -17,7 +17,7 @@ public class GroupOfUsers {
         groupState = "Pending";
     }
 
-
+    public GroupOfUsers() {}
 
     public String getGroupId() {return groupId;}
     public void setGroupId(String groupId) {this.groupId = groupId;}

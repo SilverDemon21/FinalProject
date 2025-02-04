@@ -3,6 +3,8 @@ package com.example.finalproject.adminStaff;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -18,6 +20,7 @@ import com.example.finalproject.ShowAllUsers.UserAdapter;
 import com.example.finalproject.ShowAllUsers.UsersActivity;
 import com.example.finalproject.mainAplication.GroupOfUsers;
 import com.example.finalproject.mainAplication.SavedLocation;
+import com.example.finalproject.mainAplication.listOfSavedLocations;
 import com.example.finalproject.sharedPref_manager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -62,15 +65,21 @@ public class PendingGroups extends AppCompatActivity {
 
             }
         });
+
+        fetchAllPendingGroups();
+
+
+
     }
+
+
+
 
     private void fetchAllPendingGroups(){
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Groups");
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                originalPendingGroups = null;
-                pendingGroups = null;
 
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     GroupOfUsers checkGroup = dataSnapshot.getValue(GroupOfUsers.class);

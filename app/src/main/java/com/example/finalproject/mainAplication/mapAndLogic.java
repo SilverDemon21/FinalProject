@@ -45,6 +45,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.example.finalproject.MainActivity;
 import com.example.finalproject.R;
 import com.example.finalproject.User_Profile;
+import com.example.finalproject.adminStaff.PendingGroups;
 import com.example.finalproject.sharedPref_manager;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -81,8 +82,6 @@ public class mapAndLogic extends AppCompatActivity {
     private Button btnShowSavedLocationsList;
 
 
-
-    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -229,13 +228,15 @@ public class mapAndLogic extends AppCompatActivity {
 
         if (checkPermissions()) {
             startLocationUpdates();
+            createNotificationChannel();
+            startLocationService();
+
         } else {
             requestPermissions();
         }
         showAllSavedLocations();
 
-        createNotificationChannel();
-        startLocationService();
+
     }
 
 
@@ -263,6 +264,12 @@ public class mapAndLogic extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.menu_add_savedlocations_ways, menu);
+
+        MenuItem adminItem = menu.findItem(R.id.menu_pendingGroupsAccepts);
+        sharedPref_manager manager = new sharedPref_manager(mapAndLogic.this, "LoginUpdate");
+        if(!manager.getUsername().equals("admin")){
+            adminItem.setVisible(false);
+        }
         return true;
     }
 
@@ -357,6 +364,11 @@ public class mapAndLogic extends AppCompatActivity {
                 }
             });
             dialog.show();
+        }
+
+        if(item.getItemId() == R.id.menu_pendingGroupsAccepts){
+            Intent intent = new Intent(mapAndLogic.this, PendingGroups.class);
+            startActivity(intent);
         }
         return true;
     }
