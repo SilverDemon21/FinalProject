@@ -1,5 +1,6 @@
 package com.example.finalproject.adminStaff;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -69,10 +70,25 @@ public class PendingGroups extends AppCompatActivity {
         fetchAllPendingGroups();
 
 
+        listViewPendingGroups.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                GroupOfUsers clickedGroup = pendingGroups.get(i);
+
+                new AlertDialog.Builder(PendingGroups.this)
+                        .setTitle("Delete Location")
+                        .setMessage("Are you sure you want to accept this group?: " +
+                                clickedGroup.getGroupName() + "created by" + clickedGroup.getGroupUsers().keySet().iterator().next())
+                        .setPositiveButton("Delete", ((dialog, which) -> {
+                            acceptGroup(clickedGroup);
+                        }))
+                        .setNegativeButton("Cancel",null)
+                        .show();
+
+            }
+        });
 
     }
-
-
 
 
     private void fetchAllPendingGroups(){
@@ -116,6 +132,15 @@ public class PendingGroups extends AppCompatActivity {
         pendingGroups.clear();
         pendingGroups.addAll(filteredList);
 
+        groupAdapter.notifyDataSetChanged();
+    }
+
+
+    private void acceptGroup(GroupOfUsers group){
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference.child("Groups").child(group.getGroupId()).child("groupState").setValue("Active");
+        originalPendingGroups.remove(group);
+        pendingGroups.remove(group);
         groupAdapter.notifyDataSetChanged();
     }
 }

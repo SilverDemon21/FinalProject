@@ -172,9 +172,6 @@ public class listOfSavedLocations extends AppCompatActivity {
                                 adapter = new LocationAdapter(listOfSavedLocations.this, locations);
                                 listViewSavedLocations.setAdapter(adapter);
                             }
-
-
-
                         }
 
                         @Override
