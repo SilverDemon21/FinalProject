@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.DialogPreference;
-import android.preference.Preference;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -31,23 +29,23 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class listOfSavedLocations extends AppCompatActivity {
+public class ListOfSavedLocations extends AppCompatActivity {
 
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
     private sharedPref_manager manager;
-    private LocationAdapter adapter;
+    private AdapterSavedLocations adapter;
     private ListView listViewSavedLocations;
     private EditText etSearchSavedLocation;
-    List<SavedLocation> originalLocations = new ArrayList<>();
-    List<SavedLocation> locations = new ArrayList<>();
+    List<Object_SavedLocation> originalLocations = new ArrayList<>();
+    List<Object_SavedLocation> locations = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_of_saved_locations);
+        setContentView(R.layout.list_user_saved_locations);
 
 
-        manager = new sharedPref_manager(listOfSavedLocations.this,"LoginUpdate");
+        manager = new sharedPref_manager(ListOfSavedLocations.this,"LoginUpdate");
 
         listViewSavedLocations = findViewById(R.id.listViewSavedLocations);
         etSearchSavedLocation = findViewById(R.id.etSearchSavedLocation);
@@ -74,9 +72,9 @@ public class listOfSavedLocations extends AppCompatActivity {
         listViewSavedLocations.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id){
-                SavedLocation clickedLocation = (SavedLocation) parent.getItemAtPosition(position);
+                Object_SavedLocation clickedLocation = (Object_SavedLocation) parent.getItemAtPosition(position);
 
-                new AlertDialog.Builder(listOfSavedLocations.this)
+                new AlertDialog.Builder(ListOfSavedLocations.this)
                         .setTitle("Delete Location")
                         .setMessage("Are you sure you want to delete this location: " +
                                 clickedLocation.getAddress())
@@ -93,8 +91,8 @@ public class listOfSavedLocations extends AppCompatActivity {
         listViewSavedLocations.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                SavedLocation clickedLocation = locations.get(i);
-                showNavigationChoiceDialog(listOfSavedLocations.this, clickedLocation);
+                Object_SavedLocation clickedLocation = locations.get(i);
+                showNavigationChoiceDialog(ListOfSavedLocations.this, clickedLocation);
             }
         });
 
@@ -113,14 +111,14 @@ public class listOfSavedLocations extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         super.onOptionsItemSelected(item);
         if(item.getItemId() == R.id.menu_go_back){
-            Intent intent = new Intent(listOfSavedLocations.this, MainActivity.class);
+            Intent intent = new Intent(ListOfSavedLocations.this, MainActivity.class);
             startActivity(intent);
         }
         return true;
     }
 
 
-    private void showNavigationChoiceDialog(Context context, SavedLocation location){
+    private void showNavigationChoiceDialog(Context context, Object_SavedLocation location){
         String[] options = {"Google Maps", "Waze"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -162,14 +160,14 @@ public class listOfSavedLocations extends AppCompatActivity {
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            SavedLocation location = snapshot.getValue(SavedLocation.class);
+                            Object_SavedLocation location = snapshot.getValue(Object_SavedLocation.class);
                             if(location != null){
                                 locations.add(location);
                                 originalLocations.add(location);
                             }
 
                             if(locations.size() == locationIds.size()){
-                                adapter = new LocationAdapter(listOfSavedLocations.this, locations);
+                                adapter = new AdapterSavedLocations(ListOfSavedLocations.this, locations);
                                 listViewSavedLocations.setAdapter(adapter);
                             }
                         }
@@ -183,12 +181,12 @@ public class listOfSavedLocations extends AppCompatActivity {
     }
 
     private void filterSavedLocationList(String query) {
-        List<SavedLocation> filteredList = new ArrayList<>();
+        List<Object_SavedLocation> filteredList = new ArrayList<>();
 
         if (query.isEmpty()) {
             filteredList.addAll(originalLocations);
         } else {
-            for (SavedLocation location : originalLocations) {
+            for (Object_SavedLocation location : originalLocations) {
                 if (location.getTitle().toLowerCase().contains(query.toLowerCase())) {
                     filteredList.add(location);
                 }
@@ -201,7 +199,7 @@ public class listOfSavedLocations extends AppCompatActivity {
     }
 
 
-    private void deleteLocation(SavedLocation location){
+    private void deleteLocation(Object_SavedLocation location){
         String locationId = location.getId();
         String username = manager.getUsername();
 

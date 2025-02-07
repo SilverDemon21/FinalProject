@@ -2,15 +2,12 @@ package com.example.finalproject.mainAplication;
 
 import android.Manifest;
 import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.os.Build;
 import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
@@ -25,7 +22,6 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.firebase.Firebase;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -36,7 +32,7 @@ import java.util.Locale;
 import java.util.Map;
 
 
-public class LocationService extends Service {
+public class ServiceUserLocation extends Service {
 
     private FusedLocationProviderClient fusedLocationProviderClient;
     private LocationCallback serviceLocationCallback;
@@ -66,7 +62,7 @@ public class LocationService extends Service {
     }
 
     private void updateLocationOnFirebase(Location location){
-        sharedPref_manager manager = new sharedPref_manager(LocationService.this, "LoginUpdate");
+        sharedPref_manager manager = new sharedPref_manager(ServiceUserLocation.this, "LoginUpdate");
         database = FirebaseDatabase.getInstance().getReference("users").child(manager.getUsername()).child("UserLocation");
 
         if(location != null){

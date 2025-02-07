@@ -8,18 +8,16 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.example.finalproject.R;
-import com.example.finalproject.ShowAllUsers.User;
-import com.example.finalproject.mainAplication.GroupOfUsers;
-import com.example.finalproject.mainAplication.SavedLocation;
+import com.example.finalproject.mainAplication.Object_GroupOfUsers;
 
 import java.util.List;
 
-public class PendingGroupsAdapter extends ArrayAdapter<GroupOfUsers> {
+public class AdapterAllPendingGroups extends ArrayAdapter<Object_GroupOfUsers> {
 
     private Context mContext;
-    private List<GroupOfUsers> groups;
+    private List<Object_GroupOfUsers> groups;
 
-    public PendingGroupsAdapter(Context context, List<GroupOfUsers> pendingGroups) {
+    public AdapterAllPendingGroups(Context context, List<Object_GroupOfUsers> pendingGroups) {
         super(context, 0, pendingGroups);
         mContext = context;
         groups = pendingGroups;
@@ -27,7 +25,7 @@ public class PendingGroupsAdapter extends ArrayAdapter<GroupOfUsers> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        GroupOfUsers pendingGroup = getItem(position);
+        Object_GroupOfUsers pendingGroup = getItem(position);
 
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.pending_group_item, parent, false);
@@ -39,7 +37,7 @@ public class PendingGroupsAdapter extends ArrayAdapter<GroupOfUsers> {
 
         if(pendingGroup != null){
             groupNameTextView.setText(pendingGroup.getGroupName());
-            groupCreatorUsernameTextView.setText(String.valueOf(pendingGroup.getGroupUsers().keySet().iterator().next()));
+            groupCreatorUsernameTextView.setText(String.valueOf(pendingGroup.getGroupUsers().get("Manager")));
         }
 
         return convertView;

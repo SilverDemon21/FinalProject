@@ -6,7 +6,7 @@ import android.net.Uri;
 import android.widget.Toast;
 
 public class NavigationHelper {
-    public static void navigateToLocation(Context context, SavedLocation location, boolean isGoogleMaps) {
+    public static void navigateToLocation(Context context, Object_SavedLocation location, boolean isGoogleMaps) {
         String uri;
 
         if (isGoogleMaps) {

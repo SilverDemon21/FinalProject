@@ -1,6 +1,6 @@
 package com.example.finalproject.mainAplication;
 
-public class SavedLocation {
+public class Object_SavedLocation {
     private String id;
     private String title;
     private String username;
@@ -8,7 +8,7 @@ public class SavedLocation {
     private double longitude;
     private String address;
 
-    public SavedLocation(){}
+    public Object_SavedLocation(){}
 
     public String getTitle() {return title;}
     public void setTitle(String title) {this.title = title;}

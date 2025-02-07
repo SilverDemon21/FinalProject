@@ -2,14 +2,14 @@ package com.example.finalproject.mainAplication;
 
 import java.util.HashMap;
 
-public class GroupOfUsers {
+public class Object_GroupOfUsers {
     private String groupId;
     private String groupType;
     private String groupName;
     private HashMap<String, String> groupUsers;
     private String groupState;
 
-    public GroupOfUsers(String groupId, String groupType, String groupName, HashMap<String, String> groupUsers) {
+    public Object_GroupOfUsers(String groupId, String groupType, String groupName, HashMap<String, String> groupUsers) {
         this.groupId = groupId;
         this.groupType = groupType;
         this.groupName = groupName;
@@ -17,7 +17,7 @@ public class GroupOfUsers {
         groupState = "Pending";
     }
 
-    public GroupOfUsers() {}
+    public Object_GroupOfUsers() {}
 
     public String getGroupId() {return groupId;}
     public void setGroupId(String groupId) {this.groupId = groupId;}

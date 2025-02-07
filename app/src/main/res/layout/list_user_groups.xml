@@ -5,20 +5,36 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".mainAplication.groups">
+    tools:context=".mainAplication.ListUserGroups">
+
+    <EditText
+        android:id="@+id/etSearchUserGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:layout_marginTop="40dp"
+        android:drawableLeft="@drawable/vector_search_24"
+        android:drawablePadding="5dp"
+        android:hint="Search by Group Name"
+        android:iconifiedByDefault="false"
+        android:queryHint="Search Users"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.083"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
-        android:id="@+id/listViewSavedLocations"
+        android:id="@+id/listViewUsersGroups"
         android:layout_width="match_parent"
-        android:layout_height="416dp"
+        android:layout_height="458dp"
         android:divider="@null"
         android:dividerHeight="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.403" />
+        app:layout_constraintVertical_bias="0.417" />
 
     <Button
         android:id="@+id/btnCreateGroup"

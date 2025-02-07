@@ -2,36 +2,22 @@ package com.example.finalproject;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import com.example.finalproject.mainAplication.groups;
+import com.example.finalproject.mainAplication.ListUserGroups;
 import com.example.finalproject.mainAplication.mapAndLogic;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class User_Profile extends AppCompatActivity {
     private Button  deleteProfile;
@@ -74,7 +60,7 @@ public class User_Profile extends AppCompatActivity {
                 return true;
             }
             else if(item.getItemId() == R.id.menu_groups){
-                startActivity(new Intent(getApplicationContext(), groups.class));
+                startActivity(new Intent(getApplicationContext(), ListUserGroups.class));
                 overridePendingTransition(0, 0);
                 return true;
             }

@@ -5,18 +5,17 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".mainAplication.listOfSavedLocations">
-
+    tools:context=".adminStaff.ListAllPendingGroups">
 
     <EditText
-        android:id="@+id/etSearchSavedLocation"
+        android:id="@+id/etSearchPendingGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
         android:layout_marginTop="24dp"
         android:drawablePadding="5dp"
         android:drawableLeft="@drawable/vector_search_24"
-        android:hint="Search by Address"
+        android:hint="Search by Group Name"
         android:iconifiedByDefault="false"
         android:queryHint="Search Users"
         app:layout_constraintEnd_toEndOf="parent"
@@ -24,8 +23,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <ListView
-        android:id="@+id/listViewSavedLocations"
+        android:id="@+id/listViewPendingGroups"
         android:layout_width="match_parent"
         android:layout_height="516dp"
         android:divider="@null"
@@ -35,6 +35,6 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.409" />
+        app:layout_constraintVertical_bias="0.665" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

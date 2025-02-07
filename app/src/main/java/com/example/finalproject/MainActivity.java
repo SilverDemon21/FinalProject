@@ -3,28 +3,22 @@ package com.example.finalproject;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
 
 import com.bumptech.glide.Glide;
 import com.example.finalproject.RegestrationXLogin.loginActivity;
 import com.example.finalproject.RegestrationXLogin.signUpActivity;
 import com.example.finalproject.ShowAllUsers.UsersActivity;
-import com.example.finalproject.mainAplication.groups;
+import com.example.finalproject.mainAplication.ListUserGroups;
 import com.example.finalproject.mainAplication.mapAndLogic;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -69,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
             else if(item.getItemId() == R.id.menu_groups){
-                startActivity(new Intent(getApplicationContext(), groups.class));
+                startActivity(new Intent(getApplicationContext(), ListUserGroups.class));
                 overridePendingTransition(0, 0);
                 return true;
             }

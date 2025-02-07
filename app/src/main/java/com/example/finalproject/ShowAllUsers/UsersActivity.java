@@ -60,7 +60,7 @@ public class UsersActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_useres);
+        setContentView(R.layout.list_all_users);
 
         etSearch = findViewById(R.id.etSearch);
 

@@ -1,27 +1,23 @@
 package com.example.finalproject.adminStaff;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
+import com.example.finalproject.MainActivity;
 import com.example.finalproject.R;
-import com.example.finalproject.ShowAllUsers.UserAdapter;
-import com.example.finalproject.ShowAllUsers.UsersActivity;
-import com.example.finalproject.mainAplication.GroupOfUsers;
-import com.example.finalproject.mainAplication.SavedLocation;
-import com.example.finalproject.mainAplication.listOfSavedLocations;
+import com.example.finalproject.mainAplication.Object_GroupOfUsers;
 import com.example.finalproject.sharedPref_manager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,19 +28,19 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PendingGroups extends AppCompatActivity {
+public class ListAllPendingGroups extends AppCompatActivity {
 
     private ListView listViewPendingGroups;
     private EditText etSearchPendingGroup;
-    private PendingGroupsAdapter groupAdapter;
+    private AdapterAllPendingGroups groupAdapter;
     private sharedPref_manager manager;
-    List<GroupOfUsers> originalPendingGroups = new ArrayList<>();
-    List<GroupOfUsers> pendingGroups = new ArrayList<>();
+    List<Object_GroupOfUsers> originalPendingGroups = new ArrayList<>();
+    List<Object_GroupOfUsers> pendingGroups = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pending_groups);
+        setContentView(R.layout.list_all_pending_groups);
 
         listViewPendingGroups = findViewById(R.id.listViewPendingGroups);
         etSearchPendingGroup = findViewById(R.id.etSearchPendingGroup);
@@ -73,9 +69,9 @@ public class PendingGroups extends AppCompatActivity {
         listViewPendingGroups.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                GroupOfUsers clickedGroup = pendingGroups.get(i);
+                Object_GroupOfUsers clickedGroup = pendingGroups.get(i);
 
-                new AlertDialog.Builder(PendingGroups.this)
+                new AlertDialog.Builder(ListAllPendingGroups.this)
                         .setTitle("Delete Location")
                         .setMessage("Are you sure you want to accept this group?: " +
                                 clickedGroup.getGroupName() + "created by" + clickedGroup.getGroupUsers().keySet().iterator().next())
@@ -84,7 +80,6 @@ public class PendingGroups extends AppCompatActivity {
                         }))
                         .setNegativeButton("Cancel",null)
                         .show();
-
             }
         });
 
@@ -98,7 +93,7 @@ public class PendingGroups extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    GroupOfUsers checkGroup = dataSnapshot.getValue(GroupOfUsers.class);
+                    Object_GroupOfUsers checkGroup = dataSnapshot.getValue(Object_GroupOfUsers.class);
 
                     if (checkGroup.getGroupState().equals("Pending")){
                         originalPendingGroups.add(checkGroup);
@@ -106,7 +101,7 @@ public class PendingGroups extends AppCompatActivity {
                     }
                 }
 
-                groupAdapter = new PendingGroupsAdapter(PendingGroups.this, pendingGroups);
+                groupAdapter = new AdapterAllPendingGroups(ListAllPendingGroups.this, pendingGroups);
                 listViewPendingGroups.setAdapter(groupAdapter);
             }
 
@@ -117,13 +112,30 @@ public class PendingGroups extends AppCompatActivity {
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.menu_button_go_back_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        super.onOptionsItemSelected(item);
+        if(item.getItemId() == R.id.menu_go_back){
+            Intent intent = new Intent(ListAllPendingGroups.this, MainActivity.class);
+            startActivity(intent);
+        }
+        return true;
+    }
+
     private void filterPendingGroups(String query) {
-        List<GroupOfUsers> filteredList = new ArrayList<>();
+        List<Object_GroupOfUsers> filteredList = new ArrayList<>();
 
         if (query.isEmpty()) {
             filteredList.addAll(originalPendingGroups);
         } else {
-            for (GroupOfUsers group : originalPendingGroups) {
+            for (Object_GroupOfUsers group : originalPendingGroups) {
                 if (group.getGroupName().toLowerCase().contains(query.toLowerCase())) {
                     filteredList.add(group);
                 }
@@ -136,7 +148,7 @@ public class PendingGroups extends AppCompatActivity {
     }
 
 
-    private void acceptGroup(GroupOfUsers group){
+    private void acceptGroup(Object_GroupOfUsers group){
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         databaseReference.child("Groups").child(group.getGroupId()).child("groupState").setValue("Active");
         originalPendingGroups.remove(group);

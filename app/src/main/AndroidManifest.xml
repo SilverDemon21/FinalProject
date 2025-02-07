@@ -26,19 +26,22 @@
         android:theme="@style/Theme.FinalProject"
         tools:targetApi="31">
         <activity
-            android:name=".adminStaff.PendingGroups"
+            android:name=".mainAplication.ListGroupDetails"
+            android:exported="false" />
+        <activity
+            android:name=".adminStaff.ListAllPendingGroups"
             android:exported="false" />
 
         <service
-            android:name=".mainAplication.LocationService"
+            android:name=".mainAplication.ServiceUserLocation"
             android:exported="false"
             android:foregroundServiceType="location" />
 
         <activity
-            android:name=".mainAplication.groups"
+            android:name=".mainAplication.ListUserGroups"
             android:exported="false" />
         <activity
-            android:name=".mainAplication.listOfSavedLocations"
+            android:name=".mainAplication.ListOfSavedLocations"
             android:exported="false" />
         <activity
             android:name=".mainAplication.mapAndLogic"

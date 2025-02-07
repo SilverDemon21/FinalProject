@@ -8,16 +8,15 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.example.finalproject.R;
-import com.example.finalproject.ShowAllUsers.User;
 
 import java.util.List;
 
-public class LocationAdapter extends ArrayAdapter<SavedLocation> {
+public class AdapterSavedLocations extends ArrayAdapter<Object_SavedLocation> {
 
     private Context mContext;
-    private List<SavedLocation> locations;
+    private List<Object_SavedLocation> locations;
 
-    public LocationAdapter(Context context, List<SavedLocation> locationList) {
+    public AdapterSavedLocations(Context context, List<Object_SavedLocation> locationList) {
         super(context, 0, locationList);
         mContext = context;
         locations = locationList;
@@ -27,7 +26,7 @@ public class LocationAdapter extends ArrayAdapter<SavedLocation> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        SavedLocation location = getItem(position);
+        Object_SavedLocation location = getItem(position);
 
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.saved_location_item, parent, false);

@@ -45,7 +45,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.example.finalproject.MainActivity;
 import com.example.finalproject.R;
 import com.example.finalproject.User_Profile;
-import com.example.finalproject.adminStaff.PendingGroups;
+import com.example.finalproject.adminStaff.ListAllPendingGroups;
 import com.example.finalproject.sharedPref_manager;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -126,7 +126,7 @@ public class mapAndLogic extends AppCompatActivity {
                 return true;
             }
             else if(item.getItemId() == R.id.menu_groups){
-                startActivity(new Intent(getApplicationContext(), groups.class));
+                startActivity(new Intent(getApplicationContext(), ListUserGroups.class));
                 overridePendingTransition(0, 0);
                 return true;
             }
@@ -137,7 +137,7 @@ public class mapAndLogic extends AppCompatActivity {
         btnShowSavedLocationsList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(mapAndLogic.this, listOfSavedLocations.class);
+                Intent intent = new Intent(mapAndLogic.this, ListOfSavedLocations.class);
                 startActivity(intent);
             }
         });
@@ -206,7 +206,7 @@ public class mapAndLogic extends AppCompatActivity {
                 String address = getAddressFromCoordinates(latitude, longitude);
 
                 sharedPref_manager manager = new sharedPref_manager(mapAndLogic.this, "LoginUpdate");
-                SavedLocation savedLocation = new SavedLocation();
+                Object_SavedLocation savedLocation = new Object_SavedLocation();
                 savedLocation.setId(databaseReference.child("SavedLocations").push().getKey());
                 savedLocation.setAddress(address);
                 savedLocation.setLatitude(latitude);
@@ -233,6 +233,8 @@ public class mapAndLogic extends AppCompatActivity {
 
         } else {
             requestPermissions();
+            Intent intent = new Intent(mapAndLogic.this, MainActivity.class);
+            startActivity(intent);
         }
         showAllSavedLocations();
 
@@ -305,7 +307,7 @@ public class mapAndLogic extends AppCompatActivity {
                     else {
                         sharedPref_manager manager = new sharedPref_manager(mapAndLogic.this, "LoginUpdate");
                         Toast.makeText(mapAndLogic.this, "goog", Toast.LENGTH_SHORT).show();
-                        SavedLocation location = new SavedLocation();
+                        Object_SavedLocation location = new Object_SavedLocation();
                         location.setLongitude(Double.parseDouble(longitude));
                         location.setLatitude(Double.parseDouble(latitude));
                         location.setUsername(manager.getUsername());
@@ -347,7 +349,7 @@ public class mapAndLogic extends AppCompatActivity {
                         Double latitude = coordinates[0];
                         Double longitude = coordinates[1];
 
-                        SavedLocation location = new SavedLocation();
+                        Object_SavedLocation location = new Object_SavedLocation();
                         location.setTitle(Title);
                         location.setLatitude(latitude);
                         location.setLongitude(longitude);
@@ -367,7 +369,7 @@ public class mapAndLogic extends AppCompatActivity {
         }
 
         if(item.getItemId() == R.id.menu_pendingGroupsAccepts){
-            Intent intent = new Intent(mapAndLogic.this, PendingGroups.class);
+            Intent intent = new Intent(mapAndLogic.this, ListAllPendingGroups.class);
             startActivity(intent);
         }
         return true;
@@ -448,7 +450,7 @@ public class mapAndLogic extends AppCompatActivity {
 
 
     // <editor-fold desc="Saving locations in map code">
-    public void saveLocation(SavedLocation location, GeoPoint p){
+    public void saveLocation(Object_SavedLocation location, GeoPoint p){
         String locationId = location.getId();
 
         if(locationId != null){
@@ -465,7 +467,7 @@ public class mapAndLogic extends AppCompatActivity {
         makeMarker(p, location.getTitle());
     }
 
-    public void showConfirmationSavingLocation(Context context, SavedLocation location, GeoPoint p){
+    public void showConfirmationSavingLocation(Context context, Object_SavedLocation location, GeoPoint p){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Confirm Add Location");
         builder.setMessage("Do you want to add this location?");
@@ -588,12 +590,12 @@ public class mapAndLogic extends AppCompatActivity {
 
     // <editor-fold desc="Starting and stopping location service">
     private void startLocationService(){
-        Intent serviceIntent = new Intent(this, LocationService.class);
+        Intent serviceIntent = new Intent(this, ServiceUserLocation.class);
         ContextCompat.startForegroundService(this, serviceIntent);
     }
 
     private void stopLocationService(){
-        Intent serviceIntent = new Intent(this, LocationService.class);
+        Intent serviceIntent = new Intent(this, ServiceUserLocation.class);
         stopService(serviceIntent);
     }
     // </editor-fold>
@@ -606,6 +608,8 @@ public class mapAndLogic extends AppCompatActivity {
         if (requestCode == 101) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 startLocationUpdates();
+                createNotificationChannel();
+                startLocationService();
             } else {
                 Toast.makeText(this, "Permission denied! Cannot access location.", Toast.LENGTH_SHORT).show();
             }
