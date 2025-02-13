@@ -5,61 +5,51 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".mainAplication.ListUserGroups">
+    tools:context=".mainAplication.ListGroupDetails">
 
     <EditText
-        android:id="@+id/etSearchUserGroup"
+        android:id="@+id/etSearchUserInGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
-        android:layout_marginTop="40dp"
-        android:drawableLeft="@drawable/vector_search_24"
+        android:layout_marginTop="24dp"
         android:drawablePadding="5dp"
-        android:hint="Search by Group Name"
+        android:drawableLeft="@drawable/vector_search_24"
+        android:hint="Search by User By Name"
         android:iconifiedByDefault="false"
-        android:queryHint="Search objectUsers"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.083"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
-        android:id="@+id/listViewUsersGroups"
+        android:id="@+id/listViewDetailsOfUsersGroup"
         android:layout_width="match_parent"
         android:layout_height="458dp"
         android:divider="@null"
         android:dividerHeight="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.417" />
+        app:layout_constraintVertical_bias="0.245" />
 
     <Button
-        android:id="@+id/btnCreateGroup"
-        android:layout_width="200dp"
-        android:layout_height="60dp"
+        android:id="@+id/btnAddPerson"
+        android:layout_width="180dp"
+        android:layout_height="55dp"
         android:background="@drawable/custom_button"
+        android:text="Add Person"
         android:textColor="@color/black"
-        android:text="Create Group"
         android:textSize="25dp"
         app:backgroundTint="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.075"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.828" />
+        app:layout_constraintVertical_bias="0.913" />
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigationBarGroups"
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:menu="@menu/bottom_navigation_bar"
-        app:labelVisibilityMode="labeled"
-        app:backgroundTint="@color/lightBlue" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

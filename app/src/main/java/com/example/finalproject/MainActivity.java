@@ -19,6 +19,7 @@ import com.example.finalproject.RegestrationXLogin.loginActivity;
 import com.example.finalproject.RegestrationXLogin.signUpActivity;
 import com.example.finalproject.ShowAllUsers.UsersActivity;
 import com.example.finalproject.mainAplication.ListUserGroups;
+import com.example.finalproject.mainAplication.ServiceUserLocation;
 import com.example.finalproject.mainAplication.mapAndLogic;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -171,6 +172,8 @@ public class MainActivity extends AppCompatActivity {
                 updateTitle();
                 invalidateOptionsMenu();
                 Toast.makeText(MainActivity.this, "Logged out successfully", Toast.LENGTH_SHORT).show();
+                Intent serviceIntent = new Intent(MainActivity.this, ServiceUserLocation.class);
+                stopService(serviceIntent);
             }
         }
     }

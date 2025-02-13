@@ -17,25 +17,23 @@ import java.util.List;
 
 public class AdapterUserGroups extends ArrayAdapter<Object_GroupOfUsers> {
     private Context mContext;
-    private List<Object_GroupOfUsers> groups;
 
     public AdapterUserGroups(Context context, List<Object_GroupOfUsers> UserGroups) {
         super(context, 0, UserGroups);
         mContext = context;
-        groups = UserGroups;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Object_GroupOfUsers UserGroup = getItem(position);
 
-        if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.user_group_item, parent, false);
-        }
+        convertView = LayoutInflater.from(mContext).inflate(R.layout.user_group_item, parent, false);
+
 
         TextView groupNameTextView = convertView.findViewById(R.id.groupNameUserGroupsTextView);
         TextView groupCreatorUsernameTextView = convertView.findViewById(R.id.groupCreatorUsernameUserGroupsTextView);
         TextView groupType = convertView.findViewById(R.id.groupType);
+
 
 
         if(UserGroup != null){
@@ -52,7 +50,7 @@ public class AdapterUserGroups extends ArrayAdapter<Object_GroupOfUsers> {
             ConstraintLayout usersGroupsCardView = convertView.findViewById(R.id.usersGroupsLayout);
 
 
-            pendingIdentifier.setText("Pending");
+            pendingIdentifier.setText(UserGroup.getGroupName());
             usersGroupsCardView.setBackgroundResource(R.drawable.background_user_groups_pending_item);
             groupNameTextView.setTextColor(ContextCompat.getColor(mContext, R.color.silver));
             groupCreatorUsernameTextView.setTextColor(ContextCompat.getColor(mContext, R.color.silver));

@@ -18,7 +18,7 @@
         android:drawableLeft="@drawable/vector_search_24"
         android:hint="Search by Address"
         android:iconifiedByDefault="false"
-        android:queryHint="Search Users"
+        android:queryHint="Search objectUsers"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"

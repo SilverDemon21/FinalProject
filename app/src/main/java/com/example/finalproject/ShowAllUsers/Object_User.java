@@ -1,6 +1,6 @@
 package com.example.finalproject.ShowAllUsers;
 
-public class User {
+public class Object_User {
     private String email;
     private String name;
     private String username;
@@ -8,9 +8,9 @@ public class User {
     private String photoUrl;
     private String dateOfBirth;
 
-    public User() {}
+    public Object_User() {}
 
-    public User( String email, String name, String username, String phone, String photoUrl, String dateOfBirth) {
+    public Object_User(String email, String name, String username, String phone, String photoUrl, String dateOfBirth) {
         this.email = email;
         this.name = name;
         this.username = username;

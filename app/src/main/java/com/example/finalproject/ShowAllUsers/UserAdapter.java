@@ -19,20 +19,20 @@ import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class UserAdapter extends ArrayAdapter<User> {
+public class UserAdapter extends ArrayAdapter<Object_User> {
     private Context mContext;
 
 
     // Constructor
-    public UserAdapter(Context context, List<User> userList) {
-        super(context, 0, userList);
+    public UserAdapter(Context context, List<Object_User> objectUserList) {
+        super(context, 0, objectUserList);
         mContext = context;
 
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        User user = getItem(position);
+        Object_User objectUser = getItem(position);
 
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.user_item, parent, false);
@@ -47,17 +47,17 @@ public class UserAdapter extends ArrayAdapter<User> {
         CircleImageView imgUrl = convertView.findViewById(R.id.imgPhoto);
 
 
-        if (user != null) {
-            nameTextView.setText(user.getName());
-            emailTextView.setText(user.getEmail().replace("_","."));
-            usernameTextView.setText(user.getUsername());
-            phoneTextView.setText(user.getPhoneNum());
-            int age = calculateAge(user.getDateOfBirth());
+        if (objectUser != null) {
+            nameTextView.setText(objectUser.getName());
+            emailTextView.setText(objectUser.getEmail().replace("_","."));
+            usernameTextView.setText(objectUser.getUsername());
+            phoneTextView.setText(objectUser.getPhoneNum());
+            int age = calculateAge(objectUser.getDateOfBirth());
             dateOfBirth.setText(Integer.toString(age));
 
 
             Glide.with(mContext)
-                    .load(user.getPhotoUrl())
+                    .load(objectUser.getPhotoUrl())
                     .into(imgUrl);
         }
 

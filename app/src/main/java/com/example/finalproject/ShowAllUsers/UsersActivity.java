@@ -44,8 +44,8 @@ public class UsersActivity extends AppCompatActivity {
 
     private ListView listViewUsers;
     private UserAdapter userAdapter;
-    private List<User> userList = new ArrayList<>();
-    private List<User> OriginalUserList = new ArrayList<>();
+    private List<Object_User> objectUserList = new ArrayList<>();
+    private List<Object_User> originalObjectUserList = new ArrayList<>();
     private String currentUsername;
     private sharedPref_manager manager;
     private EditText etSearch;
@@ -138,22 +138,22 @@ public class UsersActivity extends AppCompatActivity {
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                OriginalUserList.clear();
-                userList.clear();
+                originalObjectUserList.clear();
+                objectUserList.clear();
 
                 boolean isAdmin = currentUsername.equals(ADMIN_USERNAME);
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    User user = snapshot.getValue(User.class);
+                    Object_User objectUser = snapshot.getValue(Object_User.class);
 
                     if (isAdmin || snapshot.getKey().equals(currentUsername)) {
-                        userList.add(user);
-                        OriginalUserList.add(user);
+                        objectUserList.add(objectUser);
+                        originalObjectUserList.add(objectUser);
                     }
                 }
 
 
-                userAdapter = new UserAdapter(UsersActivity.this, userList);
+                userAdapter = new UserAdapter(UsersActivity.this, objectUserList);
                 listViewUsers.setAdapter(userAdapter);
 
 
@@ -163,8 +163,8 @@ public class UsersActivity extends AppCompatActivity {
                     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
                         Object clickedItem = parent.getItemAtPosition(position);
-                        User clickedUser = (User) clickedItem;
-                        String ClickedUsername = clickedUser.getUsername();
+                        Object_User clickedObjectUser = (Object_User) clickedItem;
+                        String ClickedUsername = clickedObjectUser.getUsername();
 
                         if(currentUsername.equals(ClickedUsername)){
                             Intent intent = new Intent(UsersActivity.this, signUpActivity.class);
@@ -191,31 +191,31 @@ public class UsersActivity extends AppCompatActivity {
 
     // Filter the users by their username if needed
     private void filterUserList(String query) {
-        List<User> filteredList = new ArrayList<>();
+        List<Object_User> filteredList = new ArrayList<>();
 
         if (query.isEmpty()) {
-            filteredList.addAll(OriginalUserList);
+            filteredList.addAll(originalObjectUserList);
         } else {
-            for (User user : OriginalUserList) {
-                if (user.getUsername().toLowerCase().contains(query.toLowerCase())) {
-                    filteredList.add(user);
+            for (Object_User objectUser : originalObjectUserList) {
+                if (objectUser.getUsername().toLowerCase().contains(query.toLowerCase())) {
+                    filteredList.add(objectUser);
                 }
             }
         }
-        userList.clear();
-        userList.addAll(filteredList);
+        objectUserList.clear();
+        objectUserList.addAll(filteredList);
 
         userAdapter.notifyDataSetChanged();
     }
 
 
     private void sortUserListByAge() {
-        Collections.sort(userList, new Comparator<User>() {
+        Collections.sort(objectUserList, new Comparator<Object_User>() {
             @Override
-            public int compare(User user1, User user2) {
+            public int compare(Object_User objectUser1, Object_User objectUser2) {
                 // Calculate ages for both users
-                int age1 = calculateAge(user1.getDateOfBirth());
-                int age2 = calculateAge(user2.getDateOfBirth());
+                int age1 = calculateAge(objectUser1.getDateOfBirth());
+                int age2 = calculateAge(objectUser2.getDateOfBirth());
 
                 // Compare by age (ascending order)
                 return Integer.compare(age1, age2); // Use Integer.compare for cleaner code
@@ -225,10 +225,10 @@ public class UsersActivity extends AppCompatActivity {
     }
 
     private void sortUserListByUsername() {
-        Collections.sort(userList, new Comparator<User>() {
+        Collections.sort(objectUserList, new Comparator<Object_User>() {
             @Override
-            public int compare(User user1, User user2) {
-                return user1.getUsername().compareToIgnoreCase(user2.getUsername());
+            public int compare(Object_User objectUser1, Object_User objectUser2) {
+                return objectUser1.getUsername().compareToIgnoreCase(objectUser2.getUsername());
             }
         });
         userAdapter.notifyDataSetChanged();

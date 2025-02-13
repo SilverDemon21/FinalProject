@@ -1,9 +1,11 @@
 package com.example.finalproject.mainAplication;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -156,11 +158,47 @@ public class ListUserGroups extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Object_GroupOfUsers clickedGroup = userGroups.get(i);
 
+                if(clickedGroup.getGroupState().equals("Pending")){
+                    Toast.makeText(ListUserGroups.this, "The group is pending you cannot access it", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 Intent intent = new Intent(ListUserGroups.this, ListGroupDetails.class);
                 intent.putExtra("GroupId", clickedGroup.getGroupId());
                 startActivity(intent);
             }
         });
+
+        Uri data = getIntent().getData();
+        if (data != null) {
+            String path = data.getPath();  // e.g., /accept or /decline
+            String username = data.getQueryParameter("username");
+            String groupId = data.getQueryParameter("groupId");
+
+            if (path != null && username != null && groupId != null) {
+                if (path.equals("/accept")) {
+                    Log.d("DeepLink", "User accepted: " + username);
+                    handleGroupRequest(username, groupId, true);
+                } else if (path.equals("/decline")) {
+                    Log.d("DeepLink", "User declined: " + username);
+                    handleGroupRequest(username, groupId, false);
+                }
+            }
+        }
+
+    }
+
+    private void handleGroupRequest(String username, String groupId, boolean usersAnswer){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        if(usersAnswer){
+            Map<String, Object> updateForUser = new HashMap<>();
+            updateForUser.put(groupId, true);
+            reference.child("users").child(username).child("Groups").updateChildren(updateForUser);
+
+            Map<String, Object> updateForGroup = new HashMap<>();
+            updateForGroup.put("Member", username);
+            reference.child("Groups").child(groupId).child("groupUsers").updateChildren(updateForGroup);
+        }
     }
 
     private void fetchUsersGroups(){
@@ -198,19 +236,13 @@ public class ListUserGroups extends AppCompatActivity {
                             }
 
                             @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
+                            public void onCancelled(@NonNull DatabaseError error) {}
                         });
                     }
                 }
             }
-
-
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError error) {}
         });
     }
 

@@ -14,12 +14,10 @@ import java.util.List;
 public class AdapterSavedLocations extends ArrayAdapter<Object_SavedLocation> {
 
     private Context mContext;
-    private List<Object_SavedLocation> locations;
 
     public AdapterSavedLocations(Context context, List<Object_SavedLocation> locationList) {
         super(context, 0, locationList);
         mContext = context;
-        locations = locationList;
 
     }
 

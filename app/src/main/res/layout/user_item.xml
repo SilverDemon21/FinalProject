@@ -58,7 +58,7 @@
         android:layout_width="264dp"
         android:layout_height="30dp"
         android:layout_marginVertical="10dp"
-        android:text="user@example.com"
+        android:text="objectUser@example.com"
         android:textColor="@color/black"
         android:textSize="23sp"
         app:layout_constraintBottom_toBottomOf="parent"

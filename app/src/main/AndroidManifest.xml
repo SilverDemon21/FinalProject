@@ -15,6 +15,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -39,7 +40,18 @@
 
         <activity
             android:name=".mainAplication.ListUserGroups"
-            android:exported="false" />
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="myapp"/>
+                <data android:host="accept"/>
+                <data android:scheme="myapp"/>
+                <data android:host="decline"/>
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".mainAplication.ListOfSavedLocations"
             android:exported="false" />

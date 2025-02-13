@@ -22,6 +22,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -52,10 +53,13 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -66,9 +70,11 @@ import org.osmdroid.views.overlay.Marker;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 public class mapAndLogic extends AppCompatActivity {
 
@@ -80,6 +86,10 @@ public class mapAndLogic extends AppCompatActivity {
     private DatabaseReference databaseReference;
     private LocationCallback locationCallback;
     private Button btnShowSavedLocationsList;
+
+    private Handler handler = new Handler();
+    private Set<String> visibleUsers = new HashSet<>();
+    private String currentUser;
 
 
     @Override
@@ -104,7 +114,7 @@ public class mapAndLogic extends AppCompatActivity {
         btnShowSavedLocationsList = findViewById(R.id.btnShowSavedLocations);
 
         sharedPref_manager manager = new sharedPref_manager(mapAndLogic.this, "LoginUpdate");
-
+        currentUser = manager.getUsername();
 
         // <editor-fold desc="Bottom navigation bar setup">
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationBarMap);
@@ -225,21 +235,162 @@ public class mapAndLogic extends AppCompatActivity {
 
 
 
-
         if (checkPermissions()) {
             startLocationUpdates();
             createNotificationChannel();
             startLocationService();
+            showAllSavedLocations();
+            startUpdatingMembersLocations();
 
         } else {
             requestPermissions();
-            Intent intent = new Intent(mapAndLogic.this, MainActivity.class);
-            startActivity(intent);
         }
-        showAllSavedLocations();
-
-
     }
+
+    // <editor-fold desc="Fetching all members locations">
+    public void startUpdatingMembersLocations() {
+        fetchVisibleUsers(); // Initial fetch
+        handler.postDelayed(updateUserListRunnable, 11000); // Update user list every 20 seconds
+        handler.postDelayed(updateUserLocationsRunnable, 7000); // Update locations every 10 seconds
+    }
+
+    private Runnable updateUserListRunnable = new Runnable() {
+        @Override
+        public void run() {
+            fetchVisibleUsers();
+            handler.postDelayed(this, 11000); // Run again in 20 seconds
+        }
+    };
+
+    // Fetch and update user locations every 10 seconds
+    private Runnable updateUserLocationsRunnable = new Runnable() {
+        @Override
+        public void run() {
+            fetchUserLocations(visibleUsers);
+            handler.postDelayed(this, 7000); // Run again in 10 seconds
+        }
+    };
+
+    public void stopUpdatingUserLocations() {
+        handler.removeCallbacks(updateUserListRunnable);
+        handler.removeCallbacks(updateUserLocationsRunnable);
+    }
+
+    private void fetchVisibleUsers(){
+        DatabaseReference userGroupRef = FirebaseDatabase.getInstance().getReference().child("users").child(currentUser).child("Groups");
+        DatabaseReference groupRef = FirebaseDatabase.getInstance().getReference().child("Groups");
+        Toast.makeText(mapAndLogic.this, "goog", Toast.LENGTH_SHORT).show();
+        userGroupRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                visibleUsers.clear();
+
+                for(DataSnapshot groupSnapshot : snapshot.getChildren()){
+                    String groupId = groupSnapshot.getKey();
+
+                    groupRef.child(groupId).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if(!snapshot.exists()) return;
+
+                            if(!snapshot.child("groupState").equals("Pending")){
+                                String groupType = snapshot.child("groupType").getValue(String.class);
+                                DataSnapshot memberSnapshot = snapshot.child("groupUsers");
+
+                                boolean isManagerOrCoManager = false;
+
+                                for(DataSnapshot member : memberSnapshot.getChildren()){
+                                    String memberUsername = member.getValue(String.class);
+                                    String role = member.getKey();
+
+                                    if(memberUsername.equals(currentUser) && role.equals("Manager") || role.equals("CoManager")){
+                                        isManagerOrCoManager = true;
+                                    }
+                                }
+
+                                for (DataSnapshot member : memberSnapshot.getChildren()){
+                                    String memberUsername = member.getValue(String.class);
+                                    String memberRole = member.getKey();
+                                    if (!memberUsername.equals(currentUser)) {
+                                        if (groupType.equals("Friends Mode") && !visibleUsers.contains(memberUsername)){
+                                            visibleUsers.add(memberUsername);
+                                        }
+                                        else if (groupType.equals("Family Mode") && isManagerOrCoManager && memberRole.equals("Member") && !visibleUsers.contains(memberUsername)) {
+                                            visibleUsers.add(memberUsername);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {}
+                    });
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+    }
+
+    private void fetchUserLocations(Set<String> userNames) {
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
+        Toast.makeText(mapAndLogic.this, "very goog", Toast.LENGTH_SHORT).show();
+
+        for (String username : userNames) {
+            usersRef.child(username).child("UserLocation").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        String latitude = snapshot.child("latitude").getValue(String.class);
+                        String longitude = snapshot.child("longitude").getValue(String.class);
+                        usersRef.child(username).child("photoUrl").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                            @Override
+                            public void onSuccess(DataSnapshot dataSnapshot) {
+                                String photoUrl = dataSnapshot.getValue(String.class);
+                                showUserOnMap(username, Double.parseDouble(latitude), Double.parseDouble(longitude), photoUrl);
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.e("Firebase", "Error fetching user location", error.toException());
+                }
+            });
+        }
+    }
+
+    private void showUserOnMap(String username, Double latitude, Double longitude, String photoUrl){
+        Marker memberMarker = new Marker(mapView);
+        GeoPoint point = new GeoPoint(latitude, longitude);
+        memberMarker.setPosition(point);
+        memberMarker.setTitle(username);
+        Glide.with(this)
+                .asBitmap()
+                .load(photoUrl)
+                .into(new CustomTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        // Resize the image
+                        Bitmap resizedBitmap = Bitmap.createScaledBitmap(resource, 90, 90, false);
+                        Bitmap circularBitmap = getCircularBitmap(resizedBitmap);
+
+                        // Set the resized image as the marker icon
+                        memberMarker.setIcon(new BitmapDrawable(getResources(), circularBitmap));
+                        mapView.invalidate(); // Refresh the map
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                        // Handle placeholder if needed
+                    }
+                });
+        mapView.getOverlays().add(memberMarker);
+        mapView.invalidate();
+    }
+    // </editor-fold>
 
 
     // <editor-fold desc="Circular image setup for user image on the map">
@@ -322,7 +473,6 @@ public class mapAndLogic extends AppCompatActivity {
                     }
                 }
             });
-
             dialog.show();
         }
         if(item.getItemId() == R.id.menu_makeLocationViaAddress){

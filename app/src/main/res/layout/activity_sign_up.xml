@@ -197,7 +197,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="1dp"
                 android:padding="7dp"
-                android:text="already a user? Login"
+                android:text="already a objectUser? Login"
                 android:textColor="@color/realLavender"
                 android:textSize="18dp"
                 />

@@ -14,7 +14,7 @@
         android:drawableLeft="@drawable/vector_search_24"
         android:iconifiedByDefault="false"
         android:hint="Search by username"
-        android:queryHint="Search Users" />
+        android:queryHint="Search objectUsers" />
 
 
     <LinearLayout
