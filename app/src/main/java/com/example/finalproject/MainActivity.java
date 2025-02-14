@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
     private void updateTitle() {
         if (!manager.getIsLoggedIn()) {
             sharedUser.setText("Welcome user");
-            userImage.setImageResource(R.drawable.img_defult_user_image);
+            userImage.setImageResource(R.drawable.defult_user_image);
         } else if(manager.getUsername().equals("admin")) {
             sharedUser.setText("Welcome, " + manager.getUsername() + " Admin");
         } else{

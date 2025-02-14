@@ -165,6 +165,12 @@ public class ListUserGroups extends AppCompatActivity {
 
                 Intent intent = new Intent(ListUserGroups.this, ListGroupDetails.class);
                 intent.putExtra("GroupId", clickedGroup.getGroupId());
+                clickedGroup.getGroupUsers().entrySet().stream()
+                                .filter(entry -> entry.getValue().equals("Manager"))
+                                .findFirst()
+                                .ifPresent(entry ->intent.putExtra("GroupManager", entry.getKey()));
+
+
                 startActivity(intent);
             }
         });
@@ -196,7 +202,7 @@ public class ListUserGroups extends AppCompatActivity {
             reference.child("users").child(username).child("Groups").updateChildren(updateForUser);
 
             Map<String, Object> updateForGroup = new HashMap<>();
-            updateForGroup.put("Member", username);
+            updateForGroup.put(username, "Member");
             reference.child("Groups").child(groupId).child("groupUsers").updateChildren(updateForGroup);
         }
     }
@@ -252,7 +258,7 @@ public class ListUserGroups extends AppCompatActivity {
 
         String groupId = databaseReference.child("UserGroups").push().getKey();
         HashMap<String, String> firstUserInGroupMap = new HashMap<>();
-        firstUserInGroupMap.put("Manager", senderUsername);
+        firstUserInGroupMap.put(senderUsername, "Manager");
 
         Object_GroupOfUsers newUsersGroup = new Object_GroupOfUsers(groupId, groupType, groupName ,firstUserInGroupMap);
         databaseReference.child("Groups").child(groupId).setValue(newUsersGroup);

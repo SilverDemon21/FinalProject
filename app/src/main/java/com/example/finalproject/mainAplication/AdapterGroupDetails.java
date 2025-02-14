@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -47,6 +48,7 @@ public class AdapterGroupDetails extends ArrayAdapter<Object_User> {
         TextView memberName = convertView.findViewById(R.id.memberName);
         ConstraintLayout membersInGroupLayout = convertView.findViewById(R.id.membersInGroupLayout);
         CircleImageView MemberPhoto = convertView.findViewById(R.id.MemberPhoto);
+        ImageView managerCrownInGroup = convertView.findViewById(R.id.managerCrownInGroup);
 
         if(clickedObjectUser != null){
             memberUserName.setText(clickedObjectUser.getUsername());
@@ -57,8 +59,11 @@ public class AdapterGroupDetails extends ArrayAdapter<Object_User> {
                     .into(MemberPhoto);
         }
 
-        if(memberWithStatus.get("Manager").equals(clickedObjectUser.getUsername())){
-            membersInGroupLayout.setBackgroundResource(R.drawable.background_user_groups_active_item);
+        if(!memberWithStatus.get("Manager").equals(clickedObjectUser.getUsername())){
+            managerCrownInGroup.setVisibility(View.GONE);
+        }
+        else{
+            membersInGroupLayout.setBackgroundResource(R.drawable.background_manager_in_group);
         }
 
         return convertView;

@@ -7,6 +7,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -35,7 +36,9 @@ public class ListGroupDetails extends AppCompatActivity {
     private EditText etSearchUserInGroup;
     List<Object_User> originalMembersInGroup = new ArrayList<>();
     List<Object_User> membersInGroup = new ArrayList<>();
-    private Button btnAddPerson;
+    private String managerUsername;
+    private String groupId;
+    private Button btnAddPerson, btnDeleteGroup;
 
     private int counter;
     private int totalMembers;
@@ -48,6 +51,10 @@ public class ListGroupDetails extends AppCompatActivity {
         listViewDetailsOfUsersGroup = findViewById(R.id.listViewDetailsOfUsersGroup);
         etSearchUserInGroup = findViewById(R.id.etSearchUserInGroup);
         btnAddPerson = findViewById(R.id.btnAddPerson);
+        btnDeleteGroup = findViewById(R.id.btnDeleteGroup);
+
+        managerUsername = getIntent().getStringExtra("GroupManager");
+        groupId = getIntent().getStringExtra("GroupId");
 
 
         etSearchUserInGroup.addTextChangedListener(new TextWatcher() {
@@ -64,6 +71,44 @@ public class ListGroupDetails extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
 
+            }
+        });
+
+        btnDeleteGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        listViewDetailsOfUsersGroup.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long l) {
+                sharedPref_manager manager = new sharedPref_manager(ListGroupDetails.this, "LoginUpdate");
+                if(manager.getUsername().equals(managerUsername)){
+                    Object_User user = (Object_User) parent.getItemAtPosition(position);
+                }
+            }
+        });
+
+        listViewDetailsOfUsersGroup.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                sharedPref_manager manager = new sharedPref_manager(ListGroupDetails.this, "LoginUpdate");
+                if(manager.getUsername().equals(managerUsername)){
+                    Object_User user = (Object_User) parent.getItemAtPosition(position);
+
+                    new android.app.AlertDialog.Builder(ListGroupDetails.this)
+                            .setTitle("Delete Member")
+                            .setMessage("Are you sure you want to delete this member: " +
+                                    user.getUsername())
+                            .setPositiveButton("Delete", ((dialog, which) -> {
+                                deleteMember(user);
+                            }))
+                            .setNegativeButton("Cancel",null)
+                            .show();
+                }
+                return true;
             }
         });
 
@@ -112,12 +157,10 @@ public class ListGroupDetails extends AppCompatActivity {
                 dialog.show();
             }
         });
-
         fetchMembersInGroup();
     }
 
     private void fetchMembersInGroup(){
-        String groupId = getIntent().getStringExtra("GroupId");
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         databaseReference.child("Groups").child(groupId).child("groupUsers").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -130,8 +173,8 @@ public class ListGroupDetails extends AppCompatActivity {
                 List<String> membersStatus = new ArrayList<>();
 
                 for(DataSnapshot memberSnapshot : snapshot.getChildren()){
-                    String username = memberSnapshot.getValue().toString();
-                    membersStatus.add(memberSnapshot.getKey());
+                    String username = memberSnapshot.getKey();
+                    membersStatus.add(memberSnapshot.getValue().toString());
 
                     databaseReference.child("users").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -204,5 +247,13 @@ public class ListGroupDetails extends AppCompatActivity {
         } catch (android.content.ActivityNotFoundException ex) {
             Log.e("Email", "No email clients installed.", ex);
         }
+    }
+
+    private void deleteMember(Object_User clickedMember){
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(clickedMember.getUsername()).child("Groups");
+        DatabaseReference groupRef = FirebaseDatabase.getInstance().getReference().child("Groups").child(groupId);
+
+        userRef.child(groupId).removeValue();
+        groupRef.child("groupUsers").child(clickedMember.getUsername()).removeValue();
     }
 }

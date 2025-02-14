@@ -42,7 +42,7 @@
         android:background="@drawable/custom_button"
         android:text="Add Person"
         android:textColor="@color/black"
-        android:textSize="25dp"
+        android:textSize="23dp"
         app:backgroundTint="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -50,6 +50,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.913" />
+
+    <Button
+        android:id="@+id/btnDeleteGroup"
+        android:layout_width="180dp"
+        android:layout_height="55dp"
+        android:background="@drawable/custom_button"
+        android:text="Delete Group"
+        android:textColor="@color/black"
+        android:textSize="22dp"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.93"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.914" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

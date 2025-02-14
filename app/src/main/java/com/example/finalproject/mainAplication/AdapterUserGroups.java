@@ -38,7 +38,12 @@ public class AdapterUserGroups extends ArrayAdapter<Object_GroupOfUsers> {
 
         if(UserGroup != null){
             groupNameTextView.setText(UserGroup.getGroupName());
-            groupCreatorUsernameTextView.setText(String.valueOf(UserGroup.getGroupUsers().get("Manager")));
+            UserGroup.getGroupUsers().entrySet().stream()
+                    .filter(entry -> entry.getValue().equals("Manager"))
+                    .findFirst()
+                    .ifPresent(entry ->groupCreatorUsernameTextView.setText(entry.getKey()));
+
+
             groupType.setText(UserGroup.getGroupType());
         }
 

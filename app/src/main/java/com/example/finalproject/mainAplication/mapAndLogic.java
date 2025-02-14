@@ -223,9 +223,7 @@ public class mapAndLogic extends AppCompatActivity {
                 savedLocation.setLongitude(longitude);
                 savedLocation.setUsername(manager.getUsername());
 
-
                 showConfirmationSavingLocation(mapAndLogic.this,savedLocation, p);
-
 
                 return true;
             }
@@ -245,6 +243,7 @@ public class mapAndLogic extends AppCompatActivity {
         } else {
             requestPermissions();
         }
+
     }
 
     // <editor-fold desc="Fetching all members locations">
@@ -379,7 +378,8 @@ public class mapAndLogic extends AppCompatActivity {
 
                         // Set the resized image as the marker icon
                         memberMarker.setIcon(new BitmapDrawable(getResources(), circularBitmap));
-                        mapView.invalidate(); // Refresh the map
+                        mapView.getOverlays().add(memberMarker);
+                        mapView.invalidate();
                     }
 
                     @Override
@@ -387,8 +387,7 @@ public class mapAndLogic extends AppCompatActivity {
                         // Handle placeholder if needed
                     }
                 });
-        mapView.getOverlays().add(memberMarker);
-        mapView.invalidate();
+
     }
     // </editor-fold>
 
@@ -780,7 +779,9 @@ public class mapAndLogic extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         mapView.onPause();
-        fusedLocationProviderClient.removeLocationUpdates(locationCallback); // Pause map view
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+        stopUpdatingUserLocations();
+        // Pause map view
     }
 
     @Override
