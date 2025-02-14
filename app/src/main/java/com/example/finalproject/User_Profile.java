@@ -73,15 +73,6 @@ public class User_Profile extends AppCompatActivity {
 
 
 
-        // set defult image
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setLogo(R.drawable.img_defult_user_image);
-
-            getSupportActionBar().setDisplayUseLogoEnabled(true);
-        }
-
-
         // button to delete users profile
         deleteProfile.setOnClickListener(new View.OnClickListener() {
             @Override
