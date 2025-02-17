@@ -10,16 +10,32 @@
 
 
     <ImageView
+        android:id="@+id/imageView"
         android:layout_width="158dp"
         android:layout_height="178dp"
         android:scaleType="centerCrop"
         android:src="@drawable/img_logo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.225"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.15" />
+        app:layout_constraintVertical_bias="0.435" />
+
+    <TextView
+        android:id="@+id/userConnection"
+        android:layout_width="130dp"
+        android:layout_height="70dp"
+        android:background="@drawable/background_person_connected"
+        android:text="connected"
+        android:gravity="center"
+        android:textSize="18dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.149"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.152" />
 
     <TextView
         android:id="@+id/sharedUser"
@@ -42,10 +58,10 @@
         android:src="@drawable/defult_user_image"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.784"
+        app:layout_constraintHorizontal_bias="0.85"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.183" />
+        app:layout_constraintVertical_bias="0.142" />
 
     <FrameLayout
         android:id="@+id/nav_host_fragment"

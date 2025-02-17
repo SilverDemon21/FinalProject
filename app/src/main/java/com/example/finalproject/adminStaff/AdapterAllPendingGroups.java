@@ -37,7 +37,10 @@ public class AdapterAllPendingGroups extends ArrayAdapter<Object_GroupOfUsers> {
 
         if(pendingGroup != null){
             groupNameTextView.setText(pendingGroup.getGroupName());
-            groupCreatorUsernameTextView.setText(String.valueOf(pendingGroup.getGroupUsers().get("Manager")));
+            pendingGroup.getGroupUsers().entrySet().stream()
+                    .filter(entry -> entry.getValue().equals("Manager"))
+                    .findFirst()
+                    .ifPresent(entry ->groupCreatorUsernameTextView.setText(entry.getKey()));
         }
 
         return convertView;

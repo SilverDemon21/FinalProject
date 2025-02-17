@@ -268,7 +268,6 @@ public class ListUserGroups extends AppCompatActivity {
         databaseReference.child("users").child(senderUsername).updateChildren(updates).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                groupAdapter.notifyDataSetChanged();
                 listViewUsersGroups.invalidateViews();
                 listViewUsersGroups.refreshDrawableState();
             }

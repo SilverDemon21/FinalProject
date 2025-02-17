@@ -55,7 +55,7 @@ public class AdapterUserGroups extends ArrayAdapter<Object_GroupOfUsers> {
             ConstraintLayout usersGroupsCardView = convertView.findViewById(R.id.usersGroupsLayout);
 
 
-            pendingIdentifier.setText(UserGroup.getGroupName());
+            pendingIdentifier.setText("Pending");
             usersGroupsCardView.setBackgroundResource(R.drawable.background_user_groups_pending_item);
             groupNameTextView.setTextColor(ContextCompat.getColor(mContext, R.color.silver));
             groupCreatorUsernameTextView.setTextColor(ContextCompat.getColor(mContext, R.color.silver));

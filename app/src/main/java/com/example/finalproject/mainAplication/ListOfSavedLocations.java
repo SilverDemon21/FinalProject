@@ -103,15 +103,15 @@ public class ListOfSavedLocations extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.menu_button_go_back_main, menu);
+        getMenuInflater().inflate(R.menu.menu_button_go_map, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         super.onOptionsItemSelected(item);
-        if(item.getItemId() == R.id.menu_go_back){
-            Intent intent = new Intent(ListOfSavedLocations.this, MainActivity.class);
+        if(item.getItemId() == R.id.menu_go_map){
+            Intent intent = new Intent(ListOfSavedLocations.this, mapAndLogic.class);
             startActivity(intent);
         }
         return true;

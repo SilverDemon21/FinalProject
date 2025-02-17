@@ -2,10 +2,13 @@ package com.example.finalproject.mainAplication;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -20,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.finalproject.R;
 import com.example.finalproject.RegestrationXLogin.loginActivity;
 import com.example.finalproject.ShowAllUsers.Object_User;
+import com.example.finalproject.adminStaff.ListAllPendingGroups;
 import com.example.finalproject.sharedPref_manager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ListGroupDetails extends AppCompatActivity {
@@ -42,6 +47,9 @@ public class ListGroupDetails extends AppCompatActivity {
 
     private int counter;
     private int totalMembers;
+
+    int amountToDelete = 0;
+    int counterToDelete = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +85,17 @@ public class ListGroupDetails extends AppCompatActivity {
         btnDeleteGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                sharedPref_manager manager = new sharedPref_manager(ListGroupDetails.this, "LoginUpdate");
+                if(manager.getUsername().equals(managerUsername)){
+                    new android.app.AlertDialog.Builder(ListGroupDetails.this)
+                            .setTitle("Delete group")
+                            .setMessage("Are you sure you want to delete this group?")
+                            .setPositiveButton("Delete", ((dialog, which) -> {
+                                deleteGroup();
+                            }))
+                            .setNegativeButton("Cancel",null)
+                            .show();
+                }
             }
         });
 
@@ -87,6 +105,24 @@ public class ListGroupDetails extends AppCompatActivity {
                 sharedPref_manager manager = new sharedPref_manager(ListGroupDetails.this, "LoginUpdate");
                 if(manager.getUsername().equals(managerUsername)){
                     Object_User user = (Object_User) parent.getItemAtPosition(position);
+
+                    if(!user.getUsername().equals(managerUsername)){
+                        new android.app.AlertDialog.Builder(ListGroupDetails.this)
+                                .setTitle("Promote Member")
+                                .setMessage("Are you sure you want to promote this member: " +
+                                        user.getUsername())
+                                .setPositiveButton("Promote", ((dialog, which) -> {
+                                    promoteMember(user);
+                                }))
+                                .setNegativeButton("Cancel",null)
+                                .show();
+                    }
+                    else{
+                        Toast.makeText(ListGroupDetails.this, "You cant promote yourself", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else{
+                    Toast.makeText(ListGroupDetails.this, "Only the manager of the group can promote other members", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -98,15 +134,23 @@ public class ListGroupDetails extends AppCompatActivity {
                 if(manager.getUsername().equals(managerUsername)){
                     Object_User user = (Object_User) parent.getItemAtPosition(position);
 
-                    new android.app.AlertDialog.Builder(ListGroupDetails.this)
-                            .setTitle("Delete Member")
-                            .setMessage("Are you sure you want to delete this member: " +
-                                    user.getUsername())
-                            .setPositiveButton("Delete", ((dialog, which) -> {
-                                deleteMember(user);
-                            }))
-                            .setNegativeButton("Cancel",null)
-                            .show();
+                    if(!user.getUsername().equals(managerUsername)){
+                        new android.app.AlertDialog.Builder(ListGroupDetails.this)
+                                .setTitle("Delete Member")
+                                .setMessage("Are you sure you want to delete this member: " +
+                                        user.getUsername())
+                                .setPositiveButton("Delete", ((dialog, which) -> {
+                                    deleteMember(user);
+                                }))
+                                .setNegativeButton("Cancel",null)
+                                .show();
+                    }
+                    else{
+                        Toast.makeText(ListGroupDetails.this, "You cant remove yourself from the group", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else{
+                    Toast.makeText(ListGroupDetails.this, "Only the manager of the group can remove other members", Toast.LENGTH_SHORT).show();
                 }
                 return true;
             }
@@ -187,21 +231,34 @@ public class ListGroupDetails extends AppCompatActivity {
                                 adapter = new AdapterGroupDetails(ListGroupDetails.this, membersInGroup, membersStatus);
                                 listViewDetailsOfUsersGroup.setAdapter(adapter);
                             }
-
                         }
                         @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
+                        public void onCancelled(@NonNull DatabaseError error) {}
                     });
                 }
             }
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError error) {}
         });
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.menu_button_go_groups, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        super.onOptionsItemSelected(item);
+        if(item.getItemId() == R.id.menu_go_groups){
+            Intent intent = new Intent(ListGroupDetails.this, ListUserGroups.class);
+            startActivity(intent);
+        }
+        return true;
+    }
+
 
     private void filterUsersInGroup(String query) {
         List<Object_User> filteredList = new ArrayList<>();
@@ -220,6 +277,7 @@ public class ListGroupDetails extends AppCompatActivity {
 
         adapter.notifyDataSetChanged();
     }
+
 
     private void sendEmailInvitation(String userEmail, String username, String groupId) {
         // Create deep links using the custom scheme
@@ -249,11 +307,48 @@ public class ListGroupDetails extends AppCompatActivity {
         }
     }
 
+
     private void deleteMember(Object_User clickedMember){
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(clickedMember.getUsername()).child("Groups");
         DatabaseReference groupRef = FirebaseDatabase.getInstance().getReference().child("Groups").child(groupId);
 
         userRef.child(groupId).removeValue();
         groupRef.child("groupUsers").child(clickedMember.getUsername()).removeValue();
+    }
+
+    private void promoteMember(Object_User clickedMember){
+        DatabaseReference groupRef = FirebaseDatabase.getInstance().getReference().child("Groups").child(groupId);
+
+        groupRef.child("groupUsers").child(clickedMember.getUsername()).setValue("CoManager");
+    }
+
+    private void deleteGroup(){
+        DatabaseReference groupRef = FirebaseDatabase.getInstance().getReference().child("Groups").child(groupId);
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users");
+
+        groupRef.child("groupUsers").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot countSnapshot : snapshot.getChildren()){
+                    amountToDelete += 1;
+                }
+
+                for(DataSnapshot userSnapshot : snapshot.getChildren()){
+                    userRef.child(userSnapshot.getKey()).child("Groups").child(groupId).removeValue();
+                    counterToDelete++;
+
+                    if(counterToDelete == amountToDelete){
+                        groupRef.removeValue();
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+
+
+
+        Intent intent = new Intent(ListGroupDetails.this, ListUserGroups.class);
+        startActivity(intent);
     }
 }

@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.finalproject.MainActivity;
 import com.example.finalproject.R;
 import com.example.finalproject.mainAplication.Object_GroupOfUsers;
+import com.example.finalproject.mainAplication.mapAndLogic;
 import com.example.finalproject.sharedPref_manager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -115,15 +116,15 @@ public class ListAllPendingGroups extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.menu_button_go_back_main, menu);
+        getMenuInflater().inflate(R.menu.menu_button_go_map, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         super.onOptionsItemSelected(item);
-        if(item.getItemId() == R.id.menu_go_back){
-            Intent intent = new Intent(ListAllPendingGroups.this, MainActivity.class);
+        if(item.getItemId() == R.id.menu_go_map){
+            Intent intent = new Intent(ListAllPendingGroups.this, mapAndLogic.class);
             startActivity(intent);
         }
         return true;

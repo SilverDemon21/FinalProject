@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
     private CircleImageView userImage;
     private TextView sharedUser;
     private sharedPref_manager manager;
+    private TextView userConnection;
+    private IsUserConnectedToInternetThread Thread;
 
 
     @Override
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         manager =  new sharedPref_manager(MainActivity.this, "LoginUpdate");
         userImage = findViewById(R.id.userImage);
 
+        userConnection = findViewById(R.id.userConnection);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationBarHome);
 
@@ -54,8 +57,13 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
             else if(item.getItemId() == R.id.menu_map){
-                startActivity(new Intent(getApplicationContext(), mapAndLogic.class));
-                overridePendingTransition(0, 0);
+                if(manager.getIsLoggedIn()){
+                    startActivity(new Intent(getApplicationContext(), mapAndLogic.class));
+                    overridePendingTransition(0, 0);
+                }
+                else{
+                    Toast.makeText(MainActivity.this, "First Log In", Toast.LENGTH_SHORT).show();
+                }
                 return true;
             }
             else if(item.getItemId() == R.id.menu_profile){
@@ -64,8 +72,13 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
             else if(item.getItemId() == R.id.menu_groups){
-                startActivity(new Intent(getApplicationContext(), ListUserGroups.class));
-                overridePendingTransition(0, 0);
+                if(manager.getIsLoggedIn()){
+                    startActivity(new Intent(getApplicationContext(), ListUserGroups.class));
+                    overridePendingTransition(0, 0);
+                }
+                else{
+                    Toast.makeText(MainActivity.this, "First Log In", Toast.LENGTH_SHORT).show();
+                }
                 return true;
             }
             return true;
@@ -75,6 +88,22 @@ public class MainActivity extends AppCompatActivity {
         // updating the main activity considering the sharedPref
         updateTitle();
 
+
+       Thread = new IsUserConnectedToInternetThread(this, new IsUserConnectedToInternetThread.InternetStatusListener() {
+            @Override
+            public void onInternetStatusChanged(boolean isConnected) {
+                runOnUiThread(() -> {
+                    userConnection.setText(isConnected ? "Connected" : "disconnected");
+                    if(isConnected){
+                        userConnection.setBackgroundResource(R.drawable.background_person_connected);
+                    }
+                    else{
+                        userConnection.setBackgroundResource(R.drawable.background_person_disconnected);
+                    }
+                });
+            }
+        });
+    Thread.startChecking();
 
     }
 
@@ -176,6 +205,12 @@ public class MainActivity extends AppCompatActivity {
                 stopService(serviceIntent);
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Thread.stopChecking();
     }
 }
 

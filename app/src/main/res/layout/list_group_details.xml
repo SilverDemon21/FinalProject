@@ -25,7 +25,7 @@
     <ListView
         android:id="@+id/listViewDetailsOfUsersGroup"
         android:layout_width="match_parent"
-        android:layout_height="458dp"
+        android:layout_height="470dp"
         android:divider="@null"
         android:dividerHeight="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -33,36 +33,36 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.245" />
+        app:layout_constraintVertical_bias="0.298" />
 
     <Button
         android:id="@+id/btnAddPerson"
-        android:layout_width="180dp"
+        android:layout_width="170dp"
         android:layout_height="55dp"
         android:background="@drawable/custom_button"
         android:text="Add Person"
-        android:textColor="@color/black"
-        android:textSize="23dp"
-        app:backgroundTint="@null"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.075"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.913" />
-
-    <Button
-        android:id="@+id/btnDeleteGroup"
-        android:layout_width="180dp"
-        android:layout_height="55dp"
-        android:background="@drawable/custom_button"
-        android:text="Delete Group"
         android:textColor="@color/black"
         android:textSize="22dp"
         app:backgroundTint="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.93"
+        app:layout_constraintHorizontal_bias="0.049"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.914" />
+
+    <Button
+        android:id="@+id/btnDeleteGroup"
+        android:layout_width="170dp"
+        android:layout_height="55dp"
+        android:background="@drawable/custom_button"
+        android:text="Delete Group"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.95"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.914" />

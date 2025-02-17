@@ -489,7 +489,7 @@ public class signUpActivity extends AppCompatActivity {
             signUp_name.setError("The name should be between 2 and 10 characters and only contain letters");
             profileGood = false;
         }
-        if (dateOfBirth.isEmpty()){
+        if (dateOfBirth.isEmpty() && !type.equals("update")){
             signUp_date_of_birth.setError("pls put your date of birth");
             profileGood = false;
         }
@@ -497,7 +497,7 @@ public class signUpActivity extends AppCompatActivity {
             signUp_password.setError("The password should be between 6 and 18 characters");
             profileGood = false;
         }
-        if (!comfirmPass.equals(password) | comfirmPass.isEmpty()){
+        if ((!comfirmPass.equals(password) | comfirmPass.isEmpty()) && !type.equals("update")){
             signUp_comfirm_password.setError("The password does not match the password above");
             profileGood = false;
         }

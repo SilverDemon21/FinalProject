@@ -248,25 +248,25 @@ public class mapAndLogic extends AppCompatActivity {
 
     // <editor-fold desc="Fetching all members locations">
     public void startUpdatingMembersLocations() {
-        fetchVisibleUsers(); // Initial fetch
-        handler.postDelayed(updateUserListRunnable, 11000); // Update user list every 20 seconds
-        handler.postDelayed(updateUserLocationsRunnable, 7000); // Update locations every 10 seconds
+        fetchVisibleUsers();
+        fetchUserLocations(visibleUsers);
+        handler.postDelayed(updateUserListRunnable, 11000);
+        handler.postDelayed(updateUserLocationsRunnable, 7000);
     }
 
     private Runnable updateUserListRunnable = new Runnable() {
         @Override
         public void run() {
             fetchVisibleUsers();
-            handler.postDelayed(this, 11000); // Run again in 20 seconds
+            handler.postDelayed(this, 11000);
         }
     };
 
-    // Fetch and update user locations every 10 seconds
     private Runnable updateUserLocationsRunnable = new Runnable() {
         @Override
         public void run() {
             fetchUserLocations(visibleUsers);
-            handler.postDelayed(this, 7000); // Run again in 10 seconds
+            handler.postDelayed(this, 7000);
         }
     };
 
@@ -278,7 +278,7 @@ public class mapAndLogic extends AppCompatActivity {
     private void fetchVisibleUsers(){
         DatabaseReference userGroupRef = FirebaseDatabase.getInstance().getReference().child("users").child(currentUser).child("Groups");
         DatabaseReference groupRef = FirebaseDatabase.getInstance().getReference().child("Groups");
-        Toast.makeText(mapAndLogic.this, "goog", Toast.LENGTH_SHORT).show();
+        Toast.makeText(mapAndLogic.this, "fetching members list", Toast.LENGTH_SHORT).show();
         userGroupRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -308,8 +308,8 @@ public class mapAndLogic extends AppCompatActivity {
                                 }
 
                                 for (DataSnapshot member : memberSnapshot.getChildren()){
-                                    String memberUsername = member.getValue(String.class);
-                                    String memberRole = member.getKey();
+                                    String memberUsername = member.getKey();
+                                    String memberRole = member.getValue(String.class);
                                     if (!memberUsername.equals(currentUser)) {
                                         if (groupType.equals("Friends Mode") && !visibleUsers.contains(memberUsername)){
                                             visibleUsers.add(memberUsername);
@@ -334,7 +334,7 @@ public class mapAndLogic extends AppCompatActivity {
 
     private void fetchUserLocations(Set<String> userNames) {
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
-        Toast.makeText(mapAndLogic.this, "very goog", Toast.LENGTH_SHORT).show();
+        Toast.makeText(mapAndLogic.this, "showing members on map", Toast.LENGTH_SHORT).show();
 
         for (String username : userNames) {
             usersRef.child(username).child("UserLocation").addListenerForSingleValueEvent(new ValueEventListener() {
