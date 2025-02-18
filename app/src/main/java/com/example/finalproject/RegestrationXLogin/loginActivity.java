@@ -1,17 +1,29 @@
 package com.example.finalproject.RegestrationXLogin;
 
+import static android.Manifest.permission.RECEIVE_SMS;
+import static android.Manifest.permission.SEND_SMS;
+
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.telephony.SmsManager;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.finalproject.MainActivity;
+import com.example.finalproject.Permission;
 import com.example.finalproject.R;
 import com.example.finalproject.sharedPref_manager;
 import com.google.firebase.database.DataSnapshot;
@@ -21,11 +33,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Random;
+
 public class loginActivity extends AppCompatActivity {
 
     EditText login_username, login_password;
     Button login_button;
-    TextView signUpRedirectText,sh;
+    TextView signUpRedirectText,sh,btnForgotPassword;
     ImageButton backMainActivity;
 
 
@@ -41,6 +55,7 @@ public class loginActivity extends AppCompatActivity {
         login_button = findViewById(R.id.login_button);
         signUpRedirectText = findViewById(R.id.signUpRedirectText);
         backMainActivity = findViewById(R.id.backMainActivity);
+        btnForgotPassword = findViewById(R.id.btnForgotPassword);
 
         // go back to main activity button
         backMainActivity.setOnClickListener(new View.OnClickListener() {
@@ -61,6 +76,43 @@ public class loginActivity extends AppCompatActivity {
                 else{
                     checkUser();
                 }
+            }
+        });
+
+        btnForgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LayoutInflater inflater = LayoutInflater.from(loginActivity.this);
+                View dialogView = inflater.inflate(R.layout.dialog_forgot_password, null);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(loginActivity.this);
+                builder.setView(dialogView);
+                AlertDialog dialog = builder.create();
+
+                EditText etRecoveryCode = dialogView.findViewById(R.id.etRecoveryCode);
+                Button btnSendSmsWithCode = dialogView.findViewById(R.id.btnSendSmsWithCode);
+                TextView timeToResend = dialogView.findViewById(R.id.timeToResend);
+
+                btnSendSmsWithCode.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Random rnd = new Random();
+                        if(ContextCompat.checkSelfPermission(loginActivity.this, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED){
+                            int generatedItem = rnd.nextInt(10000-10+1) + 10;
+                            SmsManager sms = SmsManager.getDefault();
+                            sms.sendTextMessage("0533381360", null, String.valueOf(generatedItem), null, null);
+                            dialog.dismiss();
+                        }
+                        else{
+                            ActivityCompat.requestPermissions(loginActivity.this,
+                                    new String[]{Manifest.permission.SEND_SMS},
+                                    101);
+                        }
+
+
+                    }
+                });
+                dialog.show();
             }
         });
 
