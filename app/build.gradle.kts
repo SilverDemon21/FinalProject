@@ -66,4 +66,6 @@ dependencies {
     implementation("org.osmdroid:osmdroid-android:6.1.13")
 
     implementation("com.google.android.gms:play-services-location:21.0.1")
+
+    implementation ("com.googlecode.libphonenumber:libphonenumber:8.12.52")
 }

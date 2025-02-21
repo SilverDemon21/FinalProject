@@ -16,6 +16,7 @@
         android:drawableLeft="@drawable/vector_search_24"
         android:drawablePadding="5dp"
         android:hint="Search by Group Name"
+        android:textColor="@color/black"
         android:iconifiedByDefault="false"
         android:queryHint="Search objectUsers"
         app:layout_constraintEnd_toEndOf="parent"

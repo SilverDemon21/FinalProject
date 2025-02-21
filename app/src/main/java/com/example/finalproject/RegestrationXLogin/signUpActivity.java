@@ -478,11 +478,11 @@ public class signUpActivity extends AppCompatActivity {
             profileGood = false;
         }
         if (!info_validation.email_validation(email)) {
-            signUp_email.setError("Pls enter a valid email / the email is already exist");
+            signUp_email.setError("Pls enter a valid email");
             profileGood = false;
         }
         if (!info_validation.phoneNumber_validation(phone)) {
-            signUp_phoneNum.setError("Pls enter a valid phone / the phone is already exist");
+            signUp_phoneNum.setError("Pls enter a valid phone");
             profileGood = false;
         }
         if (!info_validation.name_validation(name)) {
@@ -502,7 +502,7 @@ public class signUpActivity extends AppCompatActivity {
             profileGood = false;
         }
         if (!info_validation.username_validation(username) && !type.equals("update")) {
-            signUp_username.setError("The username should be between 5 and 15 characters");
+            signUp_username.setError("The username should be between 5 and 15 characters and contain only letters and numbers");
             profileGood = false;
         }
         return profileGood;
@@ -518,7 +518,7 @@ public class signUpActivity extends AppCompatActivity {
                     calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
                     // Format and display date
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
                     signUp_date_of_birth.setText(sdf.format(calendar.getTime()));
                 },
                 calendar.get(Calendar.YEAR),

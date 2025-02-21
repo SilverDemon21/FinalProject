@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.finalproject.R;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -52,8 +53,8 @@ public class UserAdapter extends ArrayAdapter<Object_User> {
             emailTextView.setText(objectUser.getEmail().replace("_","."));
             usernameTextView.setText(objectUser.getUsername());
             phoneTextView.setText(objectUser.getPhoneNum());
-            int age = calculateAge(objectUser.getDateOfBirth());
-            dateOfBirth.setText(Integer.toString(age));
+            double age = calculateAge(objectUser.getDateOfBirth());
+            dateOfBirth.setText(Double.toString(age));
 
 
             Glide.with(mContext)
@@ -65,8 +66,7 @@ public class UserAdapter extends ArrayAdapter<Object_User> {
         return convertView;
     }
 
-    private int calculateAge(String dateOfBirth) {
-        // Parse the date of birth string into a Calendar object
+    private double calculateAge(String dateOfBirth) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         try {
             Date dob = sdf.parse(dateOfBirth); // Convert string to Date
@@ -75,19 +75,29 @@ public class UserAdapter extends ArrayAdapter<Object_User> {
 
             Calendar today = Calendar.getInstance(); // Get current date
 
-            int age = today.get(Calendar.YEAR) - dobCalendar.get(Calendar.YEAR);
+            // Calculate the difference in years and months
+            int years = today.get(Calendar.YEAR) - dobCalendar.get(Calendar.YEAR);
+            int months = today.get(Calendar.MONTH) - dobCalendar.get(Calendar.MONTH);
 
-            // Adjust if birthday hasn't occurred yet this year
-            if (today.get(Calendar.DAY_OF_YEAR) < dobCalendar.get(Calendar.DAY_OF_YEAR)) {
-                age--;
+            // Adjust for negative months
+            if (months < 0) {
+                years--;
+                months += 12;
             }
 
-            return age; // Return calculated age
-        } catch (ParseException e) {
+            // Convert to decimal age (years + fraction of months)
+            double decimalAge = years + (months / 12.0);
+
+            // Format to 2 decimal places
+            DecimalFormat df = new DecimalFormat("#.##");
+            return Double.parseDouble(df.format(decimalAge));
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return 0; // Return 0 if parsing fails
     }
+
 
 
 

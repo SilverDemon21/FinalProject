@@ -20,12 +20,15 @@
 
     <EditText
         android:id="@+id/etMemberUsername"
+        android:singleLine="true"
+        android:maxLength="15"
         android:layout_width="290dp"
         android:layout_height="49dp"
         android:background="@drawable/border_orange"
         android:gravity="center"
         android:hint="Member Username"
         android:textSize="23dp"
+        android:textColor="@color/black"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"/>
 

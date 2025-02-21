@@ -1,7 +1,11 @@
 package com.example.finalproject.RegestrationXLogin;
 
 
+import android.telephony.PhoneNumberUtils;
 import android.util.Patterns;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.Phonenumber;
 
 import com.google.firebase.database.DatabaseReference;
 
@@ -53,11 +57,15 @@ public class info_validation {
     }
 
     // phone number validation
-    public static boolean phoneNumber_validation(String phone) {
-        if (!phone.matches(phoneRegex)) {
-            return false;
+    public static boolean phoneNumber_validation(String phoneNumber) {
+        PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+        try {
+            Phonenumber.PhoneNumber number = phoneUtil.parse(phoneNumber, "IL");
+            return phoneUtil.isValidNumber(number);
+        } catch (NumberParseException e) {
+            e.printStackTrace();
         }
-        return true;
+        return false;
     }
 
 }

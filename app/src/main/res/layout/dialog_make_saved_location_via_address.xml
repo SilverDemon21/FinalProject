@@ -23,22 +23,26 @@
 
     <EditText
         android:id="@+id/etTitleForSavingAddress"
+        android:singleLine="true"
         android:layout_width="290dp"
         android:layout_height="49dp"
         android:background="@drawable/border_orange"
         android:gravity="center"
         android:hint="PlaceName"
+        android:textColor="@color/black"
         android:textSize="23dp"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"/>
 
     <EditText
         android:id="@+id/etAddressForSaving"
+        android:singleLine="true"
         android:layout_width="290dp"
         android:layout_height="49dp"
         android:background="@drawable/border_orange"
         android:gravity="center"
         android:hint="Address"
+        android:textColor="@color/black"
         android:textSize="23dp"
         android:layout_gravity="center"
         android:layout_marginTop="18dp" />

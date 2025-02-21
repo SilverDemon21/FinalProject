@@ -22,21 +22,25 @@
 
     <EditText
         android:id="@+id/etTitleForSavingCoordinates"
+        android:singleLine="true"
         android:layout_width="290dp"
         android:layout_height="49dp"
         android:background="@drawable/border_orange"
         android:gravity="center"
         android:hint="PlaceName"
+        android:textColor="@color/black"
         android:textSize="23dp"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"/>
 
     <EditText
         android:id="@+id/etLatitudeForSaving"
+        android:singleLine="true"
         android:layout_width="290dp"
         android:layout_height="49dp"
         android:background="@drawable/border_orange"
         android:gravity="center"
+        android:textColor="@color/black"
         android:hint="latitude"
         android:textSize="23dp"
         android:layout_gravity="center"
@@ -44,10 +48,12 @@
 
     <EditText
         android:id="@+id/etLongitudeForSaving"
+        android:singleLine="true"
         android:layout_width="290dp"
         android:layout_height="49dp"
         android:background="@drawable/border_orange"
         android:gravity="center"
+        android:textColor="@color/black"
         android:hint="longitude"
         android:textSize="23dp"
         android:layout_gravity="center"

@@ -19,10 +19,12 @@
 
     <EditText
         android:id="@+id/etGroupName"
+        android:singleLine="true"
         android:layout_width="290dp"
         android:layout_height="49dp"
         android:background="@drawable/border_orange"
         android:gravity="center"
+        android:textColor="@color/black"
         android:hint="Group Name"
         android:textSize="23dp"
         android:layout_gravity="center"

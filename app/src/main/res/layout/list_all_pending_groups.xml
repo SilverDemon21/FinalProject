@@ -18,6 +18,7 @@
         android:hint="Search by Group Name"
         android:iconifiedByDefault="false"
         android:queryHint="Search objectUsers"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"

@@ -89,6 +89,8 @@
             <EditText
                 android:id="@+id/signUp_name"
                 android:layout_width="match_parent"
+                android:singleLine="true"
+                android:maxLength="10"
                 android:layout_height="41dp"
                 android:layout_marginTop="9dp"
                 android:textSize="16sp"
@@ -101,6 +103,7 @@
 
             <EditText
                 android:id="@+id/signUp_email"
+                android:singleLine="true"
                 android:layout_width="match_parent"
                 android:layout_height="41dp"
                 android:layout_marginTop="6dp"
@@ -114,6 +117,8 @@
 
             <EditText
                 android:id="@+id/signUp_phoneNum"
+                android:singleLine="true"
+                android:maxLength="10"
                 android:layout_width="match_parent"
                 android:layout_height="41dp"
                 android:layout_marginTop="6dp"
@@ -127,6 +132,8 @@
 
             <EditText
                 android:id="@+id/signUp_username"
+                android:singleLine="true"
+                android:maxLength="15"
                 android:layout_width="match_parent"
                 android:layout_height="41dp"
                 android:layout_marginTop="6dp"
@@ -154,6 +161,8 @@
 
             <EditText
                 android:id="@+id/signUp_password"
+                android:maxLength="18"
+                android:singleLine="true"
                 android:layout_width="match_parent"
                 android:layout_height="41dp"
                 android:layout_marginTop="6dp"
@@ -168,6 +177,8 @@
 
             <EditText
                 android:id="@+id/signUp_comfirm_password"
+                android:singleLine="true"
+                android:maxLength="18"
                 android:layout_width="match_parent"
                 android:layout_height="41dp"
                 android:layout_marginTop="6dp"

@@ -56,9 +56,11 @@
             </LinearLayout>
 
             <EditText
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
                 android:id="@+id/login_username"
+                android:layout_width="match_parent"
+                android:singleLine="true"
+                android:maxLength="15"
+                android:layout_height="50dp"
                 android:background="@drawable/border_orange"
                 android:layout_marginTop="30dp"
                 android:padding="8dp"
@@ -68,9 +70,11 @@
                 android:textColor="@color/black"
                 />
             <EditText
+                android:id="@+id/login_password"
+                android:singleLine="true"
+                android:maxLength="18"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:id="@+id/login_password"
                 android:background="@drawable/border_orange"
                 android:layout_marginTop="20dp"
                 android:padding="8dp"

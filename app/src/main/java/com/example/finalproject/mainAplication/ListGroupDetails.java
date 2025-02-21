@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -287,19 +288,30 @@ public class ListGroupDetails extends AppCompatActivity {
         String declineUrl = "myapp://decline?username=" + username + "&groupId=" + groupId;
 
         String subject = "Group Invitation";
-        String message = "You have been invited by" + senderUsername +"to join a group!\n\n" +
-                "Click below to respond:\n\n" +
-                "✅ Accept Invitation: " + acceptUrl + "\n" +
-                "❌ Decline Invitation: " + declineUrl + "\n\n" +
-                "Thank you!";
 
-        // Send email intent
+        // Format the message as HTML to allow clickable links
+        String htmlMessage = "<html><body>" +
+                "<p>You have been invited by <strong>" + senderUsername + "</strong> to join a group!</p>" +
+                "<p>Click below to respond:</p>" +
+                "<p><a href='" + acceptUrl + "'>✅ Accept Invitation</a></p>" +
+                "<p><a href='" + declineUrl + "'>❌ Decline Invitation</a></p>" +
+                "<p>Or reply to this email to accept manually.</p>" +
+                "<p>Thank you!</p>" +
+                "</body></html>";
+
+        // Plain text fallback (for email clients that do not support HTML)
+        String plainTextMessage = "You have been invited by " + senderUsername + " to join a group!\n\n"
+                + "✅ Accept Invitation: " + acceptUrl + "\n"
+                + "❌ Decline Invitation: " + declineUrl + "\n\n"
+                + "Thank you!";
+
+        // Create email intent
         Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("message/rfc822");
+        intent.setType("message/rfc822");  // Ensures only email apps handle it
         intent.putExtra(Intent.EXTRA_EMAIL, new String[]{userEmail});
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-        intent.putExtra(Intent.EXTRA_TEXT, message);
-
+        intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(htmlMessage, Html.FROM_HTML_MODE_LEGACY)); // Ensure HTML formatting
+        intent.putExtra(Intent.EXTRA_HTML_TEXT, htmlMessage);  // Use HTML text if supported
         try {
             startActivity(Intent.createChooser(intent, "Send Email"));
         } catch (android.content.ActivityNotFoundException ex) {
