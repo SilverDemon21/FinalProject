@@ -17,12 +17,10 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
-    <uses-permission android:name="android.permission.SEND_SMS_SMS"/>
-
-
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.SEND_SMS_SMS" />
 
     <application
         android:allowBackup="true"
@@ -34,6 +32,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FinalProject"
         tools:targetApi="31">
+        <activity
+            android:name=".adminStaff.ListForAllGroups"
+            android:exported="false" />
         <activity
             android:name=".mainAplication.ListGroupDetails"
             android:exported="false" />
@@ -50,16 +51,17 @@
             android:name=".mainAplication.ListUserGroups"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="myapp"/>
-                <data android:host="accept"/>
-                <data android:scheme="myapp"/>
-                <data android:host="decline"/>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="myapp" />
+                <data android:host="accept" />
+                <data android:scheme="myapp" />
+                <data android:host="decline" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".mainAplication.ListOfSavedLocations"
             android:exported="false" />
