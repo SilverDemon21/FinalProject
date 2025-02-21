@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.finalproject.MainActivity;
 import com.example.finalproject.R;
+import com.example.finalproject.mainAplication.ListUserGroups;
 import com.example.finalproject.mainAplication.Object_GroupOfUsers;
 import com.example.finalproject.mainAplication.mapAndLogic;
 import com.example.finalproject.sharedPref_manager;
@@ -116,15 +117,15 @@ public class ListAllPendingGroups extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.menu_button_go_map, menu);
+        getMenuInflater().inflate(R.menu.menu_button_go_groups, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         super.onOptionsItemSelected(item);
-        if(item.getItemId() == R.id.menu_go_map){
-            Intent intent = new Intent(ListAllPendingGroups.this, mapAndLogic.class);
+        if(item.getItemId() == R.id.menu_go_groups){
+            Intent intent = new Intent(ListAllPendingGroups.this, ListUserGroups.class);
             startActivity(intent);
         }
         return true;

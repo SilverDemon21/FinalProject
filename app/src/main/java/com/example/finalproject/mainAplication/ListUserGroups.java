@@ -7,6 +7,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -23,6 +25,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.finalproject.MainActivity;
 import com.example.finalproject.R;
 import com.example.finalproject.User_Profile;
+import com.example.finalproject.adminStaff.ListAllPendingGroups;
+import com.example.finalproject.adminStaff.ListForAllGroups;
 import com.example.finalproject.sharedPref_manager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -63,6 +67,8 @@ public class ListUserGroups extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationBarGroups);
 
         bottomNavigationView.setSelectedItemId(R.id.menu_groups);
+
+
 
 
         bottomNavigationView.setOnItemSelectedListener(item ->{
@@ -272,6 +278,35 @@ public class ListUserGroups extends AppCompatActivity {
                 listViewUsersGroups.refreshDrawableState();
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        sharedPref_manager manager = new sharedPref_manager(ListUserGroups.this, "LoginUpdate");
+        getMenuInflater().inflate(R.menu.menu_groups_options, menu);
+        MenuItem item1 = menu.findItem(R.id.menu_pendingGroupsAccepts);
+        MenuItem item2 = menu.findItem(R.id.menu_allGroupsForAdmin);
+
+        if(!manager.getUsername().equals("admin")){
+            item2.setVisible(false);
+            item1.setVisible(false);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        super.onOptionsItemSelected(item);
+        if(item.getItemId() == R.id.menu_pendingGroupsAccepts){
+            Intent intent = new Intent(ListUserGroups.this, ListAllPendingGroups.class);
+            startActivity(intent);
+        }
+        else if(item.getItemId() == R.id.menu_allGroupsForAdmin){
+            Intent intent = new Intent(ListUserGroups.this, ListForAllGroups.class);
+            startActivity(intent);
+        }
+        return true;
     }
 
     private void filterUserGroups(String query) {

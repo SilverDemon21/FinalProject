@@ -29,10 +29,12 @@ public class AdapterUserGroups extends ArrayAdapter<Object_GroupOfUsers> {
 
         convertView = LayoutInflater.from(mContext).inflate(R.layout.user_group_item, parent, false);
 
+        int amountOfUsers = UserGroup.getGroupUsers().size();
 
         TextView groupNameTextView = convertView.findViewById(R.id.groupNameUserGroupsTextView);
         TextView groupCreatorUsernameTextView = convertView.findViewById(R.id.groupCreatorUsernameUserGroupsTextView);
         TextView groupType = convertView.findViewById(R.id.groupType);
+        TextView amountOfMembersInGroupChange = convertView.findViewById(R.id.amountOfMembersInGroupChange);
 
 
 
@@ -45,6 +47,8 @@ public class AdapterUserGroups extends ArrayAdapter<Object_GroupOfUsers> {
 
 
             groupType.setText(UserGroup.getGroupType());
+            amountOfMembersInGroupChange.setText(String.valueOf(amountOfUsers));
+
         }
 
         if (UserGroup.getGroupState().equals("Pending")){
@@ -52,6 +56,7 @@ public class AdapterUserGroups extends ArrayAdapter<Object_GroupOfUsers> {
             TextView titleForGroupManager = convertView.findViewById(R.id.titleForGroupManager);
             TextView pendingIdentifier = convertView.findViewById(R.id.pendingIdentifier);
             TextView titleForGroupType = convertView.findViewById(R.id.titleForGroupType);
+            TextView amountOfMembersInGroup = convertView.findViewById(R.id.amountOfMembersInGroup);
             ConstraintLayout usersGroupsCardView = convertView.findViewById(R.id.usersGroupsLayout);
 
 
@@ -60,6 +65,8 @@ public class AdapterUserGroups extends ArrayAdapter<Object_GroupOfUsers> {
             groupNameTextView.setTextColor(ContextCompat.getColor(mContext, R.color.silver));
             groupCreatorUsernameTextView.setTextColor(ContextCompat.getColor(mContext, R.color.silver));
             groupType.setTextColor(ContextCompat.getColor(mContext,R.color.silver));
+            amountOfMembersInGroup.setTextColor(ContextCompat.getColor(mContext,R.color.silver));
+            amountOfMembersInGroupChange.setTextColor(ContextCompat.getColor(mContext, R.color.silver));
             titleForGroupManager.setTextColor(ContextCompat.getColor(mContext, R.color.silver));
             titleForGroupName.setTextColor(ContextCompat.getColor(mContext,R.color.silver));
             titleForGroupType.setTextColor(ContextCompat.getColor(mContext,R.color.silver));

@@ -417,11 +417,6 @@ public class mapAndLogic extends AppCompatActivity {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.menu_add_savedlocations_ways, menu);
 
-        MenuItem adminItem = menu.findItem(R.id.menu_pendingGroupsAccepts);
-        sharedPref_manager manager = new sharedPref_manager(mapAndLogic.this, "LoginUpdate");
-        if(!manager.getUsername().equals("admin")){
-            adminItem.setVisible(false);
-        }
         return true;
     }
 
@@ -517,10 +512,7 @@ public class mapAndLogic extends AppCompatActivity {
             dialog.show();
         }
 
-        if(item.getItemId() == R.id.menu_pendingGroupsAccepts){
-            Intent intent = new Intent(mapAndLogic.this, ListAllPendingGroups.class);
-            startActivity(intent);
-        }
+
         return true;
     }
     // </editor-fold>
