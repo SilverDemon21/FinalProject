@@ -32,6 +32,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -189,7 +190,10 @@ public class ListGroupDetails extends AppCompatActivity {
                                         String userEmail = user.getEmail();
                                         String groupId = getIntent().getStringExtra("GroupId");
 
+
                                         sendEmailInvitation(userEmail, user.getUsername(), groupId);
+
+
                                     }
                                 }
                                 @Override
@@ -281,42 +285,19 @@ public class ListGroupDetails extends AppCompatActivity {
 
 
     private void sendEmailInvitation(String userEmail, String username, String groupId) {
-        // Create deep links using the custom scheme
         sharedPref_manager manager = new sharedPref_manager(ListGroupDetails.this, "LoginUpdate");
-        String senderUsername = manager.getUsername();
-        String acceptUrl = "myapp://accept?username=" + username + "&groupId=" + groupId;
-        String declineUrl = "myapp://decline?username=" + username + "&groupId=" + groupId;
+        userEmail = userEmail.replace("_", ".");
 
-        String subject = "Group Invitation";
+        String emailBody = "Hello " + username + "! you have been invited to join our group by "
+            + manager.getUsername() + ". to join the group put this group id at the joining section at the app: "
+                + groupId;
+        new SendEmailTask(userEmail, "Join Group Code", emailBody).execute();
 
-        // Format the message as HTML to allow clickable links
-        String htmlMessage = "<html><body>" +
-                "<p>You have been invited by <strong>" + senderUsername + "</strong> to join a group!</p>" +
-                "<p>Click below to respond:</p>" +
-                "<p><a href='" + acceptUrl + "'>✅ Accept Invitation</a></p>" +
-                "<p><a href='" + declineUrl + "'>❌ Decline Invitation</a></p>" +
-                "<p>Or reply to this email to accept manually.</p>" +
-                "<p>Thank you!</p>" +
-                "</body></html>";
 
-        // Plain text fallback (for email clients that do not support HTML)
-        String plainTextMessage = "You have been invited by " + senderUsername + " to join a group!\n\n"
-                + "✅ Accept Invitation: " + acceptUrl + "\n"
-                + "❌ Decline Invitation: " + declineUrl + "\n\n"
-                + "Thank you!";
-
-        // Create email intent
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("message/rfc822");  // Ensures only email apps handle it
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{userEmail});
-        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-        intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(htmlMessage, Html.FROM_HTML_MODE_LEGACY)); // Ensure HTML formatting
-        intent.putExtra(Intent.EXTRA_HTML_TEXT, htmlMessage);  // Use HTML text if supported
-        try {
-            startActivity(Intent.createChooser(intent, "Send Email"));
-        } catch (android.content.ActivityNotFoundException ex) {
-            Log.e("Email", "No email clients installed.", ex);
-        }
+        DatabaseReference groupRef = FirebaseDatabase.getInstance().getReference().child("Groups");
+        HashMap<String, Object> updateMap = new HashMap<>();
+        updateMap.put(username, true);
+        groupRef.child(groupId).child("pendingMembers").updateChildren(updateMap);
     }
 
 
@@ -331,7 +312,24 @@ public class ListGroupDetails extends AppCompatActivity {
     private void promoteMember(Object_User clickedMember){
         DatabaseReference groupRef = FirebaseDatabase.getInstance().getReference().child("Groups").child(groupId);
 
-        groupRef.child("groupUsers").child(clickedMember.getUsername()).setValue("CoManager");
+        groupRef.child("groupUsers").child(clickedMember.getUsername()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.getValue(String.class).equals("CoManager")){
+                    Toast.makeText(ListGroupDetails.this, "This user already a co-manager", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    groupRef.child("groupUsers").child(clickedMember.getUsername()).setValue("CoManager");
+                }
+            }
+
+            
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 
     private void deleteGroup(){

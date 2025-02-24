@@ -56,10 +56,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="myapp" />
-                <data android:host="accept" />
-                <data android:scheme="myapp" />
-                <data android:host="decline" />
+                <data android:scheme="http" android:host="open.myapp.com" android:pathPrefix="/action" />
+
             </intent-filter>
         </activity>
         <activity

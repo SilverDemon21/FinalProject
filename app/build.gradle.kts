@@ -34,6 +34,12 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+    packagingOptions {
+        exclude("META-INF/LICENSE.md")
+        exclude("META-INF/LICENSE")
+        exclude("META-INF/NOTICE.md")
+        exclude("META-INF/NOTICE")
+    }
 }
 
 dependencies {
@@ -68,4 +74,9 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:21.0.1")
 
     implementation ("com.googlecode.libphonenumber:libphonenumber:8.12.52")
+
+    implementation ("com.sun.mail:android-mail:1.6.7")
+    implementation ("com.sun.mail:android-activation:1.6.7")
+
+
 }

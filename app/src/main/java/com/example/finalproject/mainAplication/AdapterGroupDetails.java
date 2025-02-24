@@ -40,9 +40,8 @@ public class AdapterGroupDetails extends ArrayAdapter<Object_User> {
     public View getView(int position, View convertView, ViewGroup parent) {
         Object_User clickedObjectUser = getItem(position);
 
-        if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.member_of_group_item, parent, false);
-        }
+        convertView = LayoutInflater.from(mContext).inflate(R.layout.member_of_group_item, parent, false);
+
 
         TextView memberUserName = convertView.findViewById(R.id.memberUserName);
         TextView memberName = convertView.findViewById(R.id.memberName);

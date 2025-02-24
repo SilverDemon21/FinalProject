@@ -44,7 +44,7 @@ import java.util.Map;
 
 public class ListUserGroups extends AppCompatActivity {
 
-    private Button btnCreateGroup;
+    private Button btnCreateGroup, btnJoinGroupStart;
     private boolean itemIsSelected = false;
     private String selectedOption;
     private AdapterUserGroups groupAdapter;
@@ -63,6 +63,7 @@ public class ListUserGroups extends AppCompatActivity {
         btnCreateGroup = findViewById(R.id.btnCreateGroup);
         listViewUsersGroups = findViewById(R.id.listViewUsersGroups);
         etSearchUserGroup = findViewById(R.id.etSearchUserGroup);
+        btnJoinGroupStart = findViewById(R.id.btnJoinGroupStart);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationBarGroups);
 
@@ -181,22 +182,86 @@ public class ListUserGroups extends AppCompatActivity {
             }
         });
 
-        Uri data = getIntent().getData();
-        if (data != null) {
-            String path = data.getPath();  // e.g., /accept or /decline
-            String username = data.getQueryParameter("username");
-            String groupId = data.getQueryParameter("groupId");
+        btnJoinGroupStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sharedPref_manager manager = new sharedPref_manager(ListUserGroups.this, "LoginUpdate");
 
-            if (path != null && username != null && groupId != null) {
-                if (path.equals("/accept")) {
-                    Log.d("DeepLink", "User accepted: " + username);
-                    handleGroupRequest(username, groupId, true);
-                } else if (path.equals("/decline")) {
-                    Log.d("DeepLink", "User declined: " + username);
-                    handleGroupRequest(username, groupId, false);
-                }
+                LayoutInflater inflater = LayoutInflater.from(ListUserGroups.this);
+                View dialogView = inflater.inflate(R.layout.dialog_join_group, null);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(ListUserGroups.this);
+                builder.setView(dialogView);
+                AlertDialog dialog = builder.create();
+
+                EditText etGroupIdForJoining = dialogView.findViewById(R.id.etGroupIdForJoining);
+                Button btnJoinGroupStart = dialogView.findViewById(R.id.btnJoinGroup);
+
+                btnJoinGroupStart.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(etGroupIdForJoining.getText().toString().isEmpty()){
+                            Toast.makeText(ListUserGroups.this, "Pls enter a group id", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                        }
+                        else{
+                            DatabaseReference groupRef = FirebaseDatabase.getInstance().getReference().child("Groups");
+                            groupRef.child(etGroupIdForJoining.getText().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if(!snapshot.exists()){
+                                        Toast.makeText(ListUserGroups.this, "There is no such group with this id", Toast.LENGTH_SHORT).show();
+                                        dialog.dismiss();
+                                    }
+                                    else{
+                                        groupRef.child(etGroupIdForJoining.getText().toString()).child("pendingMembers").child(manager.getUsername()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                if(!snapshot.exists()){
+                                                    Toast.makeText(ListUserGroups.this,"You have not been invited to join this group",Toast.LENGTH_SHORT).show();
+                                                    dialog.dismiss();
+                                                }
+                                                else{
+                                                    addUserToGroup(etGroupIdForJoining.getText().toString(), manager.getUsername());
+                                                    dialog.dismiss();
+                                                }
+
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                            }
+                                        });
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                        }
+
+                    }
+                });
+                dialog.show();
             }
-        }
+        });
+    }
+
+    private void addUserToGroup(String groupId, String username){
+        DatabaseReference groupRef = FirebaseDatabase.getInstance().getReference().child("Groups");
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users");
+
+        groupRef.child(groupId).child("pendingMembers").child(username).removeValue();
+
+        HashMap<String, Object> updatesForGroup = new HashMap<>();
+        updatesForGroup.put(username, "Member");
+        groupRef.child(groupId).child("groupUsers").updateChildren(updatesForGroup);
+
+        HashMap<String, Object> updateForUser = new HashMap<>();
+        updateForUser.put(groupId, true);
+        userRef.child(username).child("Groups").updateChildren(updateForUser);
 
     }
 
@@ -276,6 +341,7 @@ public class ListUserGroups extends AppCompatActivity {
             public void onComplete(@NonNull Task<Void> task) {
                 listViewUsersGroups.invalidateViews();
                 listViewUsersGroups.refreshDrawableState();
+                groupAdapter.notifyDataSetChanged();
             }
         });
     }

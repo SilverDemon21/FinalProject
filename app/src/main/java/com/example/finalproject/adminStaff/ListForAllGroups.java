@@ -1,11 +1,14 @@
 package com.example.finalproject.adminStaff;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -62,8 +65,27 @@ public class ListForAllGroups extends AppCompatActivity {
             }
         });
 
+        listViewAllGroupsOfUsers.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Object_GroupOfUsers clickedGroup = allGroups.get(i);
+
+                new AlertDialog.Builder(ListForAllGroups.this)
+                        .setTitle("Delete Users group")
+                        .setMessage("Are you sure you want to delete this group?")
+                        .setPositiveButton("Delete", ((dialog, which) -> {
+                            deleteGroup(clickedGroup);
+                        }))
+                        .setNegativeButton("decline",null)
+                        .show();
+                return false;
+            }
+        });
+
         fetchAllGroupsApp();
     }
+
+
 
     private void fetchAllGroupsApp(){
         DatabaseReference groupsRef = FirebaseDatabase.getInstance().getReference().child("Groups");
@@ -122,5 +144,22 @@ public class ListForAllGroups extends AppCompatActivity {
         allGroups.addAll(filteredList);
 
         groupAdapter.notifyDataSetChanged();
+    }
+
+    private void deleteGroup(Object_GroupOfUsers group){
+        DatabaseReference groupRef = FirebaseDatabase.getInstance().getReference().child("Groups");
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users");
+
+        for(String username : group.getGroupUsers().keySet()){
+            usersRef.child(username).child("Groups").child(group.getGroupId()).removeValue();
+        }
+
+        groupRef.child(group.getGroupId()).removeValue();
+
+
+        originalAllGroups.remove(group);
+        allGroups.remove(group);
+        groupAdapter.notifyDataSetChanged();
+
     }
 }

@@ -74,13 +74,15 @@ public class ListAllPendingGroups extends AppCompatActivity {
                 Object_GroupOfUsers clickedGroup = pendingGroups.get(i);
 
                 new AlertDialog.Builder(ListAllPendingGroups.this)
-                        .setTitle("Delete Location")
+                        .setTitle("Accept group")
                         .setMessage("Are you sure you want to accept this group?: " +
                                 clickedGroup.getGroupName() + "created by" + clickedGroup.getGroupUsers().keySet().iterator().next())
-                        .setPositiveButton("Delete", ((dialog, which) -> {
+                        .setPositiveButton("accept", ((dialog, which) -> {
                             acceptGroup(clickedGroup);
                         }))
-                        .setNegativeButton("Cancel",null)
+                        .setNegativeButton("decline",(dialog, which) -> {
+                           removeGroup(clickedGroup);
+                        })
                         .show();
             }
         });
@@ -156,5 +158,20 @@ public class ListAllPendingGroups extends AppCompatActivity {
         originalPendingGroups.remove(group);
         pendingGroups.remove(group);
         groupAdapter.notifyDataSetChanged();
+
+    }
+
+    private void removeGroup(Object_GroupOfUsers group){
+        DatabaseReference groupRef = FirebaseDatabase.getInstance().getReference().child("Groups");
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users");
+
+        String creatorUsername = group.getGroupUsers().entrySet().iterator().next().getKey();
+        userRef.child(creatorUsername).child("Groups").child(group.getGroupId()).removeValue();
+        groupRef.child(group.getGroupId()).removeValue();
+
+        originalPendingGroups.remove(group);
+        pendingGroups.remove(group);
+        groupAdapter.notifyDataSetChanged();
+
     }
 }

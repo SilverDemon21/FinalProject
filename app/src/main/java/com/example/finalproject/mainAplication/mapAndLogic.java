@@ -6,6 +6,7 @@ import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -24,10 +25,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -65,8 +68,10 @@ import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.Projection;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.Overlay;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -90,6 +95,9 @@ public class mapAndLogic extends AppCompatActivity {
     private Handler handler = new Handler();
     private Set<String> visibleUsers = new HashSet<>();
     private String currentUser;
+
+    double latitude;
+    double longitude;
 
 
     @Override
@@ -205,14 +213,26 @@ public class mapAndLogic extends AppCompatActivity {
         MapEventsReceiver mapEventsReceiver = new MapEventsReceiver() {
             @Override
             public boolean singleTapConfirmedHelper(GeoPoint p) {
-                return false;
+                for (Overlay overlay : mapView.getOverlays()) {
+                    if (overlay instanceof Marker) {
+                        Marker marker = (Marker) overlay;
+                        // Check if this is a "custom" marker and if it's close to the tap location
+                        if ("member".equals(marker.getRelatedObject()) && isMarkerTapped(marker, p)) {
+                            Toast.makeText(mapView.getContext(), "Custom marker clicked: " + marker.getTitle(), Toast.LENGTH_SHORT).show();
+                            showLocationOfMember(marker.getTitle());
+                            return true; // Stop further event processing
+                        }
+                    }
+                }
+                return false; // Allow other overlays to handle the event
             }
+
 
             @Override
             public boolean longPressHelper(GeoPoint p) {
+                // Handle long press for saving a location
                 double latitude = p.getLatitude();
                 double longitude = p.getLongitude();
-
                 String address = getAddressFromCoordinates(latitude, longitude);
 
                 sharedPref_manager manager = new sharedPref_manager(mapAndLogic.this, "LoginUpdate");
@@ -223,14 +243,15 @@ public class mapAndLogic extends AppCompatActivity {
                 savedLocation.setLongitude(longitude);
                 savedLocation.setUsername(manager.getUsername());
 
-                showConfirmationSavingLocation(mapAndLogic.this,savedLocation, p);
-
-                return true;
+                showConfirmationSavingLocation(mapAndLogic.this, savedLocation, p);
+                return true; // Return true to indicate that the event is handled
             }
         };
+
+
+
         MapEventsOverlay eventsOverlay = new MapEventsOverlay(mapEventsReceiver);
         mapView.getOverlays().add(eventsOverlay);
-
 
 
         if (checkPermissions()) {
@@ -245,6 +266,54 @@ public class mapAndLogic extends AppCompatActivity {
         }
 
     }
+
+
+    private boolean isMarkerTapped(Marker marker, GeoPoint tappedPoint) {
+        double threshold = 0.0005; // ~50 meters
+        return Math.abs(marker.getPosition().getLatitude() - tappedPoint.getLatitude()) < threshold &&
+                Math.abs(marker.getPosition().getLongitude() - tappedPoint.getLongitude()) < threshold;
+    }
+
+    private void showLocationOfMember(String username){
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users");
+
+
+        userRef.child(username).child("UserLocation").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                latitude = Double.valueOf(snapshot.child("latitude").getValue(String.class));
+                longitude = Double.valueOf(snapshot.child("longitude").getValue(String.class));
+                String address = snapshot.child("address").getValue(String.class);
+
+                Object_SavedLocation userLocation = new Object_SavedLocation();
+                userLocation.setLatitude(latitude);
+                userLocation.setLongitude(longitude);
+                userLocation.setAddress(address);
+
+                showNavigationChoiceDialog(mapAndLogic.this, userLocation);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+    }
+
+    private void showNavigationChoiceDialog(Context context, Object_SavedLocation location){
+        String[] options = {"Google Maps", "Waze"};
+
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(context);
+        builder.setTitle("Choose Navigation App");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                boolean useGoogleMaps = (i == 0);
+                NavigationHelper.navigateToLocation(context, location, useGoogleMaps);
+            }
+        });
+
+        builder.show();
+    }
+
+
 
     // <editor-fold desc="Fetching all members locations">
     public void startUpdatingMembersLocations() {
@@ -388,6 +457,7 @@ public class mapAndLogic extends AppCompatActivity {
                     }
                 });
 
+        memberMarker.setRelatedObject("member");
     }
     // </editor-fold>
 

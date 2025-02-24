@@ -16,23 +16,24 @@
         app:layout_constraintVertical_bias="0.0"
         tools:layout_editor_absoluteX="16dp" />
 
+
     <Button
         android:id="@+id/btnShowSavedLocations"
-        android:layout_width="250dp"
+        android:layout_width="220dp"
         android:layout_height="60dp"
-        android:text="go to saved locations list"
-        android:textSize="15.5dp"
         android:background="@drawable/custom_button"
-        android:textAllCaps="false"
         android:backgroundTint="@null"
         android:foregroundTint="@null"
+        android:text="go to saved locations list"
+        android:textAllCaps="false"
+        android:textSize="17dp"
         app:backgroundTint="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.777" />
+        app:layout_constraintVertical_bias="0.781" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationBarMap"
