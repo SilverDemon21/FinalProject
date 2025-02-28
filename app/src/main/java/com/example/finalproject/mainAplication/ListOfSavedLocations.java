@@ -113,6 +113,7 @@ public class ListOfSavedLocations extends AppCompatActivity {
         if(item.getItemId() == R.id.menu_go_map){
             Intent intent = new Intent(ListOfSavedLocations.this, mapAndLogic.class);
             startActivity(intent);
+            finish();
         }
         return true;
     }

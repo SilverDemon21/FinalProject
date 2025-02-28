@@ -98,6 +98,9 @@ public class ListGroupDetails extends AppCompatActivity {
                             .setNegativeButton("Cancel",null)
                             .show();
                 }
+                else{
+                    Toast.makeText(ListGroupDetails.this, "Only the manager can delete the group", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -161,49 +164,57 @@ public class ListGroupDetails extends AppCompatActivity {
         btnAddPerson.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                LayoutInflater inflater = LayoutInflater.from(ListGroupDetails.this);
-                View dialogView = inflater.inflate(R.layout.dialog_add_new_member_group, null);
+                sharedPref_manager manager = new sharedPref_manager(ListGroupDetails.this, "LoginUpdate");
+                if(manager.getUsername().equals(managerUsername))
+                {
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+                    LayoutInflater inflater = LayoutInflater.from(ListGroupDetails.this);
+                    View dialogView = inflater.inflate(R.layout.dialog_add_new_member_group, null);
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(ListGroupDetails.this);
-                builder.setView(dialogView);
-                AlertDialog dialog = builder.create();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ListGroupDetails.this);
+                    builder.setView(dialogView);
+                    AlertDialog dialog = builder.create();
 
-                EditText etMemberUsername = dialogView.findViewById(R.id.etMemberUsername);
-                Button btnAddNewMemberByUsername = dialogView.findViewById(R.id.btnAddNewMemberByUsername);
+                    EditText etMemberUsername = dialogView.findViewById(R.id.etMemberUsername);
+                    Button btnAddNewMemberByUsername = dialogView.findViewById(R.id.btnAddNewMemberByUsername);
 
-                btnAddNewMemberByUsername.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if(etMemberUsername.getText().toString().isEmpty()){
-                            Toast.makeText(ListGroupDetails.this, "Pls enter a valid username", Toast.LENGTH_SHORT).show();
-                        }
-                        else{
-                            reference.child("users").child(etMemberUsername.getText().toString().trim()).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    if(!snapshot.exists()){
-                                        Toast.makeText(ListGroupDetails.this, "The Username does not exist in the database", Toast.LENGTH_SHORT).show();
+                    btnAddNewMemberByUsername.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if(etMemberUsername.getText().toString().isEmpty()){
+                                Toast.makeText(ListGroupDetails.this, "Pls enter a valid username", Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                reference.child("users").child(etMemberUsername.getText().toString().trim()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if(!snapshot.exists()){
+                                            Toast.makeText(ListGroupDetails.this, "The Username does not exist in the database", Toast.LENGTH_SHORT).show();
+                                        }
+                                        else{
+                                            Object_User user = snapshot.getValue(Object_User.class);
+                                            String userEmail = user.getEmail();
+                                            String groupId = getIntent().getStringExtra("GroupId");
+
+
+                                            sendEmailInvitation(userEmail, user.getUsername(), groupId);
+
+
+                                        }
                                     }
-                                    else{
-                                        Object_User user = snapshot.getValue(Object_User.class);
-                                        String userEmail = user.getEmail();
-                                        String groupId = getIntent().getStringExtra("GroupId");
-
-
-                                        sendEmailInvitation(userEmail, user.getUsername(), groupId);
-
-
-                                    }
-                                }
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {}
-                            });
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {}
+                                });
+                            }
+                            dialog.dismiss();
                         }
-                        dialog.dismiss();
-                    }
-                });
-                dialog.show();
+                    });
+                    dialog.show();
+                }
+                else {
+                    Toast.makeText(ListGroupDetails.this, "Only the manager of the group can add other members", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
         fetchMembersInGroup();
@@ -250,7 +261,12 @@ public class ListGroupDetails extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
+        sharedPref_manager manager = new sharedPref_manager(ListGroupDetails.this, "LoginUpdate");
+        if(!manager.getUsername().equals(managerUsername)){
+            getMenuInflater().inflate(R.menu.menu_button_leave_group, menu);
+        }
         getMenuInflater().inflate(R.menu.menu_button_go_groups, menu);
+
         return true;
     }
 
@@ -260,6 +276,17 @@ public class ListGroupDetails extends AppCompatActivity {
         if(item.getItemId() == R.id.menu_go_groups){
             Intent intent = new Intent(ListGroupDetails.this, ListUserGroups.class);
             startActivity(intent);
+            finish();
+        }
+        if(item.getItemId() == R.id.menu_leave_group){
+            new android.app.AlertDialog.Builder(ListGroupDetails.this)
+                    .setTitle("Leave Group")
+                    .setMessage("Are you sure you want to leave this group?")
+                    .setPositiveButton("Leave", ((dialog, which) -> {
+                        leaveGroup();
+                    }))
+                    .setNegativeButton("Cancel",null)
+                    .show();
         }
         return true;
     }
@@ -283,6 +310,18 @@ public class ListGroupDetails extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
+    private void leaveGroup(){
+        sharedPref_manager manager = new sharedPref_manager(ListGroupDetails.this, "LoginUpdate");
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users");
+        DatabaseReference groupRef = FirebaseDatabase.getInstance().getReference().child("Groups");
+
+        userRef.child(manager.getUsername()).child("Groups").child(groupId).removeValue();
+        groupRef.child(groupId).child("groupUsers").child(manager.getUsername()).removeValue();
+
+        Intent intent = new Intent(ListGroupDetails.this, ListUserGroups.class);
+        startActivity(intent);
+        finish();
+    }
 
     private void sendEmailInvitation(String userEmail, String username, String groupId) {
         sharedPref_manager manager = new sharedPref_manager(ListGroupDetails.this, "LoginUpdate");
@@ -360,5 +399,6 @@ public class ListGroupDetails extends AppCompatActivity {
 
         Intent intent = new Intent(ListGroupDetails.this, ListUserGroups.class);
         startActivity(intent);
+        finish();
     }
 }

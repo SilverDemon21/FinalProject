@@ -65,11 +65,13 @@ public class User_Profile extends AppCompatActivity {
             if(item.getItemId() == R.id.menu_home){
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 overridePendingTransition(0, 0);
+                finish();
                 return true;
             }
             else if(item.getItemId() == R.id.menu_map){
                 startActivity(new Intent(getApplicationContext(), mapAndLogic.class));
                 overridePendingTransition(0, 0);
+                finish();
                 return true;
             }
             else if(item.getItemId() == R.id.menu_profile){
@@ -78,6 +80,7 @@ public class User_Profile extends AppCompatActivity {
             else if(item.getItemId() == R.id.menu_groups){
                 startActivity(new Intent(getApplicationContext(), ListUserGroups.class));
                 overridePendingTransition(0, 0);
+                finish();
                 return true;
             }
             return true;

@@ -133,7 +133,9 @@ public class mapAndLogic extends AppCompatActivity {
             if(item.getItemId() == R.id.menu_home){
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 overridePendingTransition(0, 0);
+                finish();
                 return true;
+
             }
             else if(item.getItemId() == R.id.menu_map){
                 return true;
@@ -141,11 +143,13 @@ public class mapAndLogic extends AppCompatActivity {
             else if(item.getItemId() == R.id.menu_profile){
                 startActivity(new Intent(getApplicationContext(), User_Profile.class));
                 overridePendingTransition(0, 0);
+                finish();
                 return true;
             }
             else if(item.getItemId() == R.id.menu_groups){
                 startActivity(new Intent(getApplicationContext(), ListUserGroups.class));
                 overridePendingTransition(0, 0);
+                finish();
                 return true;
             }
             return true;
@@ -156,6 +160,7 @@ public class mapAndLogic extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mapAndLogic.this, ListOfSavedLocations.class);
+                finish();
                 startActivity(intent);
             }
         });
@@ -267,7 +272,7 @@ public class mapAndLogic extends AppCompatActivity {
 
     }
 
-
+    // <editor-fold desc="Setting availability to track all the members">
     private boolean isMarkerTapped(Marker marker, GeoPoint tappedPoint) {
         double threshold = 0.0005; // ~50 meters
         return Math.abs(marker.getPosition().getLatitude() - tappedPoint.getLatitude()) < threshold &&
@@ -312,7 +317,7 @@ public class mapAndLogic extends AppCompatActivity {
 
         builder.show();
     }
-
+    // </editor-fold>
 
 
     // <editor-fold desc="Fetching all members locations">
@@ -821,6 +826,8 @@ public class mapAndLogic extends AppCompatActivity {
                 startLocationUpdates();
                 createNotificationChannel();
                 startLocationService();
+                showAllSavedLocations();
+                startUpdatingMembersLocations();
             } else {
                 Toast.makeText(this, "Permission denied! Cannot access location.", Toast.LENGTH_SHORT).show();
             }

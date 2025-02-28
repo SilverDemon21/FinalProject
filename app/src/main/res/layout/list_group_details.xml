@@ -14,7 +14,7 @@
         android:layout_margin="12dp"
         android:layout_marginTop="24dp"
         android:drawablePadding="5dp"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:drawableLeft="@drawable/vector_search_24"
         android:hint="Search by User By Name"
         android:iconifiedByDefault="false"

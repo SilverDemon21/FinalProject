@@ -176,6 +176,7 @@ public class signUpActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(signUpActivity.this, MainActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -185,6 +186,7 @@ public class signUpActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(signUpActivity.this, loginActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -234,6 +236,7 @@ public class signUpActivity extends AppCompatActivity {
                                         public void onResult(boolean updated) {
                                             Intent intent = new Intent(signUpActivity.this, MainActivity.class);
                                             startActivity(intent);
+                                            finish();
                                         }
                                     });
                                 }

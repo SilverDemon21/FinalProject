@@ -63,6 +63,7 @@ public class loginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(loginActivity.this, MainActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -123,6 +124,7 @@ public class loginActivity extends AppCompatActivity {
                 Intent intent = new Intent(loginActivity.this, signUpActivity.class);
                 intent.putExtra("activity", "create");
                 startActivity(intent);
+                finish();
             }
         });
     }

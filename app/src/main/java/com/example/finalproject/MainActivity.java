@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
                 if(manager.getIsLoggedIn()){
                     startActivity(new Intent(getApplicationContext(), mapAndLogic.class));
                     overridePendingTransition(0, 0);
+                    finish();
                 }
                 else{
                     Toast.makeText(MainActivity.this, "First Log In", Toast.LENGTH_SHORT).show();
@@ -69,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
             else if(item.getItemId() == R.id.menu_profile){
                 startActivity(new Intent(getApplicationContext(), User_Profile.class));
                 overridePendingTransition(0, 0);
+                finish();
                 return true;
             }
             else if(item.getItemId() == R.id.menu_groups){
@@ -153,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.menu_logIn) {
             Intent intent = new Intent(MainActivity.this, loginActivity.class);
             startActivity(intent);
+            finish();
         }
         else if (item.getItemId() == R.id.menu_logout) {
             createAlertSignOut();
@@ -161,15 +164,18 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, signUpActivity.class);
             intent.putExtra("activity", "create");
             startActivity(intent);
+            finish();
 
         } else if (item.getItemId() == R.id.menu_userInfo) {
             Intent intent = new Intent(MainActivity.this, UsersActivity.class);
             startActivity(intent);
+            finish();
         }
         else if(item.getItemId() == R.id.menu_updateProfile){
             Intent intent = new Intent(MainActivity.this, signUpActivity.class);
             intent.putExtra("activity", "update");
             startActivity(intent);
+            finish();
         }
         else if (item.getItemId()==R.id.menu_about) {
             AboutAppDialog.showAboutDialog(this);

@@ -76,16 +76,19 @@ public class ListUserGroups extends AppCompatActivity {
             if(item.getItemId() == R.id.menu_home){
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 overridePendingTransition(0, 0);
+                finish();
                 return true;
             }
             else if(item.getItemId() == R.id.menu_map){
                 startActivity(new Intent(getApplicationContext(), mapAndLogic.class));
                 overridePendingTransition(0, 0);
+                finish();
                 return true;
             }
             else if(item.getItemId() == R.id.menu_profile){
                 startActivity(new Intent(getApplicationContext(), User_Profile.class));
                 overridePendingTransition(0, 0);
+                finish();
                 return true;
             }
             else if(item.getItemId() == R.id.menu_groups){
@@ -179,6 +182,7 @@ public class ListUserGroups extends AppCompatActivity {
 
 
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -306,6 +310,7 @@ public class ListUserGroups extends AppCompatActivity {
                                     counter++;
 
                                     if(counter == totalGroups){
+
                                         groupAdapter = new AdapterUserGroups(ListUserGroups.this, userGroups);
                                         listViewUsersGroups.setAdapter(groupAdapter);
                                     }
@@ -336,14 +341,16 @@ public class ListUserGroups extends AppCompatActivity {
 
         Map<String,Object> updates = new HashMap<>();
         updates.put("Groups/" + groupId,true);
-        databaseReference.child("users").child(senderUsername).updateChildren(updates).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                listViewUsersGroups.invalidateViews();
-                listViewUsersGroups.refreshDrawableState();
-                groupAdapter.notifyDataSetChanged();
-            }
-        });
+
+        userGroups.add(newUsersGroup);
+        originalUserGroups.add(newUsersGroup);
+
+        databaseReference.child("users").child(senderUsername).updateChildren(updates);
+
+        listViewUsersGroups.invalidateViews();
+        listViewUsersGroups.refreshDrawableState();
+        groupAdapter.notifyDataSetChanged();
+
     }
 
     @Override
@@ -367,10 +374,12 @@ public class ListUserGroups extends AppCompatActivity {
         if(item.getItemId() == R.id.menu_pendingGroupsAccepts){
             Intent intent = new Intent(ListUserGroups.this, ListAllPendingGroups.class);
             startActivity(intent);
+            finish();
         }
         else if(item.getItemId() == R.id.menu_allGroupsForAdmin){
             Intent intent = new Intent(ListUserGroups.this, ListForAllGroups.class);
             startActivity(intent);
+            finish();
         }
         return true;
     }

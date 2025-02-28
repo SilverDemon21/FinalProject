@@ -37,7 +37,10 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Find Me allows users to save any location in the world. With a single click, navigate to that location using Waze or Google Maps."
+        android:text="Find Me allows users to save any location in the world.
+With a single click, navigate to that location using Waze or Google Maps.
+Also you can create groups for you family and your friends to be able to see each other
+on the map. You can even navigate to each of them!"
         android:textSize="15sp"
         android:lineSpacingExtra="4dp"
         android:textColor="@color/black"
