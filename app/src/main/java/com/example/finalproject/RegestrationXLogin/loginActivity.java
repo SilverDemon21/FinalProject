@@ -33,6 +33,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
 import java.util.Random;
 
 public class loginActivity extends AppCompatActivity {
@@ -41,6 +42,8 @@ public class loginActivity extends AppCompatActivity {
     Button login_button;
     TextView signUpRedirectText,sh,btnForgotPassword;
     ImageButton backMainActivity;
+
+    private String recoveryUsername;
 
 
     @Override
@@ -90,29 +93,130 @@ public class loginActivity extends AppCompatActivity {
                 builder.setView(dialogView);
                 AlertDialog dialog = builder.create();
 
-                EditText etRecoveryCode = dialogView.findViewById(R.id.etRecoveryCode);
+                EditText etRecoveryPhoneNumber = dialogView.findViewById(R.id.etRecoveryPhoneNumber);
                 Button btnSendSmsWithCode = dialogView.findViewById(R.id.btnSendSmsWithCode);
                 TextView timeToResend = dialogView.findViewById(R.id.timeToResend);
+                Button btnRecoverPasswordWithCode = dialogView.findViewById(R.id.btnRecoverPasswordWithCode);
+                EditText etRecoveryCodeFromSms = dialogView.findViewById(R.id.etRecoveryCodeFromSms);
 
                 btnSendSmsWithCode.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Random rnd = new Random();
-                        if(ContextCompat.checkSelfPermission(loginActivity.this, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED){
-                            int generatedItem = rnd.nextInt(10000-10+1) + 10;
-                            SmsManager sms = SmsManager.getDefault();
-                            sms.sendTextMessage("0533381360", null, String.valueOf(generatedItem), null, null);
-                            dialog.dismiss();
+                        DatabaseReference phoneRef = FirebaseDatabase.getInstance().getReference().child("phoneNumbers");
+
+                        String recoveryPhone = etRecoveryPhoneNumber.getText().toString().trim();
+                        if(!recoveryPhone.isEmpty()){
+
+                            phoneRef.child(recoveryPhone).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if(snapshot.exists()){
+                                        Random rnd = new Random();
+                                        Toast.makeText(loginActivity.this, snapshot.getValue(String.class), Toast.LENGTH_SHORT).show();
+                                        if(ContextCompat.checkSelfPermission(loginActivity.this, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED){
+                                            Toast.makeText(loginActivity.this, "there is permmisions", Toast.LENGTH_SHORT).show();
+                                            int generatedItem = rnd.nextInt(10000-10+1) + 10;
+                                            SmsManager sms = SmsManager.getDefault();
+                                            sms.sendTextMessage(etRecoveryPhoneNumber.getText().toString().trim(), null, String.valueOf(generatedItem), null, null);
+
+                                            String usernameOfRecoveryPhone = snapshot.getValue(String.class);
+                                            DatabaseReference recoveryCodeRef = FirebaseDatabase.getInstance().getReference().child("recoveryCodes");
+                                            HashMap<String, Object> updates = new HashMap<>();
+                                            updates.put(String.valueOf(generatedItem), usernameOfRecoveryPhone);
+
+                                            recoveryCodeRef.updateChildren(updates);
+
+                                        }
+                                        else{
+                                            Toast.makeText(loginActivity.this, "there is no no permmisions", Toast.LENGTH_SHORT).show();
+                                            ActivityCompat.requestPermissions(loginActivity.this,
+                                                    new String[]{Manifest.permission.SEND_SMS},
+                                                    101);
+                                        }
+                                    }
+                                    else{
+                                        Toast.makeText(loginActivity.this, "There is no such number at the database", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
                         }
                         else{
-                            ActivityCompat.requestPermissions(loginActivity.this,
-                                    new String[]{Manifest.permission.SEND_SMS},
-                                    101);
+                            Toast.makeText(loginActivity.this, "pls enter a phone number", Toast.LENGTH_SHORT).show();
                         }
-
 
                     }
                 });
+
+                btnRecoverPasswordWithCode.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                       if(etRecoveryCodeFromSms.getText().toString().trim().isEmpty()){
+                           Toast.makeText(loginActivity.this, "Pls enter your recovery code", Toast.LENGTH_SHORT).show();
+                       }
+                       else{
+                           dialog.dismiss();
+                           DatabaseReference recoveryCodeRef = FirebaseDatabase.getInstance().getReference().child("recoveryCodes");
+                           recoveryCodeRef.child(etRecoveryCodeFromSms.getText().toString().trim()).addListenerForSingleValueEvent(new ValueEventListener() {
+                               @Override
+                               public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                   if(!snapshot.exists()){
+                                       Toast.makeText(loginActivity.this, "There is no such recovery code", Toast.LENGTH_SHORT).show();
+                                   }
+                                   else{
+                                       recoveryUsername = snapshot.getValue(String.class);
+                                       LayoutInflater inflater = LayoutInflater.from(loginActivity.this);
+                                       View dialogView = inflater.inflate(R.layout.dialog_update_password, null);
+
+                                       AlertDialog.Builder builder = new AlertDialog.Builder(loginActivity.this);
+                                       builder.setView(dialogView);
+                                       AlertDialog dialog = builder.create();
+
+                                       EditText etNewPassword = dialogView.findViewById(R.id.etNewPassword);
+                                       EditText etNewPasswordConfirm = dialogView.findViewById(R.id.etNewPasswordConfirm);
+                                       Button btnUpdatePassword = dialogView.findViewById(R.id.btnUpdatePassword);
+
+                                        btnUpdatePassword.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                if(info_validation.password_validation(etNewPassword.getText().toString().trim())){
+                                                    if(etNewPasswordConfirm.getText().toString().trim().equals(etNewPassword.getText().toString().trim())){
+                                                        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users");
+                                                        userRef.child(recoveryUsername).child("password").setValue(etNewPassword.getText().toString().trim());
+                                                        dialog.dismiss();
+                                                    }
+                                                    else{
+                                                        etNewPasswordConfirm.setError("The password does not match the confirm password");
+                                                    }
+                                                }
+                                                else{
+                                                    etNewPassword.setError("The password should be at least 6 characters");
+                                                }
+                                            }
+                                        });
+
+                                       recoveryCodeRef.child(etRecoveryCodeFromSms.getText().toString().trim()).removeValue();
+                                       dialog.show();
+
+
+                                   }
+
+                               }
+
+                               @Override
+                               public void onCancelled(@NonNull DatabaseError error) {
+
+                               }
+                           });
+
+                       }
+                    }
+                });
+
                 dialog.show();
             }
         });

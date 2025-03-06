@@ -133,6 +133,12 @@ public class ServiceUserLocation extends Service {
         }
     }
 
+    @Override
+    public void onTaskRemoved(Intent rootIntent){
+        stopSelf();
+        super.onTaskRemoved(rootIntent);
+    }
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent){

@@ -74,6 +74,7 @@ import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Overlay;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -98,6 +99,8 @@ public class mapAndLogic extends AppCompatActivity {
 
     double latitude;
     double longitude;
+
+    private List<Marker> markerList = new ArrayList<>();
 
 
     @Override
@@ -407,6 +410,8 @@ public class mapAndLogic extends AppCompatActivity {
     }
 
     private void fetchUserLocations(Set<String> userNames) {
+        removePrevMembersMarkers();
+
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
         Toast.makeText(mapAndLogic.this, "showing members on map", Toast.LENGTH_SHORT).show();
 
@@ -463,6 +468,16 @@ public class mapAndLogic extends AppCompatActivity {
                 });
 
         memberMarker.setRelatedObject("member");
+        markerList.add(memberMarker);
+    }
+
+    private void removePrevMembersMarkers(){
+        for(Marker marker : markerList){
+            if(marker.getRelatedObject().equals("member")){
+                marker.remove(mapView);
+            }
+        }
+        markerList = new ArrayList<>();
     }
     // </editor-fold>
 
@@ -853,11 +868,6 @@ public class mapAndLogic extends AppCompatActivity {
         // Pause map view
     }
 
-    @Override
-    protected void onDestroy(){
-        super.onDestroy();
-        stopLocationService();
-    }
     // </editor-fold>
 }
 
