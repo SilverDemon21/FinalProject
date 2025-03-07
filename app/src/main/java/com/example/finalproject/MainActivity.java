@@ -2,7 +2,10 @@ package com.example.finalproject;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import com.bumptech.glide.Glide;
+import com.example.finalproject.BroadcastReceiverPackage.WifiReceiver;
 import com.example.finalproject.RegestrationXLogin.loginActivity;
 import com.example.finalproject.RegestrationXLogin.signUpActivity;
 import com.example.finalproject.ShowAllUsers.UsersActivity;
@@ -32,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView sharedUser;
     private sharedPref_manager manager;
     private TextView userConnection;
-    private IsUserConnectedToInternetThread Thread;
+    private WifiReceiver wifiReceiver;
 
 
     @Override
@@ -89,23 +93,6 @@ public class MainActivity extends AppCompatActivity {
         });
         // updating the main activity considering the sharedPref
         updateTitle();
-
-
-       Thread = new IsUserConnectedToInternetThread(this, new IsUserConnectedToInternetThread.InternetStatusListener() {
-            @Override
-            public void onInternetStatusChanged(boolean isConnected) {
-                runOnUiThread(() -> {
-                    userConnection.setText(isConnected ? "Connected" : "disconnected");
-                    if(isConnected){
-                        userConnection.setBackgroundResource(R.drawable.background_person_connected);
-                    }
-                    else{
-                        userConnection.setBackgroundResource(R.drawable.background_person_disconnected);
-                    }
-                });
-            }
-        });
-    Thread.startChecking();
 
     }
 
@@ -216,7 +203,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Thread.stopChecking();
+        unregisterReceiver(wifiReceiver);
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        wifiReceiver = new WifiReceiver(userConnection);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(wifiReceiver, filter);
     }
 }
 

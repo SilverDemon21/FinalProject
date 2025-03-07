@@ -162,6 +162,7 @@ public class mapAndLogic extends AppCompatActivity {
         btnShowSavedLocationsList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Intent intent = new Intent(mapAndLogic.this, ListOfSavedLocations.class);
                 finish();
                 startActivity(intent);

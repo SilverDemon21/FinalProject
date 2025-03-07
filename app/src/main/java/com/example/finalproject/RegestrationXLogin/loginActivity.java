@@ -112,9 +112,7 @@ public class loginActivity extends AppCompatActivity {
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     if(snapshot.exists()){
                                         Random rnd = new Random();
-                                        Toast.makeText(loginActivity.this, snapshot.getValue(String.class), Toast.LENGTH_SHORT).show();
                                         if(ContextCompat.checkSelfPermission(loginActivity.this, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED){
-                                            Toast.makeText(loginActivity.this, "there is permmisions", Toast.LENGTH_SHORT).show();
                                             int generatedItem = rnd.nextInt(10000-10+1) + 10;
                                             SmsManager sms = SmsManager.getDefault();
                                             sms.sendTextMessage(etRecoveryPhoneNumber.getText().toString().trim(), null, String.valueOf(generatedItem), null, null);
