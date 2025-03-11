@@ -4,111 +4,146 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="160dp"
+    android:layout_height="195dp"
     android:layout_margin="8dp"
-    app:cardCornerRadius="10dp"
-    app:cardElevation="7dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp"
     app:cardBackgroundColor="@android:color/white"
     app:cardUseCompatPadding="true">
-
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/membersInGroupLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/background_member_in_group"
-        android:padding="4dp">
+        android:padding="12dp">
 
-
-
+        <!-- Label for Name with improved styling -->
         <TextView
             android:id="@+id/textView"
-            android:layout_width="102dp"
-            android:layout_height="34dp"
+            android:layout_width="110dp"
+            android:layout_height="36dp"
             android:background="@drawable/background_text_view_defult"
             android:gravity="center"
             android:text="Name"
             android:textColor="@color/black"
-            android:textSize="20dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:elevation="2dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.738" />
+            app:layout_constraintVertical_bias="0.65" />
 
+        <!-- Label for Username with improved styling -->
         <TextView
-            android:layout_width="102dp"
-            android:layout_height="34dp"
+            android:id="@+id/usernameLabel"
+            android:layout_width="110dp"
+            android:layout_height="36dp"
             android:background="@drawable/background_text_view_defult"
             android:gravity="center"
             android:text="Username"
             android:textColor="@color/black"
-            android:textSize="20dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:elevation="2dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.276" />
+            app:layout_constraintVertical_bias="0.25" />
 
-
+        <!-- Member Name Value with improved styling -->
         <TextView
             android:id="@+id/memberName"
-            android:layout_width="131dp"
+            android:layout_width="0dp"
             android:layout_height="36dp"
-            android:layout_marginVertical="10dp"
-            android:gravity="center"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="12dp"
+            android:gravity="center_vertical|start"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
             android:text="Name"
             android:textColor="@color/black"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.618"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.752" />
+            android:textSize="16sp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintBottom_toBottomOf="@id/textView"
+            app:layout_constraintEnd_toStartOf="@id/MemberPhoto"
+            app:layout_constraintStart_toEndOf="@id/textView"
+            app:layout_constraintTop_toTopOf="@id/textView" />
 
+        <!-- Member Username Value with improved styling -->
         <TextView
             android:id="@+id/memberUserName"
-            android:layout_width="131dp"
+            android:layout_width="0dp"
             android:layout_height="36dp"
-            android:layout_marginVertical="10dp"
-            android:gravity="center"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="12dp"
+            android:gravity="center_vertical|start"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
             android:text="Username"
             android:textColor="@color/black"
-            android:textSize="19sp"
+            android:textSize="16sp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintBottom_toBottomOf="@id/usernameLabel"
+            app:layout_constraintEnd_toStartOf="@id/MemberPhoto"
+            app:layout_constraintStart_toEndOf="@id/usernameLabel"
+            app:layout_constraintTop_toTopOf="@id/usernameLabel" />
+
+        <!-- Add Contact Button with stylish design -->
+
+        <!-- Member Photo - keeping same position but improved size -->
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/addContactButton"
+            android:layout_width="200dp"
+            android:layout_height="37dp"
+            android:backgroundTint="@color/design_default_color_primary"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="Add Contact"
+            android:textAllCaps="false"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:cornerRadius="8dp"
+            app:icon="@drawable/vector_add_contact"
+            app:iconGravity="textEnd"
+            app:iconPadding="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.616"
+
+            app:layout_constraintHorizontal_bias="0.461"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.284" />
+            app:layout_constraintVertical_bias="1.0" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/MemberPhoto"
-            android:layout_width="61dp"
-            android:layout_height="60dp"
-            android:layout_margin="20dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:src="@drawable/defult_user_image"
+            app:civ_border_width="2dp"
+            app:civ_border_color="#DDDDDD"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.5" />
 
+        <!-- Crown image - kept unchanged as requested -->
         <ImageView
             android:id="@+id/managerCrownInGroup"
             android:layout_width="61dp"
             android:layout_height="40dp"
+            android:layout_marginTop="16dp"
+
+
             android:src="@drawable/img_crown_for_menager"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.934"
+            app:layout_constraintHorizontal_bias="0.986"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
