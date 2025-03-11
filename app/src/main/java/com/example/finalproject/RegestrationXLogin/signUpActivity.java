@@ -1,7 +1,7 @@
 package com.example.finalproject.RegestrationXLogin;
 
-import static com.example.finalproject.Permission.DoesHavePrem;
-import static com.example.finalproject.Permission.GrantPermission;
+import static com.example.finalproject.Permission.GrantAllPermissions;
+import static com.example.finalproject.Permission.DoesUserHasAllOfThePermissions;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -133,8 +133,8 @@ public class signUpActivity extends AppCompatActivity {
         imgGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!DoesHavePrem(signUpActivity.this)) {
-                    GrantPermission(signUpActivity.this);
+                if (!DoesUserHasAllOfThePermissions(signUpActivity.this)) {
+                    GrantAllPermissions(signUpActivity.this);
                 } else {
                     findCamera = false;
                     findGallery = true;
@@ -151,8 +151,8 @@ public class signUpActivity extends AppCompatActivity {
         imgCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!DoesHavePrem(signUpActivity.this)) {
-                    GrantPermission(signUpActivity.this);
+                if (!DoesUserHasAllOfThePermissions(signUpActivity.this)) {
+                    GrantAllPermissions(signUpActivity.this);
                 } else {
                     findGallery = false;
                     findCamera = true;

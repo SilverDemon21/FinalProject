@@ -25,12 +25,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,9 +45,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.finalproject.MainActivity;
+import com.example.finalproject.Permission;
 import com.example.finalproject.R;
 import com.example.finalproject.User_Profile;
-import com.example.finalproject.adminStaff.ListAllPendingGroups;
 import com.example.finalproject.sharedPref_manager;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -68,7 +66,6 @@ import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.Projection;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Overlay;
@@ -263,7 +260,7 @@ public class mapAndLogic extends AppCompatActivity {
         mapView.getOverlays().add(eventsOverlay);
 
 
-        if (checkPermissions()) {
+        if (Permission.DoesUserHasAllOfThePermissions(mapAndLogic.this)) {
             startLocationUpdates();
             createNotificationChannel();
             startLocationService();
@@ -271,7 +268,7 @@ public class mapAndLogic extends AppCompatActivity {
             startUpdatingMembersLocations();
 
         } else {
-            requestPermissions();
+            Permission.GrantAllPermissions(mapAndLogic.this);
         }
 
     }
@@ -377,10 +374,10 @@ public class mapAndLogic extends AppCompatActivity {
                                 boolean isManagerOrCoManager = false;
 
                                 for(DataSnapshot member : memberSnapshot.getChildren()){
-                                    String memberUsername = member.getValue(String.class);
-                                    String role = member.getKey();
+                                    String memberUsername = member.getKey();
+                                    String role = member.getValue(String.class);
 
-                                    if(memberUsername.equals(currentUser) && role.equals("Manager") || role.equals("CoManager")){
+                                    if((memberUsername.equals(currentUser) && role.equals("Manager")) || (memberUsername.equals(currentUser) && role.equals("CoManager"))){
                                         isManagerOrCoManager = true;
                                     }
                                 }
@@ -392,7 +389,7 @@ public class mapAndLogic extends AppCompatActivity {
                                         if (groupType.equals("Friends Mode") && !visibleUsers.contains(memberUsername)){
                                             visibleUsers.add(memberUsername);
                                         }
-                                        else if (groupType.equals("Family Mode") && isManagerOrCoManager && memberRole.equals("Member") && !visibleUsers.contains(memberUsername)) {
+                                        else if (groupType.equals("Parents Mode") && isManagerOrCoManager && memberRole.equals("Member") && !visibleUsers.contains(memberUsername)) {
                                             visibleUsers.add(memberUsername);
                                         }
                                     }
@@ -630,23 +627,6 @@ public class mapAndLogic extends AppCompatActivity {
     // </editor-fold>
 
 
-    // <editor-fold desc="Permission staff (checks for all necessary permissions)">
-    private boolean checkPermissions() {
-        return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void requestPermissions() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            Toast.makeText(this, "Location permission is needed to show your location on the map.", Toast.LENGTH_LONG).show();
-        }
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-                101);
-    }
-    // </editor-fold>
-
-
     // <editor-fold desc="User tracking code">
     private void startLocationUpdates(){
         LocationRequest locationRequest = LocationRequest.create();
@@ -855,7 +835,7 @@ public class mapAndLogic extends AppCompatActivity {
         super.onResume();
         mapView.onResume(); // Resume map view
 
-        if (checkPermissions()) { // Check if permissions are granted
+        if (Permission.DoesUserHasAllOfThePermissions(mapAndLogic.this)) { // Check if permissions are granted
             startLocationUpdates(); // Restart location tracking
         }
     }

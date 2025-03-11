@@ -66,6 +66,9 @@ public class ListGroupDetails extends AppCompatActivity {
         managerUsername = getIntent().getStringExtra("GroupManager");
         groupId = getIntent().getStringExtra("GroupId");
 
+        Intent intent = getIntent();
+        getSupportActionBar().setTitle(intent.getStringExtra("GroupName"));
+
 
         etSearchUserInGroup.addTextChangedListener(new TextWatcher() {
             @Override
@@ -368,8 +371,8 @@ public class ListGroupDetails extends AppCompatActivity {
 
             }
         });
-
     }
+
 
     private void deleteGroup(){
         DatabaseReference groupRef = FirebaseDatabase.getInstance().getReference().child("Groups").child(groupId);
@@ -388,6 +391,9 @@ public class ListGroupDetails extends AppCompatActivity {
 
                     if(counterToDelete == amountToDelete){
                         groupRef.removeValue();
+                        Intent intent = new Intent(ListGroupDetails.this, ListUserGroups.class);
+                        startActivity(intent);
+                        finish();
                     }
                 }
             }

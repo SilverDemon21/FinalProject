@@ -180,6 +180,8 @@ public class ListUserGroups extends AppCompatActivity {
                                 .findFirst()
                                 .ifPresent(entry ->intent.putExtra("GroupManager", entry.getKey()));
 
+                intent.putExtra("GroupName", clickedGroup.getGroupName());
+
 
                 startActivity(intent);
                 finish();

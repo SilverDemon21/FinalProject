@@ -112,10 +112,11 @@ public class loginActivity extends AppCompatActivity {
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     if(snapshot.exists()){
                                         Random rnd = new Random();
-                                        if(ContextCompat.checkSelfPermission(loginActivity.this, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED){
+                                        if(Permission.DoesUserHasAllOfThePermissions(loginActivity.this)){
                                             int generatedItem = rnd.nextInt(10000-10+1) + 10;
                                             SmsManager sms = SmsManager.getDefault();
                                             sms.sendTextMessage(etRecoveryPhoneNumber.getText().toString().trim(), null, String.valueOf(generatedItem), null, null);
+                                            Toast.makeText(loginActivity.this, "Recovery code was sent to your sms", Toast.LENGTH_SHORT).show();
 
                                             String usernameOfRecoveryPhone = snapshot.getValue(String.class);
                                             DatabaseReference recoveryCodeRef = FirebaseDatabase.getInstance().getReference().child("recoveryCodes");
@@ -127,9 +128,7 @@ public class loginActivity extends AppCompatActivity {
                                         }
                                         else{
                                             Toast.makeText(loginActivity.this, "there is no no permmisions", Toast.LENGTH_SHORT).show();
-                                            ActivityCompat.requestPermissions(loginActivity.this,
-                                                    new String[]{Manifest.permission.SEND_SMS},
-                                                    101);
+                                            Permission.GrantAllPermissions(loginActivity.this);
                                         }
                                     }
                                     else{
