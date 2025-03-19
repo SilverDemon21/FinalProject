@@ -107,9 +107,9 @@ public class AdapterGroupDetails extends ArrayAdapter<Object_User> {
                 }
             }
         });
-
         return convertView;
     }
+    
 
     private void addUserToContact(String userPhone, String usersName){
         ArrayList<ContentProviderOperation> ops = new ArrayList<>();

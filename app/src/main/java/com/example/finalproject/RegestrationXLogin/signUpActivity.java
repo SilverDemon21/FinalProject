@@ -423,6 +423,11 @@ public class signUpActivity extends AppCompatActivity {
                 database.child("emails").child(email).setValue(username);
                 database.child("phoneNumbers").child(phoneNum).setValue(username);
 
+                HashMap<String, Object> profileSettings= new HashMap<>();
+                profileSettings.put("concentrateOnUserMap",true);
+                profileSettings.put("showToastHelperMap", true);
+                database.child("users").child(username).child("profileSettings").setValue(profileSettings);
+
                 callback.onResult(true);
 
             });

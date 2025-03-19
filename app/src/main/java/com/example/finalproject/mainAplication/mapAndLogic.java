@@ -97,6 +97,9 @@ public class mapAndLogic extends AppCompatActivity {
     double latitude;
     double longitude;
 
+    private Boolean settingConMapUser = true;
+    private Boolean settingShowToastMapChange = true;
+
     private List<Marker> markerList = new ArrayList<>();
 
 
@@ -166,6 +169,20 @@ public class mapAndLogic extends AppCompatActivity {
             }
         });
 
+
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users");
+        userRef.child(manager.getUsername()).child("profileSettings").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                settingConMapUser = snapshot.child("concentrateOnUserMap").getValue(Boolean.class);
+                settingShowToastMapChange = snapshot.child("showToastHelperMap").getValue(Boolean.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
 
         userMarker = new Marker(mapView);
@@ -353,7 +370,9 @@ public class mapAndLogic extends AppCompatActivity {
     private void fetchVisibleUsers(){
         DatabaseReference userGroupRef = FirebaseDatabase.getInstance().getReference().child("users").child(currentUser).child("Groups");
         DatabaseReference groupRef = FirebaseDatabase.getInstance().getReference().child("Groups");
-        Toast.makeText(mapAndLogic.this, "fetching members list", Toast.LENGTH_SHORT).show();
+        if(settingShowToastMapChange){
+            Toast.makeText(mapAndLogic.this, "fetching members list", Toast.LENGTH_SHORT).show();
+        }
         userGroupRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -411,8 +430,9 @@ public class mapAndLogic extends AppCompatActivity {
         removePrevMembersMarkers();
 
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
-        Toast.makeText(mapAndLogic.this, "showing members on map", Toast.LENGTH_SHORT).show();
-
+        if(settingShowToastMapChange){
+            Toast.makeText(mapAndLogic.this, "showing members on map", Toast.LENGTH_SHORT).show();
+        }
         for (String username : userNames) {
             usersRef.child(username).child("UserLocation").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -651,10 +671,14 @@ public class mapAndLogic extends AppCompatActivity {
 
             GeoPoint userLocation = new GeoPoint(latitude, longitude);
             userMarker.setPosition(userLocation);
-            mapView.getController().animateTo(userLocation);
+            if(settingConMapUser){
+                mapView.getController().animateTo(userLocation);
+            }
             mapView.invalidate();
 
-            Toast.makeText(this, "new location", Toast.LENGTH_SHORT).show();
+            if(settingShowToastMapChange){
+                Toast.makeText(this, "new location", Toast.LENGTH_SHORT).show();
+            }
 
         }
     }

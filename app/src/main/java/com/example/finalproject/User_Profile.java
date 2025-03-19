@@ -6,11 +6,13 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Database;
 
 import com.example.finalproject.mainAplication.ListUserGroups;
 import com.example.finalproject.mainAplication.ServiceUserLocation;
@@ -33,6 +35,7 @@ public class User_Profile extends AppCompatActivity {
     sharedPref_manager manager;
     FirebaseDatabase database;
     DatabaseReference reference;
+    private Switch sendToastTextMapSwitch, concentrateMapOnUser;
 
     int usersAmountOfSavedLocations = 0;
     int counterSavedLocations = 0;
@@ -41,6 +44,9 @@ public class User_Profile extends AppCompatActivity {
     int counterGroups = 0;
 
     int globalCheck = 0;
+
+    private Boolean concentrateOnUserMapState;
+    private Boolean showToastHelperMapState;
 
 
 
@@ -52,9 +58,29 @@ public class User_Profile extends AppCompatActivity {
         deleteProfile = findViewById(R.id.deleteProfile);
         manager = new sharedPref_manager(User_Profile.this, "LoginUpdate");
 
+        sendToastTextMapSwitch = findViewById(R.id.sendToastTextMapSwitch);
+        concentrateMapOnUser = findViewById(R.id.concentrateMapOnUser);
+
         if (!manager.getIsLoggedIn()){
             deleteProfile.setVisibility(View.GONE);
         }
+
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users");
+        userRef.child(manager.getUsername()).child("profileSettings").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                concentrateOnUserMapState = snapshot.child("concentrateOnUserMap").getValue(Boolean.class);
+                showToastHelperMapState = snapshot.child("showToastHelperMap").getValue(Boolean.class);
+
+                concentrateMapOnUser.setChecked(concentrateOnUserMapState);
+                sendToastTextMapSwitch.setChecked(showToastHelperMapState);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationBarProfile);
@@ -95,6 +121,8 @@ public class User_Profile extends AppCompatActivity {
         });
 
     }
+
+
 
 
     public void createAlertDelete(){
@@ -143,6 +171,9 @@ public class User_Profile extends AppCompatActivity {
                                     String status = snapshot.child(manager.getUsername()).getValue(String.class);
                                     if(status.equals("Manager")){
                                         groupsRef.child(groupId).removeValue();
+                                        for(DataSnapshot user : snapshot.getChildren()){
+                                            usersRef.child(user.getKey()).child("Groups").child(groupId).removeValue();
+                                        }
                                     }
                                     else{
                                         groupsRef.child(groupId).child("groupUsers").child(manager.getUsername()).removeValue();
@@ -221,5 +252,38 @@ public class User_Profile extends AppCompatActivity {
                 globalCheck++;
             }
         }
+    }
+
+    private void addSettingsToDatabase(){
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users");
+        if(sendToastTextMapSwitch.isChecked()){
+            showToastHelperMapState = true;
+        }
+        else{
+            showToastHelperMapState = false;
+        }
+
+        if(concentrateMapOnUser.isChecked()){
+            concentrateOnUserMapState = true;
+        }
+        else{
+            concentrateOnUserMapState = false;
+        }
+
+        userRef.child(manager.getUsername()).child("profileSettings").child("concentrateOnUserMap").setValue(concentrateOnUserMapState);
+        userRef.child(manager.getUsername()).child("profileSettings").child("showToastHelperMap").setValue(showToastHelperMapState);
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        addSettingsToDatabase();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        addSettingsToDatabase();
     }
 }
