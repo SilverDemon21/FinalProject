@@ -129,6 +129,7 @@ public class ListAllPendingGroups extends AppCompatActivity {
         if(item.getItemId() == R.id.menu_go_groups){
             Intent intent = new Intent(ListAllPendingGroups.this, ListUserGroups.class);
             startActivity(intent);
+            finish();
         }
         return true;
     }

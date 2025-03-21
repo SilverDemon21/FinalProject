@@ -72,14 +72,20 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
             else if(item.getItemId() == R.id.menu_profile){
-                startActivity(new Intent(getApplicationContext(), User_Profile.class));
-                overridePendingTransition(0, 0);
-                finish();
+                if(manager.getIsLoggedIn()) {
+                    startActivity(new Intent(getApplicationContext(), User_Profile.class));
+                    overridePendingTransition(0, 0);
+                    finish();
+                }
+                else{
+                    Toast.makeText(MainActivity.this, "First Log In", Toast.LENGTH_SHORT).show();
+                }
                 return true;
             }
             else if(item.getItemId() == R.id.menu_groups){
                 if(manager.getIsLoggedIn()){
                     startActivity(new Intent(getApplicationContext(), ListUserGroups.class));
+                    finish();
                     overridePendingTransition(0, 0);
                 }
                 else{

@@ -124,6 +124,7 @@ public class ListForAllGroups extends AppCompatActivity {
         if(item.getItemId() == R.id.menu_go_groups){
             Intent intent = new Intent(ListForAllGroups.this, ListUserGroups.class);
             startActivity(intent);
+            finish();
         }
         return true;
     }

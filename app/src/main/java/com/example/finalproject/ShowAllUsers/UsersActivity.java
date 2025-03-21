@@ -128,6 +128,7 @@ public class UsersActivity extends AppCompatActivity {
         if(item.getItemId() == R.id.menu_go_back){
             Intent intent = new Intent(UsersActivity.this, MainActivity.class);
             startActivity(intent);
+            finish();
         }
         return true;
     }
@@ -170,6 +171,7 @@ public class UsersActivity extends AppCompatActivity {
                             Intent intent = new Intent(UsersActivity.this, signUpActivity.class);
                             intent.putExtra("activity","update");
                             startActivity(intent);
+                            finish();
                         }
                         else {
                             Toast.makeText(UsersActivity.this, "You are not this user pls click your stats", Toast.LENGTH_LONG).show();

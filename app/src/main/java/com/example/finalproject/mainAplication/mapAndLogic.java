@@ -164,8 +164,9 @@ public class mapAndLogic extends AppCompatActivity {
             public void onClick(View view) {
 
                 Intent intent = new Intent(mapAndLogic.this, ListOfSavedLocations.class);
-                finish();
                 startActivity(intent);
+                finish();
+
             }
         });
 
