@@ -1,11 +1,14 @@
 package com.example.finalproject.mainAplication;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.OperationApplicationException;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.RemoteException;
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
@@ -94,16 +97,24 @@ public class AdapterGroupDetails extends ArrayAdapter<Object_User> {
             public void onClick(View view) {
                 // Check if the WRITE_CONTACTS permission is granted
                 if (ContextCompat.checkSelfPermission(mContext, android.Manifest.permission.WRITE_CONTACTS)
-                        != PackageManager.PERMISSION_GRANTED) {
+                        != PackageManager.PERMISSION_GRANTED |
+                        ContextCompat.checkSelfPermission(mContext, Manifest.permission.READ_CONTACTS)
+                                != PackageManager.PERMISSION_GRANTED) {
 
                     // Permission is not granted, request permission
                     ActivityCompat.requestPermissions((Activity) mContext,
-                            new String[]{android.Manifest.permission.WRITE_CONTACTS}, 1);
+                            new String[]{android.Manifest.permission.WRITE_CONTACTS, android.Manifest.permission.READ_CONTACTS}, 1);
                 } else {
                     // Permission is granted, proceed with adding the user to contacts
                     String userPhone = clickedObjectUser.getPhoneNum();
                     String usersName = clickedObjectUser.getName();
-                    addUserToContact(userPhone, usersName);
+                    if(contactsContainsPhone(userPhone)){
+                        Toast.makeText(mContext, "This phone is already in your contacts there is no need to add this user", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        addUserToContact(userPhone, usersName);
+                    }
+
                 }
             }
         });
@@ -145,5 +156,21 @@ public class AdapterGroupDetails extends ArrayAdapter<Object_User> {
         } catch (RemoteException | OperationApplicationException e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean contactsContainsPhone(String userPhone){
+        // Content URI to access contacts
+        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(userPhone));
+
+        // Query projection (what we want to fetch)
+        String[] projection = new String[]{ContactsContract.PhoneLookup._ID, ContactsContract.PhoneLookup.NUMBER};
+
+        // Querying the ContentProvider
+        try (Cursor cursor = mContext.getContentResolver().query(uri, projection, null, null, null)) {
+            if (cursor != null && cursor.getCount() > 0) {
+                return true; // Contact exists
+            }
+        }
+        return false; // Contact does not exist
     }
 }
