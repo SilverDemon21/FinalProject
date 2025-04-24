@@ -1,0 +1,598 @@
+@startuml
+skinparam linetype ortho
+scale 0.2
+skinparam nodeDistance 100
+skinparam classDistance 50
+skinparam nodesep 50
+skinparam ranksep 50
+
+
+' Main Activities
+class MainActivity {
+    - CircleImageView userImage
+    - TextView sharedUser
+    - sharedPref_manager manager
+    - TextView userConnection
+    - BroadcastReceiverInternetAndWifi broadcastReceiverInternetAndWifi
+    - BottomNavigationView bottomNavigationView
+    + onCreate(Bundle)
+    + updateTitle()
+    + displayImage()
+    + onCreateOptionsMenu(Menu)
+    + onOptionsItemSelected(MenuItem)
+    + createAlertSignOut()
+    + onDestroy()
+    + onResume()
+}
+
+class UserProfileActivity {
+    - Button deleteProfile
+    - sharedPref_manager manager
+    - Switch sendToastTextMapSwitch
+    - Switch concentrateMapOnUser
+    - BottomNavigationView bottomNavigationView
+    + onCreate(Bundle)
+    + createAlertDelete()
+    + addSettingsToDatabase()
+    + onDestroy()
+    + onPause()
+}
+
+class SplashActivity {
+    - ImageView logo
+    + onCreate(Bundle)
+    + goToMainActivity()
+}
+
+class SplashAnimationThread {
+    - SplashActivity activity
+    - ImageView logo
+    + run()
+}
+
+' Registration and Login
+class loginActivity {
+    - EditText login_username
+    - EditText login_password
+    - Button login_button
+    - TextView signUpRedirectText
+    - TextView btnForgotPassword
+    - ImageButton backMainActivity
+    - String recoveryUsername
+    - sharedPref_manager manager
+    + onCreate(Bundle)
+    + validateUserName()
+    + validatePassword()
+    + checkUser()
+    + saveData()
+    - saveDataAtSharePreferences()
+}
+
+class signUpActivity {
+    - EditText signUp_name
+    - EditText signUp_email
+    - EditText signUp_username
+    - EditText signUp_password
+    - EditText signUp_phoneNum
+    - EditText signUp_comfirm_password
+    - EditText signUp_date_of_birth
+    - ImageView imgGallery
+    - ImageView imgCamera
+    - ImageView imgProfile
+    - TextView loginRedirectText
+    - TextView title
+    - Button signUp_button
+    - ImageButton RbackToMainActivity
+    - Uri uriPhoto
+    - Bitmap photoBitmap
+    - Calendar calendar
+    - DatabaseReference database
+    - boolean findCamera
+    - boolean findGallery
+    - String photoName
+    - String type
+
+    + onCreate(Bundle)
+    - checkUniqueness(String, String, String)
+    - updateUser(String, String, String, String, String)
+    - saveUserDetails(String, String, String, String, String, Uri, String)
+    - updatePhoto(String, String)
+    - profileIsGood()
+    - showDatePickerDialog()
+    - handleImageSelection()
+    - handleCameraCapture()
+    - handleGallerySelection()
+    - validateInputs()
+    - updateProfile()
+    - createNewProfile()
+}
+
+class HellperSignUpClass {
+    - String name
+    - String email
+    - String username
+    - String password
+    - String phoneNum
+    - String photoUrl
+    - String dateOfBirth
+    + HellperSignUpClass()
+    + HellperSignUpClass(String, String, String, String, String, String, String)
+    + getters/setters
+}
+
+class InfoValidation {
+    + validateEmail()
+    + validatePassword()
+    + validatePhone()
+}
+
+' Admin Features
+class ListAllGroups {
+    - ListView listViewAllGroupsOfUsers
+    - EditText etSearchGroupInAllGroups
+    - List<Object_GroupOfUsers> originalAllGroups
+    - List<Object_GroupOfUsers> allGroups
+    - AdapterForAllGroups groupAdapter
+
+    + onCreate(Bundle)
+    + onCreateOptionsMenu(Menu)
+    + onOptionsItemSelected(MenuItem)
+    - fetchAllGroupsApp()
+    - filterAllAppGroups(String)
+    - deleteGroup(Object_GroupOfUsers)
+    - showDeleteGroupDialog(Object_GroupOfUsers)
+}
+
+class ListAllPendingGroups {
+    - ListView listViewPendingGroups
+    - EditText etSearchPendingGroup
+    - AdapterAllPendingGroups groupAdapter
+    - List<Object_GroupOfUsers> originalPendingGroups
+    - List<Object_GroupOfUsers> pendingGroups
+
+    + onCreate(Bundle)
+    + onCreateOptionsMenu(Menu)
+    + onOptionsItemSelected(MenuItem)
+    - fetchAllPendingGroups()
+    - filterPendingGroups(String)
+    - acceptGroup(Object_GroupOfUsers)
+    - removeGroup(Object_GroupOfUsers)
+    - showAcceptGroupDialog(Object_GroupOfUsers)
+    - updateGroupList()
+}
+
+' User Management
+class UsersActivity {
+    - ListView usersListView
+    - EditText etSearchUser
+    - UserAdapter adapter
+    - List<Object_User> originalUsers
+    - List<Object_User> users
+    - BottomNavigationView bottomNavigationView
+    + onCreate(Bundle)
+    + onCreateOptionsMenu(Menu)
+    + onOptionsItemSelected(MenuItem)
+    - fetchAllUsers()
+    - filterUsers(String)
+    - sortUsersByAge()
+    - sortUsersByUsername()
+}
+
+' Main Application Features
+class mapAndLogic {
+    - MapView mapView
+    - FusedLocationProviderClient fusedLocationProviderClient
+    - Marker userMarker
+    - DatabaseReference databaseReference
+    - LocationCallback locationCallback
+    - Button btnShowSavedLocationsList
+    - Handler handler
+    - Set<String> visibleUsers
+    - String currentUser
+    - double latitude
+    - double longitude
+    - Boolean settingConMapUser
+    - Boolean settingShowToastMapChange
+    - List<Marker> markerList
+    - BottomNavigationView bottomNavigationView
+    + onCreate(Bundle)
+    + onMapReady()
+    + updateLocationOnMap()
+    + startUpdatingMembersLocations()
+    + stopUpdatingUserLocations()
+    + saveLocation()
+    + showConfirmationSavingLocation()
+    + showAllSavedLocations()
+    + makeMarker()
+    + getAddressFromCoordinates()
+    + getCoordinatesFromAddress()
+    + createNotificationChannel()
+    + startLocationService()
+    + stopLocationService()
+    + onRequestPermissionsResult()
+    + onResume()
+    + onPause()
+    - isMarkerTapped()
+    - showLocationOfMember()
+    - showNavigationChoiceDialog()
+    - updateUserListRunnable()
+    - updateUserLocationsRunnable()
+    - fetchVisibleUsers()
+    - fetchUserLocations()
+    - showUserOnMap()
+    - removePrevMembersMarkers()
+    - getCircularBitmap()
+    - validateCoordinates()
+    - startLocationUpdates()
+}
+
+class ListUserGroups {
+    - Button btnCreateGroup
+    - Button btnJoinGroupStart
+    - boolean itemIsSelected
+    - String selectedOption
+    - AdapterUserGroups groupAdapter
+    - ListView listViewUsersGroups
+    - EditText etSearchUserGroup
+    - List<Object_GroupOfUsers> originalUserGroups
+    - List<Object_GroupOfUsers> userGroups
+    - int counter
+    - int totalGroups
+    - BottomNavigationView bottomNavigationView
+
+    + onCreate(Bundle)
+    + onCreateOptionsMenu(Menu)
+    + onOptionsItemSelected(MenuItem)
+    - fetchUsersGroups()
+    - filterUserGroups(String)
+    - addUserToGroup(String, String)
+    - handleGroupRequest(String, String, boolean)
+    - sendRequestToAdmin(String, String, String)
+}
+
+class ListOfSavedLocations {
+    - ListView listViewSavedLocations
+    - EditText etSearchSavedLocation
+    - AdapterSavedLocations adapter
+    - List<Object_SavedLocation> originalLocations
+    - List<Object_SavedLocation> locations
+    - DatabaseReference databaseReference
+    - sharedPref_manager manager
+    - BottomNavigationView bottomNavigationView
+
+    + onCreate(Bundle)
+    + onCreateOptionsMenu(Menu)
+    + onOptionsItemSelected(MenuItem)
+    - fetchSavedLocations()
+    - filterLocations(String)
+    - deleteLocation(Object_SavedLocation)
+    - showDeleteLocationDialog(Object_SavedLocation)
+    - navigateToLocation(Object_SavedLocation)
+    - showNavigationChoiceDialog(Object_SavedLocation)
+}
+
+class ListGroupDetails {
+    - AdapterGroupDetails adapter
+    - ListView listViewDetailsOfUsersGroup
+    - EditText etSearchUserInGroup
+    - List<Object_User> originalMembersInGroup
+    - List<Object_User> membersInGroup
+    - String managerUsername
+    - String groupId
+    - Button btnAddPerson
+    - Button btnDeleteGroup
+    - int counter
+    - int totalMembers
+    - int amountToDelete
+    - int counterToDelete
+
+    + onCreate(Bundle)
+    + onCreateOptionsMenu(Menu)
+    + onOptionsItemSelected(MenuItem)
+    - fetchMembersInGroup()
+    - filterUsersInGroup(String)
+    - leaveGroup()
+    - sendEmailInvitation(String, String, String)
+    - deleteMember(Object_User)
+    - promoteMember(Object_User)
+    - deleteGroup()
+    - showAddMemberDialog()
+    - showDeleteMemberDialog(Object_User)
+    - showPromoteMemberDialog(Object_User)
+    - showDeleteGroupDialog()
+}
+
+class NavigationHelper {
+    + navigateToLocation(Context, Object_SavedLocation, boolean)
+}
+
+' Services
+class ServiceUserLocation {
+    - FusedLocationProviderClient fusedLocationProviderClient
+    - LocationCallback serviceLocationCallback
+    - LocationRequest locationRequest
+    - DatabaseReference database
+    - NotificationManager notificationManager
+    - NotificationChannel notificationChannel
+    - String channelId
+    - int notificationId
+
+    + onCreate()
+    + onStartCommand(Intent, int, int)
+    + onBind(Intent)
+    + onDestroy()
+    + onTaskRemoved(Intent)
+    - updateLocationOnFirebase()
+    - getAddressFromCoordinates()
+    - startForegroundServiceWithNotification()
+    - startServiceLocationUpdates()
+}
+
+' Data Objects
+class Object_User {
+    - String email
+    - String name
+    - String username
+    - String phoneNum
+    - String photoUrl
+    - String dateOfBirth
+
+    + Object_User()
+    + Object_User(String, String, String, String, String, String)
+    + getEmail()
+    + getName()
+    + getUsername()
+    + getPhoneNum()
+    + getPhotoUrl()
+    + getDateOfBirth()
+}
+
+class Object_GroupOfUsers {
+    - String groupId
+    - String groupType
+    - String groupName
+    - HashMap<String, String> groupUsers
+    - String groupState
+
+    + Object_GroupOfUsers(String, String, String, HashMap<String, String>)
+    + Object_GroupOfUsers()
+    + getGroupId()
+    + setGroupId(String)
+    + getGroupType()
+    + setGroupType(String)
+    + getGroupName()
+    + setGroupName(String)
+    + getGroupUsers()
+    + setGroupUsers(HashMap<String, String>)
+    + getGroupState()
+    + setGroupState(String)
+}
+
+class Object_SavedLocation {
+    - String id
+    - String title
+    - String username
+    - double latitude
+    - double longitude
+    - String address
+
+    + Object_SavedLocation()
+    + getTitle()
+    + setTitle(String)
+    + getUsername()
+    + setUsername(String)
+    + getLatitude()
+    + setLatitude(double)
+    + getLongitude()
+    + setLongitude(double)
+    + getAddress()
+    + setAddress(String)
+    + getId()
+    + setId(String)
+}
+
+' Adapters
+class UserAdapter {
+    - Context mContext
+    - List<Object_User> users
+    - LayoutInflater inflater
+
+    + getView(int, View, ViewGroup)
+    - calculateAge(String)
+}
+
+class AdapterUserGroups {
+    - Context mContext
+    - List<Object_GroupOfUsers> groups
+    - LayoutInflater inflater
+
+    + getView(int, View, ViewGroup)
+}
+
+class AdapterSavedLocations {
+    - Context mContext
+    - List<Object_SavedLocation> locations
+    - LayoutInflater inflater
+
+    + getView(int, View, ViewGroup)
+}
+
+class AdapterForAllGroups {
+    - Context mContext
+    - List<Object_GroupOfUsers> groups
+    - LayoutInflater inflater
+
+    + getView(int, View, ViewGroup)
+}
+
+class AdapterGroupDetails {
+    - Context mContext
+    - List<Object_User> users
+    - List<String> membersStatus
+    - LayoutInflater inflater
+
+    + getView(int, View, ViewGroup)
+}
+
+class AdapterAllPendingGroups {
+    - Context mContext
+    - List<Object_GroupOfUsers> groups
+    - LayoutInflater inflater
+
+    + getView(int, View, ViewGroup)
+}
+
+' Utility Classes
+class sharedPref_manager {
+    - boolean isLoggedIn
+    - String username
+    - String email
+    - String name
+    - String phoneNum
+    - String photoUrl
+    - SharedPreferences sh
+    - SharedPreferences.Editor editor
+    - Context context
+
+    + setName(String)
+    + getName()
+    + setEmail(String)
+    + getEmail()
+    + setUsername(String)
+    + getUsername()
+    + setPhoneNum(String)
+    + getPhoneNum()
+    + getIsLoggedIn()
+    + setIsLoggedIn(boolean)
+    + getPhotoUrl()
+    + setPhotoUrl(String)
+    + convertToLoggedIn()
+    + convertToLoggedOut()
+    - saveEmail()
+    - saveName()
+    - savePhone()
+    - savePhotoUrl()
+}
+
+class Permission {
+    + checkAndRequestPermissions(Activity)
+    + DoesUserHasAllOfThePermissions(Activity)
+    + GrantAllPermissions(Activity)
+}
+
+class AboutAppDialog {
+    + showAboutDialog(Context)
+}
+
+' Broadcast Receiver
+class BroadcastReceiverInternetAndWifi {
+    - TextView userConnection
+    + onReceive(Context, Intent)
+}
+
+' Email Sending
+class GMailSender {
+    - String user
+    - String password
+
+    + GMailSender(String, String)
+    + sendMail(String, String, String)
+}
+
+class SendEmailTask {
+    - String userEmail
+    - String userPassword
+    - String recipient
+    - String subject
+    - String body
+    - GMailSender sender
+
+    + SendEmailTask(String, String, String, String, String)
+    + doInBackground()
+    + onPostExecute(String)
+}
+
+' Relationships
+MainActivity --> sharedPref_manager : uses
+MainActivity --> BroadcastReceiverInternetAndWifi : uses
+MainActivity --> UserProfileActivity : navigates to
+MainActivity --> SplashActivity : navigates to
+MainActivity --> mapAndLogic : navigates to
+MainActivity --> ListUserGroups : navigates to
+MainActivity --> UsersActivity : navigates to
+
+UserProfileActivity --> sharedPref_manager : uses
+UserProfileActivity --> ServiceUserLocation : uses
+UserProfileActivity --> signUpActivity : navigates to
+
+SplashActivity --> SplashAnimationThread : creates
+SplashAnimationThread --> SplashActivity : updates
+
+loginActivity --> InfoValidation : uses
+loginActivity --> sharedPref_manager : uses
+loginActivity --> MainActivity : navigates to
+loginActivity --> signUpActivity : navigates to
+loginActivity --> Permission : uses
+
+signUpActivity --> InfoValidation : uses
+signUpActivity --> sharedPref_manager : uses
+signUpActivity --> GMailSender : uses
+signUpActivity --> SendEmailTask : uses
+signUpActivity --> HellperSignUpClass : uses
+signUpActivity --> MainActivity : navigates to
+signUpActivity --> Permission : uses
+
+ListAllGroups --> AdapterForAllGroups : uses
+ListAllPendingGroups --> AdapterAllPendingGroups : uses
+UsersActivity --> UserAdapter : uses
+ListUserGroups --> AdapterUserGroups : uses
+ListUserGroups --> Object_GroupOfUsers : manages
+ListUserGroups --> sharedPref_manager : uses
+ListUserGroups --> MainActivity : navigates to
+ListUserGroups --> UserProfileActivity : navigates to
+ListUserGroups --> mapAndLogic : navigates to
+ListUserGroups --> ListGroupDetails : navigates to
+
+mapAndLogic --> Object_SavedLocation : creates
+mapAndLogic --> NavigationHelper : uses
+mapAndLogic --> sharedPref_manager : uses
+mapAndLogic --> ServiceUserLocation : uses
+mapAndLogic --> MainActivity : navigates to
+mapAndLogic --> UserProfileActivity : navigates to
+mapAndLogic --> ListUserGroups : navigates to
+mapAndLogic --> ListOfSavedLocations : navigates to
+
+UsersActivity --> Object_User : displays
+
+SendEmailTask --> GMailSender : uses
+
+NavigationHelper --> Object_SavedLocation : uses
+
+AdapterForAllGroups --> Object_GroupOfUsers : displays
+AdapterAllPendingGroups --> Object_GroupOfUsers : displays
+AdapterUserGroups --> Object_GroupOfUsers : displays
+AdapterSavedLocations --> Object_SavedLocation : displays
+AdapterGroupDetails --> Object_User : displays
+UserAdapter --> Object_User : displays
+
+ServiceUserLocation --> sharedPref_manager : uses
+ServiceUserLocation --> FusedLocationProviderClient : uses
+ServiceUserLocation --> DatabaseReference : uses
+
+ListAllPendingGroups --> AdapterAllPendingGroups : uses
+ListAllPendingGroups --> Object_GroupOfUsers : manages
+ListAllPendingGroups --> ListUserGroups : navigates to
+ListAllPendingGroups --> FirebaseDatabase : uses
+ListAllPendingGroups --> AlertDialog : creates
+ListAllPendingGroups --> DatabaseReference : uses
+
+ListGroupDetails --> AdapterGroupDetails : uses
+ListGroupDetails --> Object_User : manages
+ListGroupDetails --> sharedPref_manager : uses
+ListGroupDetails --> FirebaseDatabase : uses
+ListGroupDetails --> DatabaseReference : uses
+ListGroupDetails --> SendEmailTask : uses
+ListGroupDetails --> AlertDialog : creates
+ListGroupDetails --> ListUserGroups : navigates to
+
+@enduml

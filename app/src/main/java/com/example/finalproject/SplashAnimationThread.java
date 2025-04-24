@@ -15,7 +15,6 @@ public class SplashAnimationThread extends Thread {
 
     @Override
     public void run() {
-        // All UI code must run on the UI thread
         activity.runOnUiThread(() -> {
             ObjectAnimator rotation = ObjectAnimator.ofFloat(logo, "rotation", 0f, 360f);
             rotation.setDuration(2000);

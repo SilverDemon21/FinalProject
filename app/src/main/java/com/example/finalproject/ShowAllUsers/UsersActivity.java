@@ -216,12 +216,10 @@ public class UsersActivity extends AppCompatActivity {
         Collections.sort(objectUserList, new Comparator<Object_User>() {
             @Override
             public int compare(Object_User objectUser1, Object_User objectUser2) {
-                // Calculate ages for both users
                 int age1 = calculateAge(objectUser1.getDateOfBirth());
                 int age2 = calculateAge(objectUser2.getDateOfBirth());
 
-                // Compare by age (ascending order)
-                return Integer.compare(age1, age2); // Use Integer.compare for cleaner code
+                return Integer.compare(age1, age2);
             }
         });
         userAdapter.notifyDataSetChanged();
@@ -238,27 +236,25 @@ public class UsersActivity extends AppCompatActivity {
     }
 
     private int calculateAge(String dateOfBirth) {
-        // Parse the date of birth string into a Calendar object
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
         try {
-            Date dob = sdf.parse(dateOfBirth); // Convert string to Date
+            Date dob = sdf.parse(dateOfBirth);
             Calendar dobCalendar = Calendar.getInstance();
             dobCalendar.setTime(dob);
 
-            Calendar today = Calendar.getInstance(); // Get current date
+            Calendar today = Calendar.getInstance();
 
             int age = today.get(Calendar.YEAR) - dobCalendar.get(Calendar.YEAR);
 
-            // Adjust if birthday hasn't occurred yet this year
             if (today.get(Calendar.DAY_OF_YEAR) < dobCalendar.get(Calendar.DAY_OF_YEAR)) {
                 age--;
             }
 
-            return age; // Return calculated age
+            return age;
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return 0; // Return 0 if parsing fails
+        return 0;
     }
 
 

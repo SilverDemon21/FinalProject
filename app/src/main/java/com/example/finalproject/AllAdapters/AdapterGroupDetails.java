@@ -95,17 +95,14 @@ public class AdapterGroupDetails extends ArrayAdapter<Object_User> {
         addContactButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Check if the WRITE_CONTACTS permission is granted
                 if (ContextCompat.checkSelfPermission(mContext, android.Manifest.permission.WRITE_CONTACTS)
                         != PackageManager.PERMISSION_GRANTED |
                         ContextCompat.checkSelfPermission(mContext, Manifest.permission.READ_CONTACTS)
                                 != PackageManager.PERMISSION_GRANTED) {
 
-                    // Permission is not granted, request permission
                     ActivityCompat.requestPermissions((Activity) mContext,
                             new String[]{android.Manifest.permission.WRITE_CONTACTS, android.Manifest.permission.READ_CONTACTS}, 1);
                 } else {
-                    // Permission is granted, proceed with adding the user to contacts
                     String userPhone = clickedObjectUser.getPhoneNum();
                     String usersName = clickedObjectUser.getName();
                     if(contactsContainsPhone(userPhone)){

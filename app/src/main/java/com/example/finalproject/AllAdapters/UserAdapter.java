@@ -69,33 +69,30 @@ public class UserAdapter extends ArrayAdapter<Object_User> {
     private double calculateAge(String dateOfBirth) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
         try {
-            Date dob = sdf.parse(dateOfBirth); // Convert string to Date
+            Date dob = sdf.parse(dateOfBirth);
             Calendar dobCalendar = Calendar.getInstance();
             dobCalendar.setTime(dob);
 
-            Calendar today = Calendar.getInstance(); // Get current date
+            Calendar today = Calendar.getInstance();
 
-            // Calculate the difference in years and months
             int years = today.get(Calendar.YEAR) - dobCalendar.get(Calendar.YEAR);
             int months = today.get(Calendar.MONTH) - dobCalendar.get(Calendar.MONTH);
 
-            // Adjust for negative months
+
             if (months < 0) {
                 years--;
                 months += 12;
             }
 
-            // Convert to decimal age (years + fraction of months)
             double decimalAge = years + (months / 12.0);
 
-            // Format to 2 decimal places
             DecimalFormat df = new DecimalFormat("#.##");
             return Double.parseDouble(df.format(decimalAge));
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return 0; // Return 0 if parsing fails
+        return 0;
     }
 
 

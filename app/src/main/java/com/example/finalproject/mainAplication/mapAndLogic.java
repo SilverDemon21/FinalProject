@@ -199,7 +199,6 @@ public class mapAndLogic extends AppCompatActivity {
 
                     @Override
                     public void onLoadCleared(@Nullable Drawable placeholder) {
-                        // Handle placeholder if needed
                     }
                 });
 
@@ -237,17 +236,16 @@ public class mapAndLogic extends AppCompatActivity {
                         if ("member".equals(marker.getRelatedObject()) && isMarkerTapped(marker, p)) {
                             Toast.makeText(mapView.getContext(), "Custom marker clicked: " + marker.getTitle(), Toast.LENGTH_SHORT).show();
                             showLocationOfMember(marker.getTitle());
-                            return true; // Stop further event processing
+                            return true;
                         }
                     }
                 }
-                return false; // Allow other overlays to handle the event
+                return false;
             }
 
 
             @Override
             public boolean longPressHelper(GeoPoint p) {
-                // Handle long press for saving a location
                 double latitude = p.getLatitude();
                 double longitude = p.getLongitude();
                 String address = getAddressFromCoordinates(latitude, longitude);
@@ -261,7 +259,7 @@ public class mapAndLogic extends AppCompatActivity {
                 savedLocation.setUsername(manager.getUsername());
 
                 showConfirmationSavingLocation(mapAndLogic.this, savedLocation, p);
-                return true; // Return true to indicate that the event is handled
+                return true;
             }
         };
 
@@ -727,13 +725,11 @@ public class mapAndLogic extends AppCompatActivity {
 
                     locationRef.get().addOnCompleteListener(locationTask -> {
                         if (locationTask.isSuccessful() && locationTask.getResult().exists()) {
-                            // Parse location data
                             Log.e("fds",locationId);
                             double latitude = locationTask.getResult().child("latitude").getValue(Double.class);
                             double longitude = locationTask.getResult().child("longitude").getValue(Double.class);
                             String title = locationTask.getResult().child("title").getValue(String.class);
 
-                            // Add marker to the map
                             GeoPoint point = new GeoPoint(latitude, longitude);
                             makeMarker(point, title);
                         }
@@ -854,7 +850,7 @@ public class mapAndLogic extends AppCompatActivity {
         mapView.onResume(); // Resume map view
 
         if (Permission.DoesUserHasAllOfThePermissions(mapAndLogic.this)) { // Check if permissions are granted
-            startLocationUpdates(); // Restart location tracking
+            startLocationUpdates();
         }
     }
 
