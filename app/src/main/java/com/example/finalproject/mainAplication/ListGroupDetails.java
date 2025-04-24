@@ -2,11 +2,8 @@ package com.example.finalproject.mainAplication;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,10 +18,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.finalproject.AllAdapters.AdapterGroupDetails;
+import com.example.finalproject.EmailSender.SendEmailTask;
 import com.example.finalproject.R;
-import com.example.finalproject.RegestrationXLogin.loginActivity;
-import com.example.finalproject.ShowAllUsers.Object_User;
-import com.example.finalproject.adminStaff.ListAllPendingGroups;
+import com.example.finalproject.AllObjects.Object_User;
 import com.example.finalproject.sharedPref_manager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,7 +29,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,15 +39,9 @@ public class ListGroupDetails extends AppCompatActivity {
     private EditText etSearchUserInGroup;
     List<Object_User> originalMembersInGroup = new ArrayList<>();
     List<Object_User> membersInGroup = new ArrayList<>();
-    private String managerUsername;
-    private String groupId;
+    private String managerUsername, groupId;
     private Button btnAddPerson, btnDeleteGroup;
-
-    private int counter;
-    private int totalMembers;
-
-    int amountToDelete = 0;
-    int counterToDelete = 0;
+    private int counter, totalMembers, amountToDelete = 0, counterToDelete = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

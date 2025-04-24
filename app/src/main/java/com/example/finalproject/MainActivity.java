@@ -18,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import com.bumptech.glide.Glide;
-import com.example.finalproject.BroadcastReceiverPackage.WifiReceiver;
+import com.example.finalproject.BroadcastReceiverPackage.BroadcastReceiverInternetAndWifi;
 import com.example.finalproject.RegestrationXLogin.loginActivity;
 import com.example.finalproject.RegestrationXLogin.signUpActivity;
 import com.example.finalproject.ShowAllUsers.UsersActivity;
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView sharedUser;
     private sharedPref_manager manager;
     private TextView userConnection;
-    private WifiReceiver wifiReceiver;
+    private BroadcastReceiverInternetAndWifi broadcastReceiverInternetAndWifi;
 
 
     @Override
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
             }
             else if(item.getItemId() == R.id.menu_profile){
                 if(manager.getIsLoggedIn()) {
-                    startActivity(new Intent(getApplicationContext(), User_Profile.class));
+                    startActivity(new Intent(getApplicationContext(), UserProfileActivity.class));
                     overridePendingTransition(0, 0);
                     finish();
                 }
@@ -97,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         });
-        // updating the main activity considering the sharedPref
         updateTitle();
 
     }
@@ -107,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
     private void updateTitle() {
         if (!manager.getIsLoggedIn()) {
             sharedUser.setText("Welcome user");
-            userImage.setImageResource(R.drawable.defult_user_image);
+            userImage.setImageResource(R.drawable.img_icon_def_user);
         } else if(manager.getUsername().equals("admin")) {
             sharedUser.setText("Welcome, " + manager.getUsername() + " Admin");
         } else{
@@ -125,7 +124,6 @@ public class MainActivity extends AppCompatActivity {
                 .into(userImage);
 
     }
-
 
 
     //creates pointer for the xml file of menu
@@ -209,17 +207,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(wifiReceiver);
+        unregisterReceiver(broadcastReceiverInternetAndWifi);
     }
 
     @Override
     protected void onResume(){
         super.onResume();
-        wifiReceiver = new WifiReceiver(userConnection);
+        broadcastReceiverInternetAndWifi = new BroadcastReceiverInternetAndWifi(userConnection);
         IntentFilter filter = new IntentFilter();
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(wifiReceiver, filter);
+        registerReceiver(broadcastReceiverInternetAndWifi, filter);
     }
 }
 

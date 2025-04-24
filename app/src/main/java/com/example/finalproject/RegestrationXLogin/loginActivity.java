@@ -1,11 +1,6 @@
 package com.example.finalproject.RegestrationXLogin;
 
-import static android.Manifest.permission.RECEIVE_SMS;
-import static android.Manifest.permission.SEND_SMS;
-
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.view.LayoutInflater;
@@ -19,8 +14,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.example.finalproject.MainActivity;
 import com.example.finalproject.Permission;
@@ -95,7 +88,6 @@ public class loginActivity extends AppCompatActivity {
 
                 EditText etRecoveryPhoneNumber = dialogView.findViewById(R.id.etRecoveryPhoneNumber);
                 Button btnSendSmsWithCode = dialogView.findViewById(R.id.btnSendSmsWithCode);
-                TextView timeToResend = dialogView.findViewById(R.id.timeToResend);
                 Button btnRecoverPasswordWithCode = dialogView.findViewById(R.id.btnRecoverPasswordWithCode);
                 EditText etRecoveryCodeFromSms = dialogView.findViewById(R.id.etRecoveryCodeFromSms);
 
@@ -103,6 +95,8 @@ public class loginActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         DatabaseReference phoneRef = FirebaseDatabase.getInstance().getReference().child("phoneNumbers");
+                        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users");
+                        DatabaseReference recoveryCodeRef = FirebaseDatabase.getInstance().getReference().child("recoveryCodes");
 
                         String recoveryPhone = etRecoveryPhoneNumber.getText().toString().trim();
                         if(!recoveryPhone.isEmpty()){
@@ -113,18 +107,35 @@ public class loginActivity extends AppCompatActivity {
                                     if(snapshot.exists()){
                                         Random rnd = new Random();
                                         if(Permission.DoesUserHasAllOfThePermissions(loginActivity.this)){
-                                            int generatedItem = rnd.nextInt(10000-10+1) + 10;
-                                            SmsManager sms = SmsManager.getDefault();
-                                            sms.sendTextMessage(etRecoveryPhoneNumber.getText().toString().trim(), null, String.valueOf(generatedItem), null, null);
-                                            Toast.makeText(loginActivity.this, "Recovery code was sent to your sms", Toast.LENGTH_SHORT).show();
-
                                             String usernameOfRecoveryPhone = snapshot.getValue(String.class);
-                                            DatabaseReference recoveryCodeRef = FirebaseDatabase.getInstance().getReference().child("recoveryCodes");
-                                            HashMap<String, Object> updates = new HashMap<>();
-                                            updates.put(String.valueOf(generatedItem), usernameOfRecoveryPhone);
 
-                                            recoveryCodeRef.updateChildren(updates);
+                                            userRef.child(usernameOfRecoveryPhone).child("RecoveryCode").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    if(snapshot.getValue(String.class) != null){
+                                                        recoveryCodeRef.child(snapshot.getValue(String.class)).removeValue();
+                                                    }
 
+
+                                                    int generatedItem = rnd.nextInt(10000-10+1) + 10;
+                                                    SmsManager sms = SmsManager.getDefault();
+                                                    sms.sendTextMessage(etRecoveryPhoneNumber.getText().toString().trim(), null, String.valueOf(generatedItem), null, null);
+                                                    Toast.makeText(loginActivity.this, "Recovery code was sent to your sms", Toast.LENGTH_SHORT).show();
+
+
+
+                                                    HashMap<String, Object> updates = new HashMap<>();
+                                                    updates.put(String.valueOf(generatedItem), usernameOfRecoveryPhone);
+                                                    recoveryCodeRef.updateChildren(updates);
+
+                                                    userRef.child(usernameOfRecoveryPhone).child("RecoveryCode").setValue(String.valueOf(generatedItem));
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                }
+                                            });
                                         }
                                         else{
                                             Toast.makeText(loginActivity.this, "there is no no permmisions", Toast.LENGTH_SHORT).show();
@@ -158,6 +169,7 @@ public class loginActivity extends AppCompatActivity {
                        else{
                            dialog.dismiss();
                            DatabaseReference recoveryCodeRef = FirebaseDatabase.getInstance().getReference().child("recoveryCodes");
+                           DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users");
                            recoveryCodeRef.child(etRecoveryCodeFromSms.getText().toString().trim()).addListenerForSingleValueEvent(new ValueEventListener() {
                                @Override
                                public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -180,9 +192,9 @@ public class loginActivity extends AppCompatActivity {
                                         btnUpdatePassword.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View view) {
-                                                if(info_validation.password_validation(etNewPassword.getText().toString().trim())){
+                                                if(InfoValidation.password_validation(etNewPassword.getText().toString().trim())){
                                                     if(etNewPasswordConfirm.getText().toString().trim().equals(etNewPassword.getText().toString().trim())){
-                                                        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users");
+
                                                         userRef.child(recoveryUsername).child("password").setValue(etNewPassword.getText().toString().trim());
                                                         dialog.dismiss();
                                                     }
@@ -197,6 +209,7 @@ public class loginActivity extends AppCompatActivity {
                                         });
 
                                        recoveryCodeRef.child(etRecoveryCodeFromSms.getText().toString().trim()).removeValue();
+                                       userRef.child(recoveryUsername).child("RecoveryCode").removeValue();
                                        dialog.show();
 
 

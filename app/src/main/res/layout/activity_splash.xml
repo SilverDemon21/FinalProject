@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_splash_screen">
+    android:background="@drawable/background_activity_splash_screen">
 
     <ImageView
         android:id="@+id/splash_logo"
         android:layout_width="169dp"
         android:layout_height="178dp"
         android:layout_centerInParent="true"
-        android:src="@drawable/img"
+        android:src="@drawable/img_icon2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"

@@ -17,7 +17,7 @@
         android:id="@+id/usersGroupsLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/background_user_groups_active_item"
+        android:background="@drawable/background_item_user_groups_active"
         android:padding="4dp">
 
 
@@ -121,7 +121,7 @@
             android:layout_width="55dp"
             android:layout_height="55dp"
             android:layout_margin="20dp"
-            android:src="@drawable/group_img"
+            android:src="@drawable/img_icon_group"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"

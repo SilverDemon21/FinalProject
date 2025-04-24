@@ -15,7 +15,7 @@
         android:id="@+id/membersInGroupLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/background_member_in_group"
+        android:background="@drawable/background_item_member_in_group"
         android:padding="12dp">
 
         <!-- Label for Name with improved styling -->
@@ -104,6 +104,9 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:text="Add Contact"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:clickable="true"
             android:textAllCaps="false"
             android:textSize="14sp"
             android:textStyle="bold"
@@ -123,7 +126,7 @@
             android:id="@+id/MemberPhoto"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:src="@drawable/defult_user_image"
+            android:src="@drawable/img_icon_def_user"
             app:civ_border_width="2dp"
             app:civ_border_color="#DDDDDD"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -139,7 +142,7 @@
             android:layout_marginTop="16dp"
 
 
-            android:src="@drawable/img_crown_for_menager"
+            android:src="@drawable/img_crown_for_manager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.986"
             app:layout_constraintStart_toStartOf="parent"

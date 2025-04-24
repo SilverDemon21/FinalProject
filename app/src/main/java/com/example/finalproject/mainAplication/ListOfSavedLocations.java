@@ -17,7 +17,8 @@ import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.finalproject.MainActivity;
+import com.example.finalproject.AllAdapters.AdapterSavedLocations;
+import com.example.finalproject.AllObjects.Object_SavedLocation;
 import com.example.finalproject.R;
 import com.example.finalproject.sharedPref_manager;
 import com.google.firebase.database.DataSnapshot;

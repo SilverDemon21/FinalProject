@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:background="@drawable/background_login_register"
+    android:background="@drawable/background_activity_login_register"
     tools:context=".RegestrationXLogin.signUpActivity">
 
     <androidx.cardview.widget.CardView
@@ -39,7 +39,7 @@
                     android:layout_marginLeft="5dp"
                     android:background="@null"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/image_go_back" />
+                    android:src="@drawable/img_go_back" />
 
 
                 <TextView
@@ -66,7 +66,7 @@
                    android:layout_width="50dp"
                    android:layout_height="50dp"
                    android:layout_weight="3"
-                   android:src="@drawable/galery"/>
+                   android:src="@drawable/img_icon_gallery"/>
 
                <de.hdodenhof.circleimageview.CircleImageView
                    android:id="@+id/imgProfile"
@@ -74,14 +74,14 @@
                    android:layout_height="70dp"
                    android:layout_gravity="center"
                    android:layout_weight="3"
-                   android:src="@drawable/defult_user_image" />
+                   android:src="@drawable/img_icon_def_user" />
 
                <ImageView
                    android:id="@+id/imgCamera"
                    android:layout_width="50dp"
                    android:layout_height="50dp"
                    android:layout_weight="3"
-                   android:src="@drawable/camera"/>
+                   android:src="@drawable/img_icon_camera"/>
 
 
            </LinearLayout>
@@ -208,7 +208,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="1dp"
                 android:padding="7dp"
-                android:text="already a objectUser? Login"
+                android:text="already a User? Login"
                 android:textColor="@color/realLavender"
                 android:textSize="18dp"
                 />

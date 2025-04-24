@@ -17,6 +17,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.finalproject.AllAdapters.UserAdapter;
+import com.example.finalproject.AllObjects.Object_User;
 import com.example.finalproject.MainActivity;
 import com.example.finalproject.R;
 import com.example.finalproject.RegestrationXLogin.signUpActivity;
@@ -41,7 +43,6 @@ import java.util.Locale;
 public class UsersActivity extends AppCompatActivity {
 
     private DatabaseReference mDatabase;
-
     private ListView listViewUsers;
     private UserAdapter userAdapter;
     private List<Object_User> objectUserList = new ArrayList<>();
@@ -238,7 +239,7 @@ public class UsersActivity extends AppCompatActivity {
 
     private int calculateAge(String dateOfBirth) {
         // Parse the date of birth string into a Calendar object
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
         try {
             Date dob = sdf.parse(dateOfBirth); // Convert string to Date
             Calendar dobCalendar = Calendar.getInstance();

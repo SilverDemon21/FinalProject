@@ -1,11 +1,9 @@
 package com.example.finalproject.mainAplication;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,14 +20,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.finalproject.AllAdapters.AdapterUserGroups;
+import com.example.finalproject.AllObjects.Object_GroupOfUsers;
 import com.example.finalproject.MainActivity;
 import com.example.finalproject.R;
-import com.example.finalproject.User_Profile;
+import com.example.finalproject.UserProfileActivity;
 import com.example.finalproject.adminStaff.ListAllPendingGroups;
-import com.example.finalproject.adminStaff.ListForAllGroups;
+import com.example.finalproject.adminStaff.ListAllGroups;
 import com.example.finalproject.sharedPref_manager;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -52,8 +50,7 @@ public class ListUserGroups extends AppCompatActivity {
     private EditText etSearchUserGroup;
     List<Object_GroupOfUsers> originalUserGroups = new ArrayList<>();
     List<Object_GroupOfUsers> userGroups = new ArrayList<>();
-    private int counter;
-    private int totalGroups;
+    private int counter, totalGroups;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +83,7 @@ public class ListUserGroups extends AppCompatActivity {
                 return true;
             }
             else if(item.getItemId() == R.id.menu_profile){
-                startActivity(new Intent(getApplicationContext(), User_Profile.class));
+                startActivity(new Intent(getApplicationContext(), UserProfileActivity.class));
                 overridePendingTransition(0, 0);
                 finish();
                 return true;
@@ -351,7 +348,7 @@ public class ListUserGroups extends AppCompatActivity {
 
         listViewUsersGroups.invalidateViews();
         listViewUsersGroups.refreshDrawableState();
-        groupAdapter.notifyDataSetChanged();
+
 
     }
 
@@ -379,7 +376,7 @@ public class ListUserGroups extends AppCompatActivity {
             finish();
         }
         else if(item.getItemId() == R.id.menu_allGroupsForAdmin){
-            Intent intent = new Intent(ListUserGroups.this, ListForAllGroups.class);
+            Intent intent = new Intent(ListUserGroups.this, ListAllGroups.class);
             startActivity(intent);
             finish();
         }

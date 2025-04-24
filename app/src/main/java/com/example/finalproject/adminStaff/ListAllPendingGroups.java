@@ -15,11 +15,10 @@ import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.finalproject.MainActivity;
+import com.example.finalproject.AllAdapters.AdapterAllPendingGroups;
 import com.example.finalproject.R;
 import com.example.finalproject.mainAplication.ListUserGroups;
-import com.example.finalproject.mainAplication.Object_GroupOfUsers;
-import com.example.finalproject.mainAplication.mapAndLogic;
+import com.example.finalproject.AllObjects.Object_GroupOfUsers;
 import com.example.finalproject.sharedPref_manager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,7 +34,6 @@ public class ListAllPendingGroups extends AppCompatActivity {
     private ListView listViewPendingGroups;
     private EditText etSearchPendingGroup;
     private AdapterAllPendingGroups groupAdapter;
-    private sharedPref_manager manager;
     List<Object_GroupOfUsers> originalPendingGroups = new ArrayList<>();
     List<Object_GroupOfUsers> pendingGroups = new ArrayList<>();
 

@@ -5,8 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_best_for_main"
-    tools:context=".User_Profile">
+    android:background="@drawable/background_activity_main"
+    tools:context=".UserProfileActivity">
 
 
 

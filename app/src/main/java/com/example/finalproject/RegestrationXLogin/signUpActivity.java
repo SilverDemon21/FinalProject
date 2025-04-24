@@ -216,7 +216,7 @@ public class signUpActivity extends AppCompatActivity {
                                     saveUserDetails(name, formattedEmail, username, password, phone, uriPhoto, dateOfBirth, new ImageUploadCallback() {
                                         @Override
                                         public void onResult(boolean created) {
-                                            Intent intent = new Intent(signUpActivity.this, MainActivity.class);
+                                            Intent intent = new Intent(signUpActivity.this, loginActivity.class);
                                             startActivity(intent);
                                             finish();
                                         }
@@ -485,15 +485,15 @@ public class signUpActivity extends AppCompatActivity {
             Toast.makeText(signUpActivity.this, "Pls save the image", Toast.LENGTH_SHORT).show();
             profileGood = false;
         }
-        if (!info_validation.email_validation(email)) {
+        if (!InfoValidation.email_validation(email)) {
             signUp_email.setError("Pls enter a valid email");
             profileGood = false;
         }
-        if (!info_validation.phoneNumber_validation(phone)) {
+        if (!InfoValidation.phoneNumber_validation(phone)) {
             signUp_phoneNum.setError("Pls enter a valid phone");
             profileGood = false;
         }
-        if (!info_validation.name_validation(name)) {
+        if (!InfoValidation.name_validation(name)) {
             signUp_name.setError("The name should be between 2 and 10 characters and only contain letters");
             profileGood = false;
         }
@@ -501,7 +501,7 @@ public class signUpActivity extends AppCompatActivity {
             signUp_date_of_birth.setError("pls put your date of birth");
             profileGood = false;
         }
-        if (!info_validation.password_validation(password) && !type.equals("update")) {
+        if (!InfoValidation.password_validation(password) && !type.equals("update")) {
             signUp_password.setError("The password should be between 6 and 18 characters");
             profileGood = false;
         }
@@ -509,7 +509,7 @@ public class signUpActivity extends AppCompatActivity {
             signUp_comfirm_password.setError("The password does not match the password above");
             profileGood = false;
         }
-        if (!info_validation.username_validation(username) && !type.equals("update")) {
+        if (!InfoValidation.username_validation(username) && !type.equals("update")) {
             signUp_username.setError("The username should be between 5 and 15 characters and contain only letters and numbers");
             profileGood = false;
         }

@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:background="@drawable/background_login_register"
+    android:background="@drawable/background_activity_login_register"
     tools:context=".RegestrationXLogin.loginActivity">
 
 
@@ -42,7 +42,7 @@
                     android:layout_marginLeft="5dp"
                     android:background="@null"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/image_go_back" />
+                    android:src="@drawable/img_go_back" />
 
                 <TextView
                     android:layout_width="139dp"

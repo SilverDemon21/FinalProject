@@ -147,7 +147,7 @@
                 android:layout_width="55dp"
                 android:layout_height="55dp"
                 android:layout_margin="20dp"
-                android:src="@drawable/place_img"
+                android:src="@drawable/img_icon_place"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"

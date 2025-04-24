@@ -19,7 +19,6 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
@@ -28,14 +27,14 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@drawable/icon"
+        android:icon="@drawable/img_icon1"
         android:label="Find Me"
-        android:roundIcon="@drawable/icon"
+        android:roundIcon="@drawable/img_icon1"
         android:supportsRtl="true"
         android:theme="@style/Theme.FinalProject"
         tools:targetApi="31">
         <receiver
-            android:name=".BroadcastReceiverPackage.WifiReceiver"
+            android:name=".BroadcastReceiverPackage.BroadcastReceiverInternetAndWifi"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -44,7 +43,7 @@
         </receiver>
 
         <activity
-            android:name=".adminStaff.ListForAllGroups"
+            android:name=".adminStaff.ListAllGroups"
             android:exported="false" />
         <activity
             android:name=".mainAplication.ListGroupDetails"
@@ -83,7 +82,7 @@
             android:name=".ShowAllUsers.UsersActivity"
             android:exported="false" />
         <activity
-            android:name=".User_Profile"
+            android:name=".UserProfileActivity"
             android:exported="false" />
         <activity
             android:name=".RegestrationXLogin.loginActivity"
@@ -95,7 +94,7 @@
             android:name=".MainActivity"
             android:exported="true" />
         <activity
-            android:name=".activity_splash"
+            android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -44,10 +44,11 @@ import androidx.core.content.ContextCompat;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.example.finalproject.AllObjects.Object_SavedLocation;
 import com.example.finalproject.MainActivity;
 import com.example.finalproject.Permission;
 import com.example.finalproject.R;
-import com.example.finalproject.User_Profile;
+import com.example.finalproject.UserProfileActivity;
 import com.example.finalproject.sharedPref_manager;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -82,24 +83,16 @@ import java.util.Set;
 public class mapAndLogic extends AppCompatActivity {
 
     private MapView mapView;
-    private LocationManager locationManager;
-    private LocationListener locationListener;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private Marker userMarker;
     private DatabaseReference databaseReference;
     private LocationCallback locationCallback;
     private Button btnShowSavedLocationsList;
-
     private Handler handler = new Handler();
     private Set<String> visibleUsers = new HashSet<>();
     private String currentUser;
-
-    double latitude;
-    double longitude;
-
-    private Boolean settingConMapUser = true;
-    private Boolean settingShowToastMapChange = true;
-
+    double latitude,longitude;
+    private Boolean settingConMapUser = true, settingShowToastMapChange = true;
     private List<Marker> markerList = new ArrayList<>();
 
 
@@ -144,7 +137,7 @@ public class mapAndLogic extends AppCompatActivity {
                 return true;
             }
             else if(item.getItemId() == R.id.menu_profile){
-                startActivity(new Intent(getApplicationContext(), User_Profile.class));
+                startActivity(new Intent(getApplicationContext(), UserProfileActivity.class));
                 overridePendingTransition(0, 0);
                 finish();
                 return true;

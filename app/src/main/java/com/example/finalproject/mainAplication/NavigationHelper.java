@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.widget.Toast;
 
+import com.example.finalproject.AllObjects.Object_SavedLocation;
+
 public class NavigationHelper {
     public static void navigateToLocation(Context context, Object_SavedLocation location, boolean isGoogleMaps) {
         String uri;

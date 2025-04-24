@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_best_for_main"
+    android:background="@drawable/background_activity_main"
     tools:context=".MainActivity">
 
 
@@ -26,7 +26,7 @@
         android:id="@+id/userConnection"
         android:layout_width="130dp"
         android:layout_height="70dp"
-        android:background="@drawable/background_person_connected"
+        android:background="@drawable/background_color_person_connected"
         android:text="connecte"
         android:gravity="center"
         android:textSize="18dp"
@@ -55,7 +55,7 @@
         android:id="@+id/userImage"
         android:layout_width="96dp"
         android:layout_height="93dp"
-        android:src="@drawable/defult_user_image"
+        android:src="@drawable/img_icon_def_user"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.85"
